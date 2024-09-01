@@ -11,7 +11,6 @@ import { useAppDispatch } from '@/redux/selector';
 import { handleLogin } from '@/redux/auth/auth-slice';
 import { showNotification } from '@/redux/notification/notification-slice';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/20/solid';
-import { LoginFormData } from '@/types/login';
 import { ERROR_MESSAGES } from '@/utils/constant';
 import { moveToNextPage } from '@/utils/Deeplink';
 import { CustomError } from '@/types/errorMessage';
@@ -24,12 +23,7 @@ const LoginForm = () => {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const LoginSchema = Yup.object().shape({
-    email: Yup.string()
-      .required('Email is required')
-      .matches(
-        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        'Email must be a valid email address',
-      ),
+    username: Yup.string().required('Username is required'),
     password: Yup.string()
       .required('Password is required')
       .min(8, 'Password must be at least 8 characters long')
@@ -40,12 +34,12 @@ const LoginForm = () => {
       ),
   });
 
-  const defaultValues: LoginFormData = {
-    email: '',
+  const defaultValues = {
+    username: '',
     password: '',
   };
 
-  const methods = useForm<LoginFormData>({
+  const methods = useForm({
     resolver: yupResolver(LoginSchema),
     defaultValues,
     mode: 'onBlur',
@@ -56,7 +50,7 @@ const LoginForm = () => {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit: SubmitHandler<LoginFormData> = async (credentials) => {
+  const onSubmit = async (credentials: any) => {
     try {
       await dispatch(handleLogin(credentials));
       moveToNextPage(router);
