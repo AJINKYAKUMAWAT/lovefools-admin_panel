@@ -1,4 +1,4 @@
-# Lovefools-Admin_panel
+# Lovefools-Admin_Panel
 
 
 ## Getting Started

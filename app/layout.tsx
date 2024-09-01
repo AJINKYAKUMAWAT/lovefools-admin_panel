@@ -29,7 +29,7 @@ const RootLayout: FunctionComponent<PropsWithChildren> = ({ children }) => {
         />
         <meta
           property='og:url'
-          content='https://pentacleerp.com/'
+          content='https://lovefools.com/'
         />
       </head>
 

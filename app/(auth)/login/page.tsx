@@ -16,7 +16,7 @@ const Login = () => {
           src={img}
           alt='logo'
           onClick={() => {
-            window.location.href = 'https://www.pentacle.global/';
+            window.location.href = 'https://www.lovefools-admin_panel/';
           }}
         />
         {/* <span className=' my-2 text-center text-5xl font-semibold text-green-900'>
