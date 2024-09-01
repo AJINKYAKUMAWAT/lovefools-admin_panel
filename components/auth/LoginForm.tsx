@@ -84,9 +84,9 @@ const LoginForm = () => {
         onSubmit={handleSubmit(onSubmit)}>
         <label>Email</label>
         <ControllerTextField
-          name='email'
-          placeholder='Enter your email'
-          type='email'
+          name='username'
+          placeholder='Enter your username'
+          type='text'
         />
         <Spacer y={4} />
 
