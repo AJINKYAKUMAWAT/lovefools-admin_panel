@@ -1,4 +1,4 @@
-# pentacle-frontend
+# Lovefools-Admin_panel
 
 
 ## Getting Started
@@ -12,6 +12,8 @@ First, run the development server:
 ```bash
 npm run dev -- for running app
 npm run format -- for formating files
+npm run build -- for build app
+
 ```
 
 ## Rules to follow for creating files and folders
