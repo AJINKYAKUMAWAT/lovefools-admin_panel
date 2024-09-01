@@ -49,7 +49,7 @@ export const { setAuthLoading, login, logout, setInitialized } =
   authSlice.actions;
 export default authSlice.reducer;
 
-const getToken = async (credentails) => {
+const getToken = async (credentails?: any) => {
   try {
     const accessToken = getCookie('token');
     const refreshToken = getCookie('refreshToken');
@@ -65,32 +65,32 @@ const getToken = async (credentails) => {
   }
 };
 
-export const handleLogin = (credentails) => async (dispatch: AppDispatch) => {
-  dispatch(setAuthLoading(true));
+export const handleLogin =
+  (credentails?: any) => async (dispatch: AppDispatch) => {
+    dispatch(setAuthLoading(true));
 
-  try {
-    const loginResponse = await getToken(credentails);
-    console.log('loginResponse', loginResponse);
+    try {
+      const loginResponse = await getToken(credentails);
 
-    setCookie('isAuthenticated', true);
-    setCookie('token', loginResponse.accessToken);
-    setCookie('refreshToken', loginResponse.refreshToken);
+      setCookie('isAuthenticated', true);
+      setCookie('token', loginResponse.accessToken);
+      setCookie('refreshToken', loginResponse.refreshToken);
 
-    const userResponse = await getLoggedInUsersDetails();
+      const userResponse = await getLoggedInUsersDetails();
 
-    dispatch(login({ ...loginResponse }));
-    dispatch(
-      setUser({
-        ...userResponse,
-      }),
-    );
-    dispatch(setAuthLoading(false));
-  } catch (error) {
-    dispatch(handleLogout());
-    dispatch(setAuthLoading(false));
-    throw error;
-  }
-};
+      dispatch(login({ ...loginResponse }));
+      dispatch(
+        setUser({
+          ...userResponse,
+        }),
+      );
+      dispatch(setAuthLoading(false));
+    } catch (error) {
+      dispatch(handleLogout());
+      dispatch(setAuthLoading(false));
+      throw error;
+    }
+  };
 
 export const handleLogout = () => (dispatch: AppDispatch) => {
   deleteCookie('isAuthenticated');
