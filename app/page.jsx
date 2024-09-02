@@ -1,13 +1,6 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import {
-  AMC,
-  API_ENDPOINT,
-  CONFIRMATION_MESSAGES,
-  ERROR_MESSAGES,
-  MonthsOptions,
-  Roles,
-} from '@/utils/constant';
+import React, { useEffect, useRef, useState } from 'react';
+import { AMC, API_ENDPOINT, CONFIRMATION_MESSAGES } from '@/utils/constant';
 import { List } from '@/components/common/list/List';
 import {
   ArrowPathIcon,
@@ -23,8 +16,6 @@ import axiosInstance from '@/utils/axios';
 import { useRouter } from 'next/navigation';
 import SearchBar from '@/components/common/SearchBar';
 import { formatInput } from '@/utils/utils';
-import Select from '@/components/common/Select';
-import { formatDate } from '@/utils/formatTime';
 import {
   getAmcDetails,
   getAmcList,
@@ -32,6 +23,8 @@ import {
   updateAmcValues,
   updateTab,
 } from '@/redux/amc/amcSlice';
+import ReceiptForm from '@/components/receiptList';
+import PopupModal from '@/components/common/PopupModal';
 
 const data = [
   {
@@ -59,14 +52,23 @@ const data = [
 
 const Dashboard = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState();
   const [queryParams, setQueryParams] = useState();
   const { user } = useAppSelector((state) => state.userInfo);
   const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState(5);
 
   const dispatch = useAppDispatch();
   const router = useRouter();
-
+  const defaultValues = useRef({
+    name: '',
+    description: '',
+    price: '',
+    menuType: null,
+    subMenuType: null,
+    photo: '',
+  });
   const [queryParameters, setQueryParameter] = useState({
     page: 1,
     limit: 10,
@@ -75,73 +77,22 @@ const Dashboard = () => {
     search: '',
   });
 
-  useEffect(() => {
-    dispatch(getAmcList({ ...queryParameters, search: '', month: null }));
-  }, []);
-
   const handleMetaChange = (meta) => {
     const month =
       typeof meta.month === 'string' ? meta.month : meta.month?.value;
-
-    dispatch(
-      getAmcList({
-        ...meta,
-        month: month,
-        search: meta.search,
-      }),
-    );
   };
 
   const refreshBtn = () => {
     setQueryParams(null);
-    dispatch(
-      getAmcList({
-        search: '',
-        sortOrder: -1,
-        page: 1,
-        sortBy: 'id',
-        month: null,
-      }),
-    );
   };
 
   const handleEditButtonClick = async (row) => {
-    await dispatch(getAmcDetails(Number(row.id)));
     const amount = String(row.amount);
-    dispatch(
-      updateAmcValues({
-        id: row.id,
-        serviceName: row.serviceName,
-        serviceCompanyName: row.serviceCompanyName,
-        startDate: row.startDate ? new Date(row.startDate) : null,
-        endDate: row.endDate ? new Date(row.endDate) : null,
-        amount: formatInput(amount),
-      }),
-    );
-    dispatch(updateTab('amcDetails'));
-    router.push(`/amc/edit/${row.id}`);
-  };
-
-  const handleAddAmc = () => {
-    dispatch(removeAmc());
-    dispatch(
-      updateAmcValues({
-        id: null,
-        serviceName: '',
-        serviceCompanyName: '',
-        startDate: null,
-        endDate: null,
-        amount: null,
-      }),
-    );
-    dispatch(updateTab('amcDetails'));
-    router.push('/amc/add');
   };
 
   const handleDeleteButtonClick = async () => {
     try {
       await axiosInstance.delete(API_ENDPOINT.AMC_UPDATE(Number(id)));
-      dispatch(getAmcList(queryParameters));
       dispatch(
         showNotification({
           message: AMC.AMC_DELETED,
@@ -160,7 +111,7 @@ const Dashboard = () => {
       } else {
         dispatch(
           showNotification({
-            message: ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            message: 'Something went wrong',
             variant: 'error',
           }),
         );
@@ -190,11 +141,27 @@ const Dashboard = () => {
     setQueryParams(monthType);
   };
 
+  const toggleReciptFormModal = () => {
+    defaultValues.current = {
+      name: '',
+      description: '',
+      price: '',
+      menuType: null,
+      subMenuType: null,
+      photo: '',
+    };
+    setShowModal((prev) => !prev);
+  };
+
+  const onSubmit = () => {};
+
+  console.log('defaultValues', defaultValues);
+
   return (
     <>
       <div className='container mx-auto'>
         <div className='flex flex-col justify-between'>
-          <h2 className='text-2xl font-semibold'>Amc </h2>
+          <h2 className='text-2xl font-semibold'>Receipt List </h2>
           <div className='flex flex-wrap'>
             <div className='sm: flex w-full gap-4 sm:flex-col md:w-fit lg:w-3/4'>
               <div className='flex w-full flex-col sm:flex-row md:gap-4'>
@@ -205,15 +172,6 @@ const Dashboard = () => {
                   value={queryParameters.search || ''}
                   onChange={handleSearch}
                 />
-                {/* <Select
-                  className='my-3 md:w-44'
-                  placeholder='Month'
-                  value={queryParams}
-                  onChange={(value) => {
-                    selectMonth(value);
-                  }}
-                  options={MonthsOptions}
-                /> */}
               </div>
             </div>
             <div className='my-2 flex w-full justify-end sm:w-1/4'>
@@ -229,7 +187,7 @@ const Dashboard = () => {
               </Button>
               <Button
                 onClick={() => {
-                  handleAddAmc();
+                  toggleReciptFormModal();
                 }}>
                 Add
               </Button>
@@ -249,7 +207,7 @@ const Dashboard = () => {
           ]}
           data={{
             data: data.length > 0 ? data : [],
-            pageData: { total: 0 },
+            pageData: { total: total || 0 },
           }}
           meta={queryParameters}
           onMetaChange={handleMetaChange}
@@ -299,6 +257,16 @@ const Dashboard = () => {
           }}
         />
       </div>
+      <PopupModal
+        isOpen={showModal}
+        header={defaultValues.current.id ? 'Update Recipt' : 'Add Receipt'}
+        onOpenChange={toggleReciptFormModal}>
+        <ReceiptForm
+          handleClose={toggleReciptFormModal}
+          handleAreaOfInterestSubmit={onSubmit}
+          defaultValues={defaultValues.current}
+        />
+      </PopupModal>
       <ConfirmationModal
         isOpen={showDeleteModal}
         message={CONFIRMATION_MESSAGES.AMC_DELETE}
