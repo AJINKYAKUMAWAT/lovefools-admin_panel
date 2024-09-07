@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axios';
-import { API_ENDPOINT, ERROR_MESSAGES, SortDirection } from '@/utils/constant';
+import {
+  API_ENDPOINT,
+  ERROR_MESSAGES,
+  RECEIPT,
+  SortDirection,
+} from '@/utils/constant';
+import { toast } from 'react-toastify';
 
 const initialListParameters = {
   page: 1,
@@ -40,8 +46,6 @@ export const getReceiptList = createAsyncThunk(
         },
       };
     } catch (error) {
-      console.log(error);
-
       return rejectWithValue(error.message);
     }
   },
@@ -55,8 +59,10 @@ export const addReceipt = createAsyncThunk(
         API_ENDPOINT.ADD_RECEIPT,
         receiptDetails,
       );
+      toast.success(RECEIPT.RECEIPT_SUCCESS);
       return data;
     } catch (error) {
+      toast.error(error.message);
       return rejectWithValue(error.message);
     }
   },
@@ -70,8 +76,10 @@ export const updateReceipt = createAsyncThunk(
         API_ENDPOINT.UPDATE_RECEIPT(id),
         payload,
       );
+      toast.success(RECEIPT.RECEIPT_UPDATE);
       return data;
     } catch (error) {
+      toast.error(error.message);
       console.log(error);
     }
   },
@@ -84,8 +92,10 @@ export const deleteReceipt = createAsyncThunk(
       const { data } = await axiosInstance.post(
         API_ENDPOINT.DELETE_RECEIPT(id),
       );
+      toast.success(RECEIPT.RECEIPT_DELETED);
       return data;
     } catch (error) {
+      toast.error(error.message);
       console.log(error);
     }
   },

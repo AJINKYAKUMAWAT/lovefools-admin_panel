@@ -50,8 +50,12 @@ const LoginForm = () => {
 
   const onSubmit = async (credentials) => {
     try {
-      await dispatch(handleLogin(credentials));
-      moveToNextPage(router);
+      const data = await dispatch(handleLogin(credentials, router));
+      console.log(data.error);
+
+      if (!data.error) {
+        moveToNextPage(router);
+      }
     } catch (error) {
       console.log(error);
     }

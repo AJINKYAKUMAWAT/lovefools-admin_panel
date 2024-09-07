@@ -13,6 +13,8 @@ export const showNotificationAsync = createAsyncThunk(
   'notification/showNotificationAsync',
   async ({ message, variant }, { rejectWithValue }) => {
     try {
+      console.log('message', message);
+
       // Simulating an asynchronous operation like logging or notification request
       return { message, variant };
     } catch (error) {

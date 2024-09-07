@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { deleteCookie, getCookie, setCookie } from 'cookies-next';
 import axios from 'axios';
 import { API_ENDPOINT } from '@/utils/constant';
+import { toast } from 'react-toastify';
 
 const initialState = {
   isAuthenticated: false,
@@ -67,6 +68,7 @@ export const handleLogin = createAsyncThunk(
 
       return data;
     } catch (error) {
+      toast.error(error.response.data.message);
       dispatch(handleLogout());
       return rejectWithValue(error.message);
     }

@@ -33,6 +33,8 @@ import {
   findSingleSelectedValueLabelOption,
   generateOptions,
 } from '@/utils/utils';
+import { showNotificationAsync } from '@/redux/notification/notification-slice';
+import { toast } from 'react-toastify';
 
 const data = [
   {
@@ -126,8 +128,6 @@ const Dashboard = () => {
   };
 
   const toggleDeleteModal = (id) => {
-    console.log(id);
-
     setId(id);
     setDeleteModal((prev) => !prev);
   };
@@ -178,7 +178,6 @@ const Dashboard = () => {
       if (!defaultValues.current.id) {
         dispatch(addReceipt(payload));
       } else {
-        console.log(defaultValues.current.id);
         dispatch(
           updateReceipt({ id: defaultValues.current.id, payload: payload }),
         );

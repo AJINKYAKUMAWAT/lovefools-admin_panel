@@ -7,6 +7,8 @@ import './globals.css';
 import { persistor, store } from '../redux/store';
 import Loader from '@/components/common/Loader';
 import { PersistGate } from 'redux-persist/integration/react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RootLayout = ({ children }) => {
   return (
@@ -41,6 +43,7 @@ const RootLayout = ({ children }) => {
               <Suspense fallback={<Loader />}>
                 <Layout>{children}</Layout>
               </Suspense>
+              <ToastContainer />
             </NextUIProvider>
           </PersistGate>
         </Provider>
