@@ -12,38 +12,27 @@ import Button from '@/components/common/Button';
 import ConfirmationModal from '@/components/common/ConfirmationModal';
 import { useAppDispatch, useAppSelector } from '@/redux/selector';
 import SearchBar from '@/components/common/SearchBar';
-import PopupModal from '@/components/common/PopupModal';
 import {
-  addtableList,
-  deletetableList,
-  getTableList,
-  updatetableList,
-} from '../../redux/table-list/tableListSlice';
-import TableLIstForm from '@/components/table-list/tableListForm';
+  deleteContactFormList,
+  getContactFormList,
+} from '../../redux/contact-form/contactFormSlice';
 
-const TableList = () => {
+const ContactForm = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
-  const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
   const dispatch = useAppDispatch();
-  const defaultValues = useRef({
-    id: null,
-    table_no: '',
-    description: '',
-    photo: '',
-  });
 
   const { listParameters, data, total, loading } = useAppSelector(
-    (state) => state.tableList,
+    (state) => state.contactForm,
   );
 
   useEffect(() => {
-    dispatch(getTableList({}));
+    dispatch(getContactFormList({}));
   }, []);
 
   const handleMetaChange = (meta) => {
     dispatch(
-      getTableList({
+      getContactFormList({
         ...meta,
         search: meta.search,
       }),
@@ -51,18 +40,7 @@ const TableList = () => {
   };
 
   const refreshBtn = () => {
-    dispatch(getTableList({}));
-  };
-
-  const handleEditButtonClick = async (row) => {
-    defaultValues.current = {
-      id: row._id,
-      table_no: row.table_no,
-      description: row.description,
-      photo: '',
-    };
-
-    setShowModal((prev) => !prev);
+    dispatch(getContactFormList({}));
   };
 
   const toggleDeleteModal = (id) => {
@@ -78,20 +56,10 @@ const TableList = () => {
     });
   };
 
-  const toggleTableListModal = () => {
-    defaultValues.current = {
-      id: null,
-      table_no: '',
-      description: '',
-      photo: '',
-    };
-    setShowModal((prev) => !prev);
-  };
-
   const handleDelete = async () => {
     try {
-      dispatch(deletetableList({ id }));
-      dispatch(getTableList({ ...listParameters, search: '', page: 1 }));
+      dispatch(deleteContactFormList({ id }));
+      dispatch(getContactFormList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
@@ -99,34 +67,11 @@ const TableList = () => {
     toggleDeleteModal();
   };
 
-  const onSubmit = async (tableData) => {
-    const payload = {
-      table_no: tableData.table_no,
-      description: tableData.description,
-      photo: '',
-    };
-
-    try {
-      if (!defaultValues.current.id) {
-        dispatch(addtableList(payload));
-      } else {
-        dispatch(
-          updatetableList({ id: defaultValues.current.id, payload: payload }),
-        );
-      }
-      dispatch(getTableList({ ...listParameters, search: '', page: 1 }));
-    } catch (error) {
-      console.log(error);
-    }
-
-    toggleTableListModal();
-  };
-
   return (
     <>
       <div className='container mx-auto'>
         <div className='flex flex-col justify-between'>
-          <h2 className='text-2xl font-semibold'>Table List </h2>
+          <h2 className='text-2xl font-semibold'>Contact Form </h2>
           <div className='flex flex-wrap'>
             <div className='sm: flex w-full gap-4 sm:flex-col md:w-fit lg:w-3/4'>
               <div className='flex w-full flex-col sm:flex-row md:gap-4'>
@@ -150,23 +95,18 @@ const TableList = () => {
                   <ArrowPathIcon className='h-5 w-5' />
                 </Tooltip>
               </Button>
-              <Button
-                onClick={() => {
-                  toggleTableListModal();
-                }}>
-                Add
-              </Button>
             </div>
           </div>
         </div>
         <List
           columns={[
-            { id: 'table_no', label: 'Table No.' },
+            { id: 'mobile_no', label: 'Mobile No..' },
             {
-              id: 'description',
-              label: 'Description',
+              id: 'name',
+              label: 'Name',
             },
-            { id: 'photo', label: 'Photo' },
+            { id: 'emailId', label: 'Email Id' },
+            { id: 'message', label: 'Message' },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
@@ -182,9 +122,10 @@ const TableList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.table_no}</TableCell>
-                <TableCell>{row.description}</TableCell>
-                <TableCell>{row.photo ? row.photo : '-'}</TableCell>
+                <TableCell>{row.mobile_no}</TableCell>
+                <TableCell>{row.name}</TableCell>
+                <TableCell>{row.emailId}</TableCell>
+                <TableCell>{row.message}</TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
@@ -219,21 +160,9 @@ const TableList = () => {
           }}
         />
       </div>
-      <PopupModal
-        isOpen={showModal}
-        header={
-          defaultValues.current.id ? 'Update Table List' : 'Add Table List'
-        }
-        onOpenChange={toggleTableListModal}>
-        <TableLIstForm
-          handleClose={toggleTableListModal}
-          handleTableListSubmit={onSubmit}
-          defaultValues={defaultValues.current}
-        />
-      </PopupModal>
       <ConfirmationModal
         isOpen={showDeleteModal}
-        message={CONFIRMATION_MESSAGES.TABLE_LIST_DELETE}
+        message={CONFIRMATION_MESSAGES.CONTACT_FORM_DELETE}
         onClose={toggleDeleteModal}
         onConfirm={() => {
           handleDelete();
@@ -243,4 +172,4 @@ const TableList = () => {
   );
 };
 
-export default TableList;
+export default ContactForm;

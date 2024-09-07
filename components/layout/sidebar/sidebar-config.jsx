@@ -27,7 +27,7 @@ const SidebarConfig = [
   {
     name: 'Contact Form',
     icon: <CreditCardIcon className='h-6 w-6' />,
-    href: '/clients',
+    href: '/contact-form',
   },
 
   {
