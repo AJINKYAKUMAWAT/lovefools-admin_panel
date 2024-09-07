@@ -1,28 +1,98 @@
-import { createSlice } from '@reduxjs/toolkit';
-import {
-  getLoggedInUsersDetails,
-  removeUser,
-  setUser,
-} from '../user-info/user-info-slice';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { deleteCookie, getCookie, setCookie } from 'cookies-next';
-import axiosInstance from '@/utils/axios';
-import { API_ENDPOINT } from '@/utils/constant';
-import { AppDispatch } from '../store';
 import axios from 'axios';
+import { API_ENDPOINT } from '@/utils/constant';
 
 const initialState = {
   isAuthenticated: false,
-  loading: true,
+  loading: false,
   isInitialized: false,
   accessToken: '',
+  user: null, // Added user state
+  error: null,
 };
 
+// Async thunks
+export const getLoggedInUsersDetails = createAsyncThunk(
+  'auth/getLoggedInUsersDetails',
+  async (_, { rejectWithValue }) => {
+    try {
+      // const { data } = await axios.get(API_ENDPOINT.LOGGEDIN_USER);
+      const data = {
+        fullName: 'Ajinkya',
+      };
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const getToken = createAsyncThunk(
+  'auth/getToken',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const accessToken = getCookie('token');
+      const refreshToken = getCookie('refreshToken');
+      if (accessToken && refreshToken) return { accessToken, refreshToken };
+
+      const { data } = await axios.post(
+        'http://localhost:5000/api/user/login',
+        credentials,
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const handleLogin = createAsyncThunk(
+  'auth/handleLogin',
+  async (credentials, { dispatch, rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(
+        'http://localhost:5000/api/user/login',
+        credentials,
+      );
+
+      setCookie('isAuthenticated', true);
+      setCookie('token', data.accessToken);
+      setCookie('refreshToken', data.refreshToken);
+
+      const userResponse = await dispatch(getLoggedInUsersDetails()).unwrap();
+
+      dispatch(login({ ...data }));
+      dispatch(setUser({ ...userResponse }));
+
+      return data;
+    } catch (error) {
+      dispatch(handleLogout());
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const handleAuth = createAsyncThunk('auth/handleAuth', () => {});
+
+export const handleLogout = createAsyncThunk(
+  'auth/handleLogout',
+  async (_, { dispatch }) => {
+    deleteCookie('isAuthenticated');
+    deleteCookie('token');
+    deleteCookie('refreshToken');
+    dispatch(removeUser());
+    return true;
+  },
+);
+
+// Slice
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setAuthLoading: (state, action) => {
-      state.loading = action.payload;
+    setInitialized: (state, action) => {
+      state.isInitialized = action.payload;
     },
     login: (state, action) => {
       state.accessToken = action.payload.accessToken;
@@ -32,62 +102,57 @@ const authSlice = createSlice({
       state.accessToken = '';
       state.isAuthenticated = false;
     },
-    setInitialized: (state, action) => {
-      state.isInitialized = action.payload;
+    setUser: (state, action) => {
+      state.user = action.payload;
     },
+    removeUser: (state) => {
+      state.user = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(handleLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(handleLogin.fulfilled, (state, action) => {
+        state.accessToken = action.payload.accessToken;
+        state.isAuthenticated = true;
+        state.loading = false;
+      })
+      .addCase(handleLogin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(handleLogout.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(handleLogout.fulfilled, (state) => {
+        state.accessToken = '';
+        state.isAuthenticated = false;
+        state.loading = false;
+      })
+      .addCase(handleLogout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getLoggedInUsersDetails.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getLoggedInUsersDetails.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.loading = false;
+      })
+      .addCase(getLoggedInUsersDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(handleAuth.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+      });
   },
 });
 
-export const { setAuthLoading, login, logout, setInitialized } =
+export const { setInitialized, login, logout, setUser, removeUser } =
   authSlice.actions;
 export default authSlice.reducer;
-
-const getToken = async (credentails) => {
-  try {
-    const accessToken = getCookie('token');
-    const refreshToken = getCookie('refreshToken');
-    if (accessToken && refreshToken) return { accessToken, refreshToken };
-
-    const data = await axios.post(
-      'http://localhost:5000/api/user/login',
-      credentails,
-    );
-    return data.data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const handleLogin = (credentails) => async (dispatch) => {
-  dispatch(setAuthLoading(true));
-
-  try {
-    const loginResponse = await getToken(credentails);
-
-    setCookie('isAuthenticated', true);
-    setCookie('token', loginResponse.accessToken);
-    setCookie('refreshToken', loginResponse.refreshToken);
-
-    const userResponse = await getLoggedInUsersDetails();
-
-    dispatch(login({ ...loginResponse }));
-    dispatch(
-      setUser({
-        ...userResponse,
-      }),
-    );
-    dispatch(setAuthLoading(false));
-  } catch (error) {
-    dispatch(handleLogout());
-    dispatch(setAuthLoading(false));
-    throw error;
-  }
-};
-
-export const handleLogout = () => (dispatch) => {
-  deleteCookie('isAuthenticated');
-  deleteCookie('token');
-  deleteCookie('refreshToken');
-  dispatch(logout());
-  dispatch(removeUser());
-};

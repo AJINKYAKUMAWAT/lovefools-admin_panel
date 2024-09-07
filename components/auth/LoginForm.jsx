@@ -9,7 +9,6 @@ import ControllerTextField from '@/components/common/ControllerTextField';
 import Button from '@/components/common/Button';
 import { useAppDispatch } from '@/redux/selector';
 import { handleLogin } from '@/redux/auth/auth-slice';
-import { showNotification } from '@/redux/notification/notification-slice';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/20/solid';
 import { ERROR_MESSAGES } from '@/utils/constant';
 import { moveToNextPage } from '@/utils/Deeplink';
@@ -54,21 +53,7 @@ const LoginForm = () => {
       await dispatch(handleLogin(credentials));
       moveToNextPage(router);
     } catch (error) {
-      if (error instanceof Error) {
-        dispatch(
-          showNotification({
-            message: ERROR_MESSAGES.INVALID_CREDENTIALS,
-            variant: 'error',
-          }),
-        );
-      } else {
-        dispatch(
-          showNotification({
-            message: error ? error.message : ERROR_MESSAGES.INVALID_CREDENTIALS,
-            variant: 'error',
-          }),
-        );
-      }
+      console.log(error);
     }
   };
 

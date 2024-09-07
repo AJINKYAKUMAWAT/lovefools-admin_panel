@@ -4,22 +4,16 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import ControllerTextField from '@/components/common/ControllerTextField';
 import Button from '@/components/common/Button';
 import FormProvider from '@/components/common/FormProvider';
-import { reciptSchema } from '@/schema/amc/receipt';
-import ControllerTextArea from './common/ControllerTextArea';
+import { reciptSchema } from '@/schema/receipt/receipt';
+import ControllerTextArea from '../common/ControllerTextArea';
 import { generateOptions } from '@/utils/utils';
 import { menuType, subMenuType } from '@/utils/constant';
 import { ArrowUpTrayIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
-import ControllerSelect from './common/ControllerSelect';
+import ControllerSelect from '../common/ControllerSelect';
 import { Tooltip } from '@nextui-org/react';
 
-const ReceiptForm = ({
-  handleAreaOfInterestSubmit,
-  handleClose,
-  defaultValues,
-}) => {
-  console.log('defaultValues', defaultValues);
-
+const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
   const methods = useForm({
     resolver: yupResolver(reciptSchema),
     defaultValues,
@@ -38,11 +32,8 @@ const ReceiptForm = ({
   } = methods;
 
   const onSubmit = async (data) => {
-    // handleAreaOfInterestSubmit(AreaOfInterestData);
-    console.log('data', data);
+    handleReceiptSubmit(data);
   };
-
-  console.log(errors);
 
   const handleImageUpload = async (name, event) => {
     const { files } = event.target;
@@ -67,21 +58,7 @@ const ReceiptForm = ({
         setValue(name, selectedFile);
         clearErrors(name);
       } catch (error) {
-        if (error instanceof Error) {
-          dispatch(
-            showNotification({
-              message: error.message,
-              variant: 'error',
-            }),
-          );
-        } else {
-          dispatch(
-            showNotification({
-              message: ERROR_MESSAGES.SOMETHING_WENT_WRONG,
-              variant: 'error',
-            }),
-          );
-        }
+        console.log(error);
       }
     }
   };

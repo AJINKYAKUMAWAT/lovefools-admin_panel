@@ -11,7 +11,9 @@ const Sidebar = ({ open, toggleSidebar }) => {
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
 
-  const { user } = useAppSelector((state) => state.userInfo);
+  const { isAuthenticated, isInitialized } = useAppSelector(
+    (state) => state.auth,
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -45,7 +47,7 @@ const Sidebar = ({ open, toggleSidebar }) => {
     return false;
   };
 
-  if (!user) return null;
+  if (!isAuthenticated) return null;
 
   const handleMenuItemClick = () => {
     if (window.innerWidth <= 480) {

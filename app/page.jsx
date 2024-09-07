@@ -1,6 +1,13 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
-import { AMC, API_ENDPOINT, CONFIRMATION_MESSAGES } from '@/utils/constant';
+import {
+  API_ENDPOINT,
+  CONFIRMATION_MESSAGES,
+  ERROR_MESSAGE,
+  menuType,
+  RECEIPT,
+  subMenuType,
+} from '@/utils/constant';
 import { List } from '@/components/common/list/List';
 import {
   ArrowPathIcon,
@@ -10,21 +17,22 @@ import {
 import { TableCell, TableRow, Tooltip } from '@nextui-org/react';
 import Button from '@/components/common/Button';
 import ConfirmationModal from '@/components/common/ConfirmationModal';
-import { showNotification } from '@/redux/notification/notification-slice';
 import { useAppDispatch, useAppSelector } from '@/redux/selector';
 import axiosInstance from '@/utils/axios';
 import { useRouter } from 'next/navigation';
 import SearchBar from '@/components/common/SearchBar';
-import { formatInput } from '@/utils/utils';
-import {
-  getAmcDetails,
-  getAmcList,
-  removeAmc,
-  updateAmcValues,
-  updateTab,
-} from '@/redux/amc/amcSlice';
-import ReceiptForm from '@/components/receiptList';
+import ReceiptForm from '@/components/receipt/receiptForm';
 import PopupModal from '@/components/common/PopupModal';
+import {
+  addReceipt,
+  deleteReceipt,
+  getReceiptList,
+  updateReceipt,
+} from '@/redux/receipt/receiptSlice';
+import {
+  findSingleSelectedValueLabelOption,
+  generateOptions,
+} from '@/utils/utils';
 
 const data = [
   {
@@ -53,15 +61,12 @@ const data = [
 const Dashboard = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [id, setId] = useState();
-  const [queryParams, setQueryParams] = useState();
+  const [id, setId] = useState(null);
   const { user } = useAppSelector((state) => state.userInfo);
-  const [loading, setLoading] = useState(false);
-  const [total, setTotal] = useState(5);
-
   const dispatch = useAppDispatch();
   const router = useRouter();
   const defaultValues = useRef({
+    id: null,
     name: '',
     description: '',
     price: '',
@@ -69,80 +74,75 @@ const Dashboard = () => {
     subMenuType: null,
     photo: '',
   });
-  const [queryParameters, setQueryParameter] = useState({
-    page: 1,
-    limit: 10,
-    sortBy: 'id',
-    sortOrder: -1,
-    search: '',
-  });
+
+  const { listParameters, data, total, loading } = useAppSelector(
+    (state) => state.receipt,
+  );
+
+  useEffect(() => {
+    dispatch(getReceiptList({}));
+  }, []);
 
   const handleMetaChange = (meta) => {
-    const month =
-      typeof meta.month === 'string' ? meta.month : meta.month?.value;
+    dispatch(
+      getReceiptList({
+        ...meta,
+        search: meta.search,
+      }),
+    );
   };
 
   const refreshBtn = () => {
-    setQueryParams(null);
+    dispatch(getReceiptList({}));
   };
 
   const handleEditButtonClick = async (row) => {
-    const amount = String(row.amount);
+    defaultValues.current = {
+      id: row._id,
+      name: row.receipt_Name,
+      description: row.description,
+      price: row.price,
+      menuType: findSingleSelectedValueLabelOption(
+        generateOptions(menuType, 'id', 'type'),
+        row.type,
+      ),
+      subMenuType: findSingleSelectedValueLabelOption(
+        generateOptions(subMenuType, 'id', 'type'),
+        row.sub_type,
+      ),
+      photo: '',
+    };
+
+    setShowModal((prev) => !prev);
   };
 
   const handleDeleteButtonClick = async () => {
     try {
       await axiosInstance.delete(API_ENDPOINT.AMC_UPDATE(Number(id)));
-      dispatch(
-        showNotification({
-          message: AMC.AMC_DELETED,
-          variant: 'success',
-        }),
-      );
       setDeleteModal((prev) => !prev);
     } catch (error) {
-      if (error instanceof Error) {
-        dispatch(
-          showNotification({
-            message: error.message,
-            variant: 'error',
-          }),
-        );
-      } else {
-        dispatch(
-          showNotification({
-            message: 'Something went wrong',
-            variant: 'error',
-          }),
-        );
-      }
+      console.log(error);
     }
   };
 
   const toggleDeleteModal = (id) => {
+    console.log(id);
+
     setId(id);
     setDeleteModal((prev) => !prev);
   };
 
   const handleSearch = (searchQuery) => {
     handleMetaChange({
-      ...queryParameters,
+      ...listParameters,
       search: searchQuery,
       page: 1,
     });
   };
 
-  const selectMonth = (monthType) => {
-    handleMetaChange({
-      ...queryParameters,
-      month: monthType,
-      page: 1,
-    });
-    setQueryParams(monthType);
-  };
-
   const toggleReciptFormModal = () => {
     defaultValues.current = {
+      id: null,
       name: '',
       description: '',
       price: '',
@@ -153,9 +153,49 @@ const Dashboard = () => {
     setShowModal((prev) => !prev);
   };
 
-  const onSubmit = () => {};
+  const handleDelete = async () => {
+    try {
+      dispatch(deleteReceipt({ id }));
+      dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
+    } catch (error) {
+      console.log(error);
+    }
+    setId(null);
+    toggleDeleteModal();
+  };
 
-  console.log('defaultValues', defaultValues);
+  const onSubmit = async (receiptData) => {
+    const payload = {
+      receipt_Name: receiptData.name,
+      description: receiptData.description,
+      price: receiptData.price,
+      type: receiptData.menuType.value,
+      sub_type: receiptData.subMenuType.value,
+      photo: '',
+    };
+
+    try {
+      if (!defaultValues.current.id) {
+        dispatch(addReceipt(payload));
+      } else {
+        console.log(defaultValues.current.id);
+        dispatch(
+          updateReceipt({ id: defaultValues.current.id, payload: payload }),
+        );
+      }
+      dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
+    } catch (error) {
+      console.log(error);
+    }
+
+    toggleReciptFormModal();
+  };
+
+  const getDataLabel = (options, value) => {
+    const getLabel = options.filter((data) => data.id === value);
+
+    return getLabel[0].type;
+  };
 
   return (
     <>
@@ -169,7 +209,7 @@ const Dashboard = () => {
                   type='text'
                   placeholder='Search'
                   className='my-3 max-w-md md:w-50'
-                  value={queryParameters.search || ''}
+                  value={listParameters.search || ''}
                   onChange={handleSearch}
                 />
               </div>
@@ -196,20 +236,21 @@ const Dashboard = () => {
         </div>
         <List
           columns={[
-            { id: 'tableNo', label: 'Table no.' },
+            { id: 'receipt_Name', label: 'Receipt Name' },
             {
               id: 'description',
               label: 'Description',
             },
-            { id: 'seats', label: 'Seats' },
-            { id: 'photo', label: 'Photo' },
+            { id: 'price', label: 'Price' },
+            { id: 'type', label: 'Menu Type' },
+            { id: 'sub_type', label: 'Sub Menu Type' },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
             data: data.length > 0 ? data : [],
             pageData: { total: total || 0 },
           }}
-          meta={queryParameters}
+          meta={listParameters}
           onMetaChange={handleMetaChange}
           removeWrapper
           isStriped
@@ -218,11 +259,15 @@ const Dashboard = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.tableNo}</TableCell>
+                <TableCell>{row.receipt_Name}</TableCell>
                 <TableCell>{row.description}</TableCell>
-                <TableCell>{row.seats}</TableCell>
-                <TableCell>{row.photo}</TableCell>
-
+                <TableCell>{row.price}</TableCell>
+                <TableCell>
+                  {row.type ? getDataLabel(menuType, row.type) : '-'}
+                </TableCell>
+                <TableCell>
+                  {row.sub_type ? getDataLabel(subMenuType, row.sub_type) : '-'}
+                </TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
@@ -244,7 +289,7 @@ const Dashboard = () => {
                       color='danger'
                       aria-label='Delete'
                       onClick={() => {
-                        toggleDeleteModal(Number(row.id));
+                        toggleDeleteModal(row._id);
                       }}>
                       <Tooltip content='Delete'>
                         <TrashIcon className='h-4 w-4' />
@@ -263,16 +308,16 @@ const Dashboard = () => {
         onOpenChange={toggleReciptFormModal}>
         <ReceiptForm
           handleClose={toggleReciptFormModal}
-          handleAreaOfInterestSubmit={onSubmit}
+          handleReceiptSubmit={onSubmit}
           defaultValues={defaultValues.current}
         />
       </PopupModal>
       <ConfirmationModal
         isOpen={showDeleteModal}
-        message={CONFIRMATION_MESSAGES.AMC_DELETE}
+        message={CONFIRMATION_MESSAGES.RECEIPT_DELETE}
         onClose={toggleDeleteModal}
         onConfirm={() => {
-          handleDeleteButtonClick();
+          handleDelete();
         }}
       />
     </>

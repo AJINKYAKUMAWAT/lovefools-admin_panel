@@ -7,7 +7,11 @@ import Loader from '../common/Loader';
 import { useAppDispatch, useAppSelector } from '@/redux/selector';
 import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
-import { handleLogin, setInitialized } from '@/redux/auth/auth-slice';
+import {
+  handleAuth,
+  handleLogin,
+  setInitialized,
+} from '@/redux/auth/auth-slice';
 
 const Layout = ({ children }) => {
   const router = useRouter();
@@ -24,7 +28,7 @@ const Layout = ({ children }) => {
       return router.push('/login');
     }
 
-    dispatch(handleLogin());
+    dispatch(handleAuth());
 
     return () => {};
   }, []);
