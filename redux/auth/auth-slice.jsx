@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { deleteCookie, getCookie, setCookie } from 'cookies-next';
+import { deleteCookie, setCookie } from 'cookies-next';
 import axios from 'axios';
-import { API_ENDPOINT } from '@/utils/constant';
 import { toast } from 'react-toastify';
 
 const initialState = {
@@ -22,25 +21,6 @@ export const getLoggedInUsersDetails = createAsyncThunk(
       const data = {
         fullName: 'Ajinkya',
       };
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  },
-);
-
-export const getToken = createAsyncThunk(
-  'auth/getToken',
-  async (credentials, { rejectWithValue }) => {
-    try {
-      const accessToken = getCookie('token');
-      const refreshToken = getCookie('refreshToken');
-      if (accessToken && refreshToken) return { accessToken, refreshToken };
-
-      const { data } = await axios.post(
-        'http://localhost:5000/api/user/login',
-        credentials,
-      );
       return data;
     } catch (error) {
       return rejectWithValue(error.message);

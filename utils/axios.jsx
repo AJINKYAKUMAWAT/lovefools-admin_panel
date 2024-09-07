@@ -3,7 +3,7 @@ import { deleteCookie, getCookie, setCookie } from 'cookies-next';
 import { API_ENDPOINT, ERROR_MESSAGES, MAX_RETRIES } from './constant';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || '',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/user/',
 });
 
 let retryCount = 0;
