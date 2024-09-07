@@ -33,8 +33,6 @@ import {
   findSingleSelectedValueLabelOption,
   generateOptions,
 } from '@/utils/utils';
-import { showNotificationAsync } from '@/redux/notification/notification-slice';
-import { toast } from 'react-toastify';
 
 const data = [
   {

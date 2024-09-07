@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Spacer } from '@nextui-org/react';
 import * as Yup from 'yup';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import FormProvider from '@/components/common/FormProvider';
 import ControllerTextField from '@/components/common/ControllerTextField';
@@ -10,7 +10,6 @@ import Button from '@/components/common/Button';
 import { useAppDispatch } from '@/redux/selector';
 import { handleLogin } from '@/redux/auth/auth-slice';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/20/solid';
-import { ERROR_MESSAGES } from '@/utils/constant';
 import { moveToNextPage } from '@/utils/Deeplink';
 
 const LoginForm = () => {
