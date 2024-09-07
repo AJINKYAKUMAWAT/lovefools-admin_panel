@@ -51,8 +51,6 @@ const LoginForm = () => {
   const onSubmit = async (credentials) => {
     try {
       const data = await dispatch(handleLogin(credentials, router));
-      console.log(data.error);
-
       if (!data.error) {
         moveToNextPage(router);
       }
