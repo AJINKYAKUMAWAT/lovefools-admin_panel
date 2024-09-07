@@ -4,6 +4,10 @@ export const API_ENDPOINT = {
   UPDATE_RECEIPT: (id) => `updateReceipt/${id}`,
   DELETE_RECEIPT: (id) => `deleteReceipt/${id}`,
   GET_RECEIPT: 'getReceiptList',
+  ADD_TABLE_LIST: 'addReceipt',
+  UPDATE_TABLE_LIST: (id) => `updateReceipt/${id}`,
+  DELETE_TABLE_LIST: (id) => `deleteReceipt/${id}`,
+  GET_TABLE_LIST: 'getReceiptList',
 };
 
 export const SortDirection = {
@@ -17,10 +21,17 @@ export const RECEIPT = {
   RECEIPT_UPDATE: 'Receipt updated successfully',
 };
 
+export const TABLE_LIST = {
+  TABLE_LIST_DELETED: 'Table list deleted successfully',
+  TABLE_LIST_SUCCESS: 'Table list created successfully',
+  TABLE_LIST_UPDATE: 'Table list updated successfully',
+};
+
 export const ERROR_MESSAGE = 'Something went wrong';
 
 export const CONFIRMATION_MESSAGES = {
   RECEIPT_DELETE: 'Are you sure want to delete this receipt?',
+  TABLE_LIST_DELETE: 'Are you sure want to delete this table list?',
 };
 
 export const menuType = [

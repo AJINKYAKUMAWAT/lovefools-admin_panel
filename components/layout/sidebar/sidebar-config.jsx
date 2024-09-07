@@ -16,7 +16,7 @@ const SidebarConfig = [
   {
     name: 'Table List ',
     icon: <ClockIcon className='h-6 w-6' />,
-    href: '/punch-in-out',
+    href: '/table-list',
   },
   {
     name: 'Table Order',

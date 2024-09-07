@@ -4,18 +4,19 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import ControllerTextField from '@/components/common/ControllerTextField';
 import Button from '@/components/common/Button';
 import FormProvider from '@/components/common/FormProvider';
-import { reciptSchema } from '@/schema/receipt/receipt';
 import ControllerTextArea from '../common/ControllerTextArea';
-import { generateOptions } from '@/utils/utils';
-import { menuType, subMenuType } from '@/utils/constant';
 import { ArrowUpTrayIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
-import ControllerSelect from '../common/ControllerSelect';
 import { Tooltip } from '@nextui-org/react';
+import { tableListSchema } from '@/schema/table-list/tableList';
 
-const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
+const TableLIstForm = ({
+  handleTableListSubmit,
+  handleClose,
+  defaultValues,
+}) => {
   const methods = useForm({
-    resolver: yupResolver(reciptSchema),
+    resolver: yupResolver(tableListSchema),
     defaultValues,
     mode: 'onBlur',
   });
@@ -27,12 +28,12 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
   const {
     handleSubmit,
     setValue,
-    formState: { isSubmitting, errors },
+    formState: { errors },
     getValues,
   } = methods;
 
   const onSubmit = async (data) => {
-    handleReceiptSubmit(data);
+    handleTableListSubmit(data);
   };
 
   const handleImageUpload = async (name, event) => {
@@ -72,9 +73,9 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
           <div className='grid gap-4'>
             <ControllerTextField
               type='text'
-              placeholder='Enter name '
-              name='name'
-              label='Name'
+              placeholder='Enter table no. '
+              name='tableNo'
+              label='Table No.'
             />
           </div>
           <div className='grid gap-4'>
@@ -83,30 +84,6 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
               placeholder='Enter description '
               name='description'
               label='Description'
-            />
-          </div>
-          <div className='grid gap-4'>
-            <ControllerTextField
-              type='text'
-              placeholder='Enter Price '
-              name='price'
-              label='Price'
-            />
-          </div>
-          <div className='grid gap-4'>
-            <ControllerSelect
-              name='menuType'
-              placeholder='Select menu type'
-              options={generateOptions(menuType, 'id', 'type')}
-              label='Type'
-            />
-          </div>
-          <div className='grid gap-4'>
-            <ControllerSelect
-              name='subMenuType'
-              placeholder='Select sub menu type'
-              options={generateOptions(subMenuType, 'id', 'type')}
-              label='Sub Type'
             />
           </div>
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
@@ -185,4 +162,4 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
   );
 };
 
-export default ReceiptForm;
+export default TableLIstForm;

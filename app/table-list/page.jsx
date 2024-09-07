@@ -1,11 +1,6 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  API_ENDPOINT,
-  CONFIRMATION_MESSAGES,
-  menuType,
-  subMenuType,
-} from '@/utils/constant';
+import { CONFIRMATION_MESSAGES } from '@/utils/constant';
 import { List } from '@/components/common/list/List';
 import {
   ArrowPathIcon,
@@ -16,48 +11,39 @@ import { TableCell, TableRow, Tooltip } from '@nextui-org/react';
 import Button from '@/components/common/Button';
 import ConfirmationModal from '@/components/common/ConfirmationModal';
 import { useAppDispatch, useAppSelector } from '@/redux/selector';
-import axiosInstance from '@/utils/axios';
-import { useRouter } from 'next/navigation';
 import SearchBar from '@/components/common/SearchBar';
-import ReceiptForm from '@/components/receipt/receiptForm';
 import PopupModal from '@/components/common/PopupModal';
 import {
-  addReceipt,
-  deleteReceipt,
-  getReceiptList,
-  updateReceipt,
-} from '@/redux/receipt/receiptSlice';
-import {
-  findSingleSelectedValueLabelOption,
-  generateOptions,
-} from '@/utils/utils';
+  addtableList,
+  deletetableList,
+  getTableList,
+  updatetableList,
+} from '../../redux/table-list/tableListSlice';
+import TableLIstForm from '@/components/table-list/tableListForm';
 
-const ReceiptList = () => {
+const TableList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
   const dispatch = useAppDispatch();
   const defaultValues = useRef({
     id: null,
-    name: '',
+    table_no: '',
     description: '',
-    price: '',
-    menuType: null,
-    subMenuType: null,
     photo: '',
   });
 
   const { listParameters, data, total, loading } = useAppSelector(
-    (state) => state.receipt,
+    (state) => state.tableList,
   );
 
   useEffect(() => {
-    dispatch(getReceiptList({}));
+    dispatch(getTableList({}));
   }, []);
 
   const handleMetaChange = (meta) => {
     dispatch(
-      getReceiptList({
+      getTableList({
         ...meta,
         search: meta.search,
       }),
@@ -65,23 +51,14 @@ const ReceiptList = () => {
   };
 
   const refreshBtn = () => {
-    dispatch(getReceiptList({}));
+    dispatch(getTableList({}));
   };
 
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
-      name: row.receipt_Name,
+      table_no: row.table_no,
       description: row.description,
-      price: row.price,
-      menuType: findSingleSelectedValueLabelOption(
-        generateOptions(menuType, 'id', 'type'),
-        row.type,
-      ),
-      subMenuType: findSingleSelectedValueLabelOption(
-        generateOptions(subMenuType, 'id', 'type'),
-        row.sub_type,
-      ),
       photo: '',
     };
 
@@ -104,11 +81,8 @@ const ReceiptList = () => {
   const toggleReciptFormModal = () => {
     defaultValues.current = {
       id: null,
-      name: '',
+      table_no: '',
       description: '',
-      price: '',
-      menuType: null,
-      subMenuType: null,
       photo: '',
     };
     setShowModal((prev) => !prev);
@@ -116,8 +90,8 @@ const ReceiptList = () => {
 
   const handleDelete = async () => {
     try {
-      dispatch(deleteReceipt({ id }));
-      dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
+      dispatch(deletetableList({ id }));
+      dispatch(getTableList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
@@ -125,25 +99,22 @@ const ReceiptList = () => {
     toggleDeleteModal();
   };
 
-  const onSubmit = async (receiptData) => {
+  const onSubmit = async (tableData) => {
     const payload = {
-      receipt_Name: receiptData.name,
-      description: receiptData.description,
-      price: receiptData.price,
-      type: receiptData.menuType.value,
-      sub_type: receiptData.subMenuType.value,
+      table_no: tableData.table_no,
+      description: tableData.description,
       photo: '',
     };
 
     try {
       if (!defaultValues.current.id) {
-        dispatch(addReceipt(payload));
+        dispatch(addtableList(payload));
       } else {
         dispatch(
-          updateReceipt({ id: defaultValues.current.id, payload: payload }),
+          updatetableList({ id: defaultValues.current.id, payload: payload }),
         );
       }
-      dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
+      dispatch(getTableList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
@@ -161,7 +132,7 @@ const ReceiptList = () => {
     <>
       <div className='container mx-auto'>
         <div className='flex flex-col justify-between'>
-          <h2 className='text-2xl font-semibold'>Receipt List </h2>
+          <h2 className='text-2xl font-semibold'>Table List </h2>
           <div className='flex flex-wrap'>
             <div className='sm: flex w-full gap-4 sm:flex-col md:w-fit lg:w-3/4'>
               <div className='flex w-full flex-col sm:flex-row md:gap-4'>
@@ -196,14 +167,12 @@ const ReceiptList = () => {
         </div>
         <List
           columns={[
-            { id: 'receipt_Name', label: 'Receipt Name' },
+            { id: 'table_no', label: 'Table No.' },
             {
               id: 'description',
               label: 'Description',
             },
-            { id: 'price', label: 'Price' },
-            { id: 'type', label: 'Menu Type' },
-            { id: 'sub_type', label: 'Sub Menu Type' },
+            { id: 'photo', label: 'Photo' },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
@@ -219,15 +188,9 @@ const ReceiptList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.receipt_Name}</TableCell>
+                <TableCell>{row.table_no}</TableCell>
                 <TableCell>{row.description}</TableCell>
-                <TableCell>{row.price}</TableCell>
-                <TableCell>
-                  {row.type ? getDataLabel(menuType, row.type) : '-'}
-                </TableCell>
-                <TableCell>
-                  {row.sub_type ? getDataLabel(subMenuType, row.sub_type) : '-'}
-                </TableCell>
+                <TableCell>{row.photo ? row.photo : '-'}</TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
@@ -264,17 +227,19 @@ const ReceiptList = () => {
       </div>
       <PopupModal
         isOpen={showModal}
-        header={defaultValues.current.id ? 'Update Recipt' : 'Add Receipt'}
+        header={
+          defaultValues.current.id ? 'Update Table List' : 'Add Table List'
+        }
         onOpenChange={toggleReciptFormModal}>
-        <ReceiptForm
+        <TableLIstForm
           handleClose={toggleReciptFormModal}
-          handleReceiptSubmit={onSubmit}
+          handleTableListSubmit={onSubmit}
           defaultValues={defaultValues.current}
         />
       </PopupModal>
       <ConfirmationModal
         isOpen={showDeleteModal}
-        message={CONFIRMATION_MESSAGES.RECEIPT_DELETE}
+        message={CONFIRMATION_MESSAGES.TABLE_LIST_DELETE}
         onClose={toggleDeleteModal}
         onConfirm={() => {
           handleDelete();
@@ -284,4 +249,4 @@ const ReceiptList = () => {
   );
 };
 
-export default ReceiptList;
+export default TableList;
