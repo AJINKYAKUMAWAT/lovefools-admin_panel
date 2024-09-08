@@ -6,22 +6,22 @@ import Button from '@/components/common/Button';
 import FormProvider from '@/components/common/FormProvider';
 import ControllerTextArea from '../common/ControllerTextArea';
 import { generateOptions } from '@/utils/utils';
-import { statusType, subMenuType } from '@/utils/constant';
+import { galleryType, statusType, subMenuType } from '@/utils/constant';
 import { ArrowUpTrayIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import ControllerSelect from '../common/ControllerSelect';
 import { Tooltip } from '@nextui-org/react';
 import ControllerDatePicker from '../common/ControllerDatePicker';
 import ControllerDateTimePicker from '../common/ControllerDateTimePicker';
-import { eventListSchema } from '@/schema/event-list/eventList';
+import { galleryListSchema } from '@/schema/gallery-list/galleryList';
 
-const EventListForm = ({
-  handleEventListSubmit,
+const GalleryListForm = ({
+  handleGalleryListSubmit,
   handleClose,
   defaultValues,
 }) => {
   const methods = useForm({
-    resolver: yupResolver(eventListSchema),
+    resolver: yupResolver(galleryListSchema),
     defaultValues,
     mode: 'onBlur',
   });
@@ -38,7 +38,7 @@ const EventListForm = ({
   } = methods;
 
   const onSubmit = async (data) => {
-    handleEventListSubmit(data);
+    handleGalleryListSubmit(data);
   };
 
   const handleImageUpload = async (name, event) => {
@@ -84,19 +84,6 @@ const EventListForm = ({
             />
           </div>
           <div className='grid gap-4'>
-            <ControllerDatePicker
-              placeholder='Enter Date '
-              name='date'
-              label='Date'
-            />
-          </div>{' '}
-          <div className='grid gap-4'>
-            <ControllerDateTimePicker
-              name='time'
-              label='Time'
-            />
-          </div>
-          <div className='grid gap-4'>
             <ControllerTextArea
               type='text'
               placeholder='Enter description '
@@ -106,10 +93,10 @@ const EventListForm = ({
           </div>
           <div className='grid gap-4'>
             <ControllerSelect
-              name='status'
-              placeholder='Select status'
-              options={generateOptions(statusType, 'id', 'type')}
-              label='Status'
+              name='type'
+              placeholder='Select type'
+              options={generateOptions(galleryType, 'id', 'type')}
+              label='Type'
             />
           </div>
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
@@ -188,4 +175,4 @@ const EventListForm = ({
   );
 };
 
-export default EventListForm;
+export default GalleryListForm;

@@ -14,15 +14,15 @@ import { useAppDispatch, useAppSelector } from '@/redux/selector';
 import SearchBar from '@/components/common/SearchBar';
 import PopupModal from '@/components/common/PopupModal';
 import {
-  addEventList,
-  deleteEventList,
-  getEventList,
-  updateEventList,
-} from '../../redux/event-list/eventListSlice';
-import EventListForm from '../../components/event-list/eventListForm';
-import statusType from '../../utils/constant';
+  addGalleryList,
+  deleteGalleryList,
+  getGalleryList,
+  updateGalleryList,
+} from '../../redux/gallery-list/galleryListSlice';
+import GalleryListForm from '../../components/gallery-list/galleryListForm';
+import { galleryType } from '../../utils/constant';
 
-const EventList = () => {
+const GalleryList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
@@ -30,24 +30,22 @@ const EventList = () => {
   const defaultValues = useRef({
     id: null,
     name: '',
-    desciption: '',
-    date: null,
-    time: null,
-    status: null,
+    description: null,
+    type: null,
     photo: '',
   });
 
   const { listParameters, data, total, loading } = useAppSelector(
-    (state) => state.eventList,
+    (state) => state.galleryList,
   );
 
   useEffect(() => {
-    dispatch(getEventList({}));
+    dispatch(getGalleryList({}));
   }, []);
 
   const handleMetaChange = (meta) => {
     dispatch(
-      getEventList({
+      getGalleryList({
         ...meta,
         search: meta.search,
       }),
@@ -55,18 +53,16 @@ const EventList = () => {
   };
 
   const refreshBtn = () => {
-    dispatch(getEventList({}));
+    dispatch(getGalleryList({}));
   };
 
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
       name: '',
-      desciption: '',
-      date: row.date,
-      time: row.time,
-      status: findSingleSelectedValueLabelOption(
-        generateOptions(statusType, 'id', 'type'),
+      description: row.description,
+      type: findSingleSelectedValueLabelOption(
+        generateOptions(galleryType, 'id', 'type'),
         row.type,
       ),
       photo: '',
@@ -88,14 +84,12 @@ const EventList = () => {
     });
   };
 
-  const toggleEventListFormModal = () => {
+  const toggleGalleryListFormModal = () => {
     defaultValues.current = {
       id: null,
       name: '',
-      desciption: '',
-      date: null,
-      time: null,
-      status: null,
+      description: null,
+      type: null,
       photo: '',
     };
     setShowModal((prev) => !prev);
@@ -103,8 +97,8 @@ const EventList = () => {
 
   const handleDelete = async () => {
     try {
-      dispatch(deleteEventList({ id }));
-      dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
+      dispatch(deleteGalleryList({ id }));
+      dispatch(getGalleryList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
@@ -112,30 +106,28 @@ const EventList = () => {
     toggleDeleteModal();
   };
 
-  const onSubmit = async (eventData) => {
+  const onSubmit = async (galleryData) => {
     const payload = {
-      name: eventData.name,
-      desciption: eventData.desciption,
-      date: eventData.date,
-      time: eventData.time,
-      status: eventData.subMenuType.value,
+      name: galleryData.name,
+      description: galleryData.description,
+      type: galleryData.type,
       photo: '',
     };
 
     try {
       if (!defaultValues.current.id) {
-        dispatch(addEventList(payload));
+        dispatch(addGalleryList(payload));
       } else {
         dispatch(
-          updateEventList({ id: defaultValues.current.id, payload: payload }),
+          updateGalleryList({ id: defaultValues.current.id, payload: payload }),
         );
       }
-      dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
+      dispatch(getGalleryList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
 
-    toggleEventListFormModal();
+    toggleGalleryListFormModal();
   };
 
   const getDataLabel = (options, value) => {
@@ -148,7 +140,7 @@ const EventList = () => {
     <>
       <div className='container mx-auto'>
         <div className='flex flex-col justify-between'>
-          <h2 className='text-2xl font-semibold'>Event List </h2>
+          <h2 className='text-2xl font-semibold'>Gallery List </h2>
           <div className='flex flex-wrap'>
             <div className='sm: flex w-full gap-4 sm:flex-col md:w-fit lg:w-3/4'>
               <div className='flex w-full flex-col sm:flex-row md:gap-4'>
@@ -174,7 +166,7 @@ const EventList = () => {
               </Button>
               <Button
                 onClick={() => {
-                  toggleEventListFormModal();
+                  toggleGalleryListFormModal();
                 }}>
                 Add
               </Button>
@@ -184,13 +176,8 @@ const EventList = () => {
         <List
           columns={[
             { id: 'name', label: 'Name' },
-            {
-              id: 'date',
-              label: 'Date',
-            },
-            { id: 'Time', label: 'Time' },
             { id: 'description', label: 'Description' },
-            { id: 'status', label: 'Status' },
+            { id: 'type', label: 'Type' },
             { id: 'photo', label: 'photo' },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
@@ -208,12 +195,9 @@ const EventList = () => {
             return (
               <TableRow key={row.id}>
                 <TableCell>{row.name}</TableCell>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>{row.time}</TableCell>
-
                 <TableCell>{row.description}</TableCell>
                 <TableCell>
-                  {row.status ? getDataLabel(statusType, row.status) : '-'}
+                  {row.type ? getDataLabel(galleryType, row.type) : '-'}
                 </TableCell>
                 <TableCell>{row.photo ? row.photo : '-'}</TableCell>
                 <TableCell>
@@ -253,18 +237,18 @@ const EventList = () => {
       <PopupModal
         isOpen={showModal}
         header={
-          defaultValues.current.id ? 'Update Event List' : 'Add Event List'
+          defaultValues.current.id ? 'Update Gallery List' : 'Add Gallery List'
         }
-        onOpenChange={toggleEventListFormModal}>
-        <EventListForm
-          handleClose={toggleEventListFormModal}
-          handleEventListSubmit={onSubmit}
+        onOpenChange={toggleGalleryListFormModal}>
+        <GalleryListForm
+          handleClose={toggleGalleryListFormModal}
+          handleGalleryListSubmit={onSubmit}
           defaultValues={defaultValues.current}
         />
       </PopupModal>
       <ConfirmationModal
         isOpen={showDeleteModal}
-        message={CONFIRMATION_MESSAGES.EVENT_LIST_DELETE}
+        message={CONFIRMATION_MESSAGES.GALLERY_LIST_DELETE}
         onClose={toggleDeleteModal}
         onConfirm={() => {
           handleDelete();
@@ -274,4 +258,4 @@ const EventList = () => {
   );
 };
 
-export default EventList;
+export default GalleryList;

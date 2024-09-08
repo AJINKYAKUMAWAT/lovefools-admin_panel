@@ -18,6 +18,10 @@ export const API_ENDPOINT = {
   UPDATE_EVENT_LIST: (id) => `updateReceipt/${id}`,
   DELETE_EVENT_LIST: (id) => `deleteReceipt/${id}`,
   GET_EVENT_LIST: 'getReceiptList',
+  ADD_GALLERY_LIST: 'addReceipt',
+  UPDATE_GALLERY_LIST: (id) => `updateReceipt/${id}`,
+  DELETE_GALLERY_LIST: (id) => `deleteReceipt/${id}`,
+  GET_GALLERY_LIST: 'getReceiptList',
 };
 
 export const SortDirection = {
@@ -55,6 +59,12 @@ export const EVENT_LIST = {
   EVENT_LIST_UPDATE: 'Event list updated successfully',
 };
 
+export const GALLERY_LIST = {
+  GALLERY_LIST_DELETED: 'Gallery list deleted successfully',
+  GALLERY_LIST_SUCCESS: 'Gallery list created successfully',
+  GALLERY_LIST_UPDATE: 'Gallery list updated successfully',
+};
+
 export const ERROR_MESSAGE = 'Something went wrong';
 
 export const CONFIRMATION_MESSAGES = {
@@ -63,6 +73,7 @@ export const CONFIRMATION_MESSAGES = {
   CONTACT_FORM_DELETE: 'Are you sure want to delete this contact form?',
   USER_LIST_DELETE: 'Are you sure want to delete this user list?',
   EVENT_LIST_DELETE: 'Are you sure want to delete this event list?',
+  GALLERY_LIST_DELETE: 'Are you sure want to delete this gallery list?',
 };
 
 export const menuType = [
@@ -100,5 +111,16 @@ export const statusType = [
   {
     id: '2',
     type: 'Upcoming',
+  },
+];
+
+export const galleryType = [
+  {
+    id: '1',
+    type: 'Photo',
+  },
+  {
+    id: '2',
+    type: 'Video',
   },
 ];
