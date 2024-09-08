@@ -14,36 +14,38 @@ import { useAppDispatch, useAppSelector } from '@/redux/selector';
 import SearchBar from '@/components/common/SearchBar';
 import PopupModal from '@/components/common/PopupModal';
 import {
-  addTableList,
-  deleteTableList,
-  getTableList,
-  updateTableList,
-} from '../../redux/table-list/tableListSlice';
-import TableListForm from '@/components/table-list/tableListForm';
+  addUserList,
+  deleteUserList,
+  getUserList,
+  updateUserList,
+} from '../../redux/user-list/userListSlice';
+import UserListForm from '../../components/user-list/userListForm';
 
-const TableList = () => {
+const UserList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
   const dispatch = useAppDispatch();
   const defaultValues = useRef({
     id: null,
-    table_no: '',
+    mobile_no: '',
+    name: '',
+    emailId: '',
     description: '',
     photo: '',
   });
 
   const { listParameters, data, total, loading } = useAppSelector(
-    (state) => state.tableList,
+    (state) => state.userList,
   );
 
   useEffect(() => {
-    dispatch(getTableList({}));
+    dispatch(getUserList({}));
   }, []);
 
   const handleMetaChange = (meta) => {
     dispatch(
-      getTableList({
+      getUserList({
         ...meta,
         search: meta.search,
       }),
@@ -51,13 +53,15 @@ const TableList = () => {
   };
 
   const refreshBtn = () => {
-    dispatch(getTableList({}));
+    dispatch(getUserList({}));
   };
 
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
-      table_no: row.table_no,
+      mobile_no: row.mobile_no,
+      name: row.name,
+      emailId: row.emailId,
       description: row.description,
       photo: '',
     };
@@ -78,10 +82,12 @@ const TableList = () => {
     });
   };
 
-  const toggleTableListModal = () => {
+  const toggleUserListModal = () => {
     defaultValues.current = {
       id: null,
-      table_no: '',
+      mobile_no: '',
+      name: '',
+      emailId: '',
       description: '',
       photo: '',
     };
@@ -90,8 +96,8 @@ const TableList = () => {
 
   const handleDelete = async () => {
     try {
-      dispatch(deleteTableList({ id }));
-      dispatch(getTableList({ ...listParameters, search: '', page: 1 }));
+      dispatch(deleteUserList({ id }));
+      dispatch(getUserList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
@@ -99,34 +105,36 @@ const TableList = () => {
     toggleDeleteModal();
   };
 
-  const onSubmit = async (tableData) => {
+  const onSubmit = async (userData) => {
     const payload = {
-      table_no: tableData.table_no,
-      description: tableData.description,
+      mobile_no: userData.mobile_no,
+      name: userData.name,
+      emailId: userData.emailId,
+      description: userData.description,
       photo: '',
     };
 
     try {
       if (!defaultValues.current.id) {
-        dispatch(addTableList(payload));
+        dispatch(addUserList(payload));
       } else {
         dispatch(
-          updateTableList({ id: defaultValues.current.id, payload: payload }),
+          updateUserList({ id: defaultValues.current.id, payload: payload }),
         );
       }
-      dispatch(getTableList({ ...listParameters, search: '', page: 1 }));
+      dispatch(getUserList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
 
-    toggleTableListModal();
+    toggleUserListModal();
   };
 
   return (
     <>
       <div className='container mx-auto'>
         <div className='flex flex-col justify-between'>
-          <h2 className='text-2xl font-semibold'>Table List </h2>
+          <h2 className='text-2xl font-semibold'>User List </h2>
           <div className='flex flex-wrap'>
             <div className='sm: flex w-full gap-4 sm:flex-col md:w-fit lg:w-3/4'>
               <div className='flex w-full flex-col sm:flex-row md:gap-4'>
@@ -152,7 +160,7 @@ const TableList = () => {
               </Button>
               <Button
                 onClick={() => {
-                  toggleTableListModal();
+                  toggleUserListModal();
                 }}>
                 Add
               </Button>
@@ -161,7 +169,10 @@ const TableList = () => {
         </div>
         <List
           columns={[
-            { id: 'table_no', label: 'Table No.' },
+            { id: 'mobile_no', label: 'Mobile No.' },
+            { id: 'name', label: 'Name' },
+            { id: 'emailId', label: 'Email Id.' },
+
             {
               id: 'description',
               label: 'Description',
@@ -182,7 +193,9 @@ const TableList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.table_no}</TableCell>
+                <TableCell>{row.mobile_no}</TableCell>
+                <TableCell>{row.name}</TableCell>
+                <TableCell>{row.emailId}</TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell>{row.photo ? row.photo : '-'}</TableCell>
                 <TableCell>
@@ -221,19 +234,17 @@ const TableList = () => {
       </div>
       <PopupModal
         isOpen={showModal}
-        header={
-          defaultValues.current.id ? 'Update Table List' : 'Add Table List'
-        }
-        onOpenChange={toggleTableListModal}>
-        <TableListForm
-          handleClose={toggleTableListModal}
-          handleTableListSubmit={onSubmit}
+        header={defaultValues.current.id ? 'Update User List' : 'Add User List'}
+        onOpenChange={toggleUserListModal}>
+        <UserListForm
+          handleClose={toggleUserListModal}
+          handleUserListSubmit={onSubmit}
           defaultValues={defaultValues.current}
         />
       </PopupModal>
       <ConfirmationModal
         isOpen={showDeleteModal}
-        message={CONFIRMATION_MESSAGES.TABLE_LIST_DELETE}
+        message={CONFIRMATION_MESSAGES.USER_LIST_DELETE}
         onClose={toggleDeleteModal}
         onConfirm={() => {
           handleDelete();
@@ -243,4 +254,4 @@ const TableList = () => {
   );
 };
 
-export default TableList;
+export default UserList;

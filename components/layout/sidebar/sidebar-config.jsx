@@ -33,7 +33,7 @@ const SidebarConfig = [
   {
     name: 'User Info',
     icon: <InboxStackIcon className='h-6 w-6' />,
-    href: '/area-of-interest',
+    href: '/user-list',
   },
 
   {

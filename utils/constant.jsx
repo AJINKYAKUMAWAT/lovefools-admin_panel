@@ -10,6 +10,10 @@ export const API_ENDPOINT = {
   GET_TABLE_LIST: 'getReceiptList',
   DELETE_CONTACT_FORM: (id) => `deleteReceipt/${id}`,
   GET_CONTACT_FORM: 'getReceiptList',
+  ADD_USER_LIST: 'addReceipt',
+  UPDATE_USER_LIST: (id) => `updateReceipt/${id}`,
+  DELETE_USER_LIST: (id) => `deleteReceipt/${id}`,
+  GET_USER_LIST: 'getReceiptList',
 };
 
 export const SortDirection = {
@@ -35,12 +39,19 @@ export const CONTACT_FORM = {
   CONTACT_FORM_UPDATE: 'Contact form updated successfully',
 };
 
+export const USER_LIST = {
+  USER_LIST_DELETED: 'User llist deleted successfully',
+  USER_LIST_SUCCESS: 'User llist created successfully',
+  USER_LIST_UPDATE: 'User llist updated successfully',
+};
+
 export const ERROR_MESSAGE = 'Something went wrong';
 
 export const CONFIRMATION_MESSAGES = {
   RECEIPT_DELETE: 'Are you sure want to delete this receipt?',
   TABLE_LIST_DELETE: 'Are you sure want to delete this table list?',
   CONTACT_FORM_DELETE: 'Are you sure want to delete this contact form?',
+  USER_LIST_DELETE: 'Are you sure want to delete this user list?',
 };
 
 export const menuType = [
