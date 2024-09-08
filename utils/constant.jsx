@@ -26,6 +26,10 @@ export const API_ENDPOINT = {
   UPDATE_TESTIMONIAL_LIST: (id) => `updateReceipt/${id}`,
   DELETE_TESTIMONIAL_LIST: (id) => `deleteReceipt/${id}`,
   GET_TESTIMONIAL_LIST: 'getReceiptList',
+  ADD_CMS_LIST: 'addReceipt',
+  UPDATE_CMS_LIST: (id) => `updateReceipt/${id}`,
+  DELETE_CMS_LIST: (id) => `deleteReceipt/${id}`,
+  GET_CMS_LIST: 'getReceiptList',
 };
 
 export const SortDirection = {
@@ -61,6 +65,10 @@ export const EVENT_LIST = {
   EVENT_LIST_DELETED: 'Event list deleted successfully',
   EVENT_LIST_SUCCESS: 'Event list created successfully',
   EVENT_LIST_UPDATE: 'Event list updated successfully',
+};
+
+export const CMS_LIST = {
+  CMS_LIST_UPDATE: 'CMS list updated successfully',
 };
 
 export const GALLERY_LIST = {

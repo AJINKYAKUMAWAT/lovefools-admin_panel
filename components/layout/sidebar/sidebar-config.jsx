@@ -54,7 +54,7 @@ const SidebarConfig = [
   {
     name: 'CMS List',
     icon: <TicketIcon className='h-6 w-6' />,
-    href: '/request-module',
+    href: '/cms-list',
   },
 ];
 

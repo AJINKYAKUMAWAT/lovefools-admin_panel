@@ -8,6 +8,7 @@ import UserListReducer from '@/redux/user-list/userListSlice';
 import EventListReducer from '@/redux/event-list/eventListSlice';
 import GalleryListReducer from '@/redux/gallery-list/galleryListSlice';
 import TestimonialListReducer from '@/redux/testimonial-list/testimonialListSlice';
+import CMSListReducer from '@/redux/cms-list/cmsListSlice';
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -19,6 +20,7 @@ export const rootReducer = combineReducers({
   eventList: EventListReducer,
   galleryList: GalleryListReducer,
   testimonialList: TestimonialListReducer,
+  cmsList: CMSListReducer,
 });
 
 export default rootReducer;
