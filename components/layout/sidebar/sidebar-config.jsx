@@ -49,7 +49,7 @@ const SidebarConfig = [
   {
     name: 'Testimonial List',
     icon: <TicketIcon className='h-6 w-6' />,
-    href: '/request-module',
+    href: '/testimonial-list',
   },
   {
     name: 'CMS List',

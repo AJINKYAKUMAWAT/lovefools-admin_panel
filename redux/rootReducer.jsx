@@ -7,6 +7,7 @@ import ContactFormReducer from '@/redux/contact-form/contactFormSlice';
 import UserListReducer from '@/redux/user-list/userListSlice';
 import EventListReducer from '@/redux/event-list/eventListSlice';
 import GalleryListReducer from '@/redux/gallery-list/galleryListSlice';
+import TestimonialListReducer from '@/redux/testimonial-list/testimonialListSlice';
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -17,6 +18,7 @@ export const rootReducer = combineReducers({
   userList: UserListReducer,
   eventList: EventListReducer,
   galleryList: GalleryListReducer,
+  testimonialList: TestimonialListReducer,
 });
 
 export default rootReducer;

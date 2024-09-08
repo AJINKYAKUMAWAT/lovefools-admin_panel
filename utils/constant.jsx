@@ -22,6 +22,10 @@ export const API_ENDPOINT = {
   UPDATE_GALLERY_LIST: (id) => `updateReceipt/${id}`,
   DELETE_GALLERY_LIST: (id) => `deleteReceipt/${id}`,
   GET_GALLERY_LIST: 'getReceiptList',
+  ADD_TESTIMONIAL_LIST: 'addReceipt',
+  UPDATE_TESTIMONIAL_LIST: (id) => `updateReceipt/${id}`,
+  DELETE_TESTIMONIAL_LIST: (id) => `deleteReceipt/${id}`,
+  GET_TESTIMONIAL_LIST: 'getReceiptList',
 };
 
 export const SortDirection = {
@@ -65,6 +69,12 @@ export const GALLERY_LIST = {
   GALLERY_LIST_UPDATE: 'Gallery list updated successfully',
 };
 
+export const TESTIMONIAL_LIST = {
+  TESTIMONIAL_LIST_DELETED: 'Testimonial list deleted successfully',
+  TESTIMONIAL_LIST_SUCCESS: 'Testimonial list created successfully',
+  TESTIMONIAL_LIST_UPDATE: 'Testimonial list updated successfully',
+};
+
 export const ERROR_MESSAGE = 'Something went wrong';
 
 export const CONFIRMATION_MESSAGES = {
@@ -74,6 +84,7 @@ export const CONFIRMATION_MESSAGES = {
   USER_LIST_DELETE: 'Are you sure want to delete this user list?',
   EVENT_LIST_DELETE: 'Are you sure want to delete this event list?',
   GALLERY_LIST_DELETE: 'Are you sure want to delete this gallery list?',
+  TESTIMONIAL_LIST_DELETE: 'Are you sure want to delete this Testimonial list?',
 };
 
 export const menuType = [
