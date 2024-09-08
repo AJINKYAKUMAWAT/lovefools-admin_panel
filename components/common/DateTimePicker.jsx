@@ -1,5 +1,4 @@
-import { DatePicker } from '@nextui-org/react';
-import { DateValue } from '@internationalized/date';
+import { TimeInput } from '@nextui-org/react';
 
 const DateTimePicker = ({
   isRequired = false,
@@ -13,8 +12,7 @@ const DateTimePicker = ({
 }) => {
   return (
     <div className='flex w-full flex-row gap-4'>
-      <DatePicker
-        granularity={showTimePicker ? 'second' : 'day'}
+      <TimeInput
         label={label}
         variant='bordered'
         hideTimeZone
@@ -24,9 +22,9 @@ const DateTimePicker = ({
         isRequired={isRequired}
         isInvalid={isInvalid}
         errorMessage={errorMessage}
-        onChange={(date) => {
+        onChange={(time) => {
           if (onChange) {
-            if (date) onChange(date);
+            if (time) onChange(time);
           }
         }}
         {...rest}

@@ -5,6 +5,7 @@ import ReceiptReducer from '@/redux/receipt/receiptSlice';
 import TableListReducer from '@/redux/table-list/tableListSlice';
 import ContactFormReducer from '@/redux/contact-form/contactFormSlice';
 import UserListReducer from '@/redux/user-list/userListSlice';
+import EventListReducer from '@/redux/event-list/eventListSlice';
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -13,6 +14,7 @@ export const rootReducer = combineReducers({
   tableList: TableListReducer,
   contactForm: ContactFormReducer,
   userList: UserListReducer,
+  eventList: EventListReducer,
 });
 
 export default rootReducer;

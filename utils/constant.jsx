@@ -14,6 +14,10 @@ export const API_ENDPOINT = {
   UPDATE_USER_LIST: (id) => `updateReceipt/${id}`,
   DELETE_USER_LIST: (id) => `deleteReceipt/${id}`,
   GET_USER_LIST: 'getReceiptList',
+  ADD_EVENT_LIST: 'addReceipt',
+  UPDATE_EVENT_LIST: (id) => `updateReceipt/${id}`,
+  DELETE_EVENT_LIST: (id) => `deleteReceipt/${id}`,
+  GET_EVENT_LIST: 'getReceiptList',
 };
 
 export const SortDirection = {
@@ -40,9 +44,15 @@ export const CONTACT_FORM = {
 };
 
 export const USER_LIST = {
-  USER_LIST_DELETED: 'User llist deleted successfully',
-  USER_LIST_SUCCESS: 'User llist created successfully',
-  USER_LIST_UPDATE: 'User llist updated successfully',
+  USER_LIST_DELETED: 'User list deleted successfully',
+  USER_LIST_SUCCESS: 'User list created successfully',
+  USER_LIST_UPDATE: 'User list updated successfully',
+};
+
+export const EVENT_LIST = {
+  EVENT_LIST_DELETED: 'Event list deleted successfully',
+  EVENT_LIST_SUCCESS: 'Event list created successfully',
+  EVENT_LIST_UPDATE: 'Event list updated successfully',
 };
 
 export const ERROR_MESSAGE = 'Something went wrong';
@@ -52,6 +62,7 @@ export const CONFIRMATION_MESSAGES = {
   TABLE_LIST_DELETE: 'Are you sure want to delete this table list?',
   CONTACT_FORM_DELETE: 'Are you sure want to delete this contact form?',
   USER_LIST_DELETE: 'Are you sure want to delete this user list?',
+  EVENT_LIST_DELETE: 'Are you sure want to delete this event list?',
 };
 
 export const menuType = [
@@ -78,5 +89,16 @@ export const subMenuType = [
   {
     id: '3',
     type: 'Drink',
+  },
+];
+
+export const statusType = [
+  {
+    id: '1',
+    type: 'Done',
+  },
+  {
+    id: '2',
+    type: 'Upcoming',
   },
 ];

@@ -39,7 +39,7 @@ const SidebarConfig = [
   {
     name: 'Event List',
     icon: <TicketIcon className='h-6 w-6' />,
-    href: '/request-module',
+    href: '/event-list',
   },
   {
     name: 'Gallery List',

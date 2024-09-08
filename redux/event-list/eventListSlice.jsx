@@ -1,0 +1,188 @@
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axiosInstance from '@/utils/axios';
+import {
+  API_ENDPOINT,
+  EVENT_LIST,
+  eventList,
+  SortDirection,
+} from '@/utils/constant';
+import { toast } from 'react-toastify';
+
+const initialListParameters = {
+  page: 1,
+  limit: 10,
+  sortBy: 'id',
+  sortOrder: SortDirection.DESC,
+  search: '',
+};
+
+const initialState = {
+  data: [],
+  defaultValues: null,
+  total: 0,
+  loading: false,
+  error: null,
+  listParameters: initialListParameters,
+  tab: '',
+};
+
+// Async thunks
+export const getEventList = createAsyncThunk(
+  'eventList/getEventList',
+  async (queryParameters, { dispatch, rejectWithValue }) => {
+    try {
+      const {
+        data: { data: eventListData, pageData: meta },
+      } = await axiosInstance.post(API_ENDPOINT.GET_EVENT_LIST, {
+        ...queryParameters,
+      });
+      return {
+        eventListData,
+        total: meta.total,
+        updatedListParams: {
+          ...queryParameters,
+          page: meta.page,
+          limit: meta.limit,
+        },
+      };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const addEventList = createAsyncThunk(
+  'eventList/addEventList',
+  async (eventListDetails, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.post(
+        API_ENDPOINT.ADD_EVENT_LIST,
+        eventListDetails,
+      );
+      toast.success(EVENT_LIST.EVENT_LIST_SUCCESS);
+      return data;
+    } catch (error) {
+      toast.error(error.message);
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const updateEventList = createAsyncThunk(
+  'eventList/updateEventList',
+  async ({ id, payload }) => {
+    try {
+      const { data } = await axiosInstance.post(
+        API_ENDPOINT.UPDATE_EVENT_LIST(id),
+        payload,
+      );
+      toast.success(EVENT_LIST.EVENT_LIST_UPDATE);
+      return data;
+    } catch (error) {
+      toast.error(error.message);
+      console.log(error);
+    }
+  },
+);
+
+export const deleteEventList = createAsyncThunk(
+  'eventList/deleteEventList',
+  async ({ id }) => {
+    try {
+      const { data } = await axiosInstance.post(
+        API_ENDPOINT.DELETE_EVENT_LIST(id),
+      );
+      toast.success(EVENT_LIST.EVENT_LIST_DELETED);
+      return data;
+    } catch (error) {
+      toast.error(error.message);
+      console.log(error);
+    }
+  },
+);
+
+export const updateEventListValues = createAsyncThunk(
+  'eventList/updateEventListValues',
+  async (defaultValues, { rejectWithValue }) => {
+    try {
+      return defaultValues;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+const eventListSlice = createSlice({
+  name: 'eventList',
+  initialState,
+  reducers: {
+    updateListParameters: (state, action) => {
+      state.listParameters = { ...state.listParameters, ...action.payload };
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload.loading;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getEventList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getEventList.fulfilled, (state, action) => {
+        state.data = action.payload.eventListData;
+        state.total = action.payload.total;
+        state.listParameters = action.payload.updatedListParams;
+        state.loading = false;
+      })
+      .addCase(getEventList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(addEventList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addEventList.fulfilled, (state, action) => {
+        state.data = action.payload || [];
+        state.defaultValues = action.payload || null;
+        state.loading = false;
+      })
+      .addCase(addEventList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(updateEventList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateEventList.fulfilled, (state, action) => {
+        state.data = action.payload || [];
+        state.defaultValues = action.payload || null;
+        state.loading = false;
+      })
+      .addCase(updateEventList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(updateEventListValues.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateEventListValues.fulfilled, (state, action) => {
+        state.defaultValues = action.payload;
+        state.loading = false;
+      })
+      .addCase(updateEventListValues.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
+});
+
+export const { updateListParameters, setLoading } = eventListSlice.actions;
+
+export default eventListSlice.reducer;
