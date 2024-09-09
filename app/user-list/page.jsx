@@ -59,10 +59,10 @@ const UserList = () => {
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
-      mobileNo: row.mobileNo,
+      mobileNo: row.mobileNumber,
       name: row.name,
       emailId: row.emailId,
-      description: row.description,
+      description: row.Address,
       photo: '',
     };
 
@@ -198,7 +198,7 @@ const UserList = () => {
                 <TableCell>{row.mobileNumber}</TableCell>
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.emailId}</TableCell>
-                <TableCell>{row.description}</TableCell>
+                <TableCell>{row.Address}</TableCell>
                 <TableCell>{row.photo ? row.photo : '-'}</TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
