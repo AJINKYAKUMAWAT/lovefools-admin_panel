@@ -28,7 +28,7 @@ const TableList = () => {
   const dispatch = useAppDispatch();
   const defaultValues = useRef({
     id: null,
-    table_no: '',
+    tableNo: '',
     description: '',
     photo: '',
   });
@@ -57,7 +57,7 @@ const TableList = () => {
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
-      table_no: row.table_no,
+      tableNo: row.table_number,
       description: row.description,
       photo: '',
     };
@@ -81,7 +81,7 @@ const TableList = () => {
   const toggleTableListModal = () => {
     defaultValues.current = {
       id: null,
-      table_no: '',
+      tableNo: '',
       description: '',
       photo: '',
     };
@@ -101,7 +101,7 @@ const TableList = () => {
 
   const onSubmit = async (tableData) => {
     const payload = {
-      table_no: tableData.table_no,
+      table_number: tableData.tableNo,
       description: tableData.description,
       photo: '',
     };
@@ -161,7 +161,7 @@ const TableList = () => {
         </div>
         <List
           columns={[
-            { id: 'table_no', label: 'Table No.' },
+            { id: 'tableNo', label: 'Table No.' },
             {
               id: 'description',
               label: 'Description',
@@ -182,7 +182,7 @@ const TableList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.table_no}</TableCell>
+                <TableCell>{row.table_number}</TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell>{row.photo ? row.photo : '-'}</TableCell>
                 <TableCell>

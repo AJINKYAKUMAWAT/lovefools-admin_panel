@@ -28,7 +28,7 @@ const UserList = () => {
   const dispatch = useAppDispatch();
   const defaultValues = useRef({
     id: null,
-    mobile_no: '',
+    mobileNo: '',
     name: '',
     emailId: '',
     description: '',
@@ -59,7 +59,7 @@ const UserList = () => {
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
-      mobile_no: row.mobile_no,
+      mobileNo: row.mobileNo,
       name: row.name,
       emailId: row.emailId,
       description: row.description,
@@ -85,7 +85,7 @@ const UserList = () => {
   const toggleUserListModal = () => {
     defaultValues.current = {
       id: null,
-      mobile_no: '',
+      mobileNo: '',
       name: '',
       emailId: '',
       description: '',
@@ -106,11 +106,13 @@ const UserList = () => {
   };
 
   const onSubmit = async (userData) => {
+    console.log(userData);
+
     const payload = {
-      mobile_no: userData.mobile_no,
+      mobileNumber: userData.mobileNo,
       name: userData.name,
       emailId: userData.emailId,
-      description: userData.description,
+      Address: userData.description,
       photo: '',
     };
 
@@ -169,7 +171,7 @@ const UserList = () => {
         </div>
         <List
           columns={[
-            { id: 'mobile_no', label: 'Mobile No.' },
+            { id: 'mobileNo', label: 'Mobile No.' },
             { id: 'name', label: 'Name' },
             { id: 'emailId', label: 'Email Id.' },
 
@@ -193,7 +195,7 @@ const UserList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.mobile_no}</TableCell>
+                <TableCell>{row.mobileNumber}</TableCell>
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.emailId}</TableCell>
                 <TableCell>{row.description}</TableCell>
