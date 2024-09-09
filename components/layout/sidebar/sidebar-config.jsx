@@ -1,21 +1,23 @@
 import {
-  HomeIcon,
-  ClockIcon,
-  TicketIcon,
   UserGroupIcon,
-  InboxStackIcon,
-  CreditCardIcon,
+  DocumentTextIcon,
+  ListBulletIcon,
+  EnvelopeIcon,
+  UserCircleIcon,
+  CalendarDaysIcon,
+  PhotoIcon,
+  ClipboardDocumentIcon,
 } from '@heroicons/react/24/outline';
 
 const SidebarConfig = [
   {
     name: 'Reciept List',
-    icon: <HomeIcon className='h-6 w-6' />,
+    icon: <DocumentTextIcon className='h-6 w-6' />,
     href: '/',
   },
   {
     name: 'Table List ',
-    icon: <ClockIcon className='h-6 w-6' />,
+    icon: <ListBulletIcon className='h-6 w-6' />,
     href: '/table-list',
   },
   {
@@ -26,34 +28,34 @@ const SidebarConfig = [
 
   {
     name: 'Contact Form',
-    icon: <CreditCardIcon className='h-6 w-6' />,
+    icon: <EnvelopeIcon className='h-6 w-6' />,
     href: '/contact-form',
   },
 
   {
     name: 'User Info',
-    icon: <InboxStackIcon className='h-6 w-6' />,
+    icon: <UserCircleIcon className='h-6 w-6' />,
     href: '/user-list',
   },
 
   {
     name: 'Event List',
-    icon: <TicketIcon className='h-6 w-6' />,
+    icon: <CalendarDaysIcon className='h-6 w-6' />,
     href: '/event-list',
   },
   {
     name: 'Gallery List',
-    icon: <TicketIcon className='h-6 w-6' />,
+    icon: <PhotoIcon className='h-6 w-6' />,
     href: '/gallery-list',
   },
   {
     name: 'Testimonial List',
-    icon: <TicketIcon className='h-6 w-6' />,
+    icon: <UserGroupIcon className='h-6 w-6' />,
     href: '/testimonial-list',
   },
   {
     name: 'CMS List',
-    icon: <TicketIcon className='h-6 w-6' />,
+    icon: <ClipboardDocumentIcon className='h-6 w-6' />,
     href: '/cms-list',
   },
 ];

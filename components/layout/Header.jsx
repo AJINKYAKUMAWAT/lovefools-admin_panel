@@ -66,6 +66,7 @@ const Header = ({ toggleSidebar }) => {
                 className='mt-2 mt-[-2px] cursor-pointer pl-6'
                 onClick={() => router.push('/')}>
                 <Image
+                  style={{ maxWidth: 'none', marginLeft: '-32px' }}
                   width={120}
                   height={120}
                   src={img2}
