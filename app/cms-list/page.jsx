@@ -16,7 +16,7 @@ const CMSList = () => {
   const dispatch = useAppDispatch();
   const defaultValues = useRef({
     id: null,
-    desciption: '',
+    description: '',
   });
 
   const { listParameters, data, total, loading } = useAppSelector(
@@ -43,7 +43,7 @@ const CMSList = () => {
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
-      desciption: '',
+      description: '',
       photo: '',
     };
 
@@ -61,14 +61,14 @@ const CMSList = () => {
   const toggleCMSListFormModal = () => {
     defaultValues.current = {
       id: null,
-      desciption: '',
+      description: '',
     };
     setShowModal((prev) => !prev);
   };
 
   const onSubmit = async (eventData) => {
     const payload = {
-      desciption: eventData.desciption,
+      description: eventData.description,
     };
 
     try {

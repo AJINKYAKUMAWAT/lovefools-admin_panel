@@ -20,7 +20,13 @@ import {
   updateEventList,
 } from '../../redux/event-list/eventListSlice';
 import EventListForm from '../../components/event-list/eventListForm';
-import statusType from '../../utils/constant';
+import { statusType } from '../../utils/constant';
+import { formatDate } from '@/utils/formatTime';
+import {
+  findSingleSelectedValueLabelOption,
+  generateOptions,
+} from '@/utils/utils';
+import { Time } from '@internationalized/date';
 
 const EventList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
@@ -30,7 +36,7 @@ const EventList = () => {
   const defaultValues = useRef({
     id: null,
     name: '',
-    desciption: '',
+    description: '',
     date: null,
     time: null,
     status: null,
@@ -59,15 +65,18 @@ const EventList = () => {
   };
 
   const handleEditButtonClick = async (row) => {
+    console.log(row.time);
+    const [hr, min] = row.time.split(':');
+
     defaultValues.current = {
       id: row._id,
-      name: '',
-      desciption: '',
-      date: row.date,
-      time: row.time,
+      name: row.event_Name,
+      description: row.description,
+      date: new Date(row.date),
+      time: new Time(hr, min),
       status: findSingleSelectedValueLabelOption(
         generateOptions(statusType, 'id', 'type'),
-        row.type,
+        row.status,
       ),
       photo: '',
     };
@@ -92,7 +101,7 @@ const EventList = () => {
     defaultValues.current = {
       id: null,
       name: '',
-      desciption: '',
+      description: '',
       date: null,
       time: null,
       status: null,
@@ -113,12 +122,14 @@ const EventList = () => {
   };
 
   const onSubmit = async (eventData) => {
+    console.log(eventData);
+
     const payload = {
-      name: eventData.name,
-      desciption: eventData.desciption,
+      event_Name: eventData.name,
+      description: eventData.description,
       date: eventData.date,
       time: eventData.time,
-      status: eventData.subMenuType.value,
+      status: eventData.status.value,
       photo: '',
     };
 
@@ -139,7 +150,7 @@ const EventList = () => {
   };
 
   const getDataLabel = (options, value) => {
-    const getLabel = options.filter((data) => data.id === value);
+    const getLabel = options && options?.filter((data) => data.id === value);
 
     return getLabel[0].type;
   };
@@ -183,7 +194,7 @@ const EventList = () => {
         </div>
         <List
           columns={[
-            { id: 'name', label: 'Name' },
+            { id: 'event_Name', label: 'Name' },
             {
               id: 'date',
               label: 'Date',
@@ -207,8 +218,8 @@ const EventList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.date}</TableCell>
+                <TableCell>{row.event_Name}</TableCell>
+                <TableCell>{row.date ? formatDate(row.date) : '-'}</TableCell>
                 <TableCell>{row.time}</TableCell>
 
                 <TableCell>{row.description}</TableCell>

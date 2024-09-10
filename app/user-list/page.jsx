@@ -171,12 +171,12 @@ const UserList = () => {
         </div>
         <List
           columns={[
-            { id: 'mobileNo', label: 'Mobile No.' },
+            { id: 'mobileNumber', label: 'Mobile No.' },
             { id: 'name', label: 'Name' },
             { id: 'emailId', label: 'Email Id.' },
 
             {
-              id: 'description',
+              id: 'Address',
               label: 'Description',
             },
             { id: 'photo', label: 'Photo' },

@@ -30,7 +30,7 @@ const TestimonialList = () => {
   const defaultValues = useRef({
     id: null,
     name: '',
-    desciption: '',
+    description: '',
     photo: '',
   });
 
@@ -59,7 +59,7 @@ const TestimonialList = () => {
     defaultValues.current = {
       id: row._id,
       name: '',
-      desciption: '',
+      description: '',
       photo: '',
     };
 
@@ -83,7 +83,7 @@ const TestimonialList = () => {
     defaultValues.current = {
       id: null,
       name: '',
-      desciption: '',
+      description: '',
       photo: '',
     };
     setShowModal((prev) => !prev);
@@ -103,7 +103,7 @@ const TestimonialList = () => {
   const onSubmit = async (eventData) => {
     const payload = {
       name: eventData.name,
-      desciption: eventData.desciption,
+      description: eventData.description,
       photo: '',
     };
 

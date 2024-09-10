@@ -161,7 +161,7 @@ const TableList = () => {
         </div>
         <List
           columns={[
-            { id: 'tableNo', label: 'Table No.' },
+            { id: 'table_number', label: 'Table No.' },
             {
               id: 'description',
               label: 'Description',
