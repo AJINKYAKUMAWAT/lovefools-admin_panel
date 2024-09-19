@@ -109,12 +109,13 @@ const TableList = () => {
     try {
       if (!defaultValues.current.id) {
         dispatch(addTableList(payload));
+        dispatch(getTableList({ ...listParameters, search: '', page: 1 }));
       } else {
         dispatch(
           updateTableList({ id: defaultValues.current.id, payload: payload }),
         );
+        dispatch(getTableList({ ...listParameters, search: '', page: 1 }));
       }
-      dispatch(getTableList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }

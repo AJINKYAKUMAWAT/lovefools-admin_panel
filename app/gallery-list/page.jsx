@@ -117,12 +117,13 @@ const GalleryList = () => {
     try {
       if (!defaultValues.current.id) {
         dispatch(addGalleryList(payload));
+        dispatch(getGalleryList({ ...listParameters, search: '', page: 1 }));
       } else {
         dispatch(
           updateGalleryList({ id: defaultValues.current.id, payload: payload }),
         );
+        dispatch(getGalleryList({ ...listParameters, search: '', page: 1 }));
       }
-      dispatch(getGalleryList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }

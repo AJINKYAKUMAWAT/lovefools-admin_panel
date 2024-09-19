@@ -119,12 +119,13 @@ const UserList = () => {
     try {
       if (!defaultValues.current.id) {
         dispatch(addUserList(payload));
+        dispatch(getUserList({ ...listParameters, search: '', page: 1 }));
       } else {
         dispatch(
           updateUserList({ id: defaultValues.current.id, payload: payload }),
         );
+        dispatch(getUserList({ ...listParameters, search: '', page: 1 }));
       }
-      dispatch(getUserList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }

@@ -138,23 +138,18 @@ const ReceiptList = () => {
     try {
       if (!defaultValues.current.id) {
         dispatch(addReceipt(payload));
+        dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
       } else {
         dispatch(
           updateReceipt({ id: defaultValues.current.id, payload: payload }),
         );
+        dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
       }
-      dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
 
     toggleReciptFormModal();
-  };
-
-  const getDataLabel = (options, value) => {
-    const getLabel = options.filter((data) => data.id === value);
-
-    return getLabel[0]?.type;
   };
 
   return (

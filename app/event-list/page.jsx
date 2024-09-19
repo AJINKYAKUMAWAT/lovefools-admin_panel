@@ -136,12 +136,13 @@ const EventList = () => {
     try {
       if (!defaultValues.current.id) {
         dispatch(addEventList(payload));
+        dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
       } else {
         dispatch(
           updateEventList({ id: defaultValues.current.id, payload: payload }),
         );
+        dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
       }
-      dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
