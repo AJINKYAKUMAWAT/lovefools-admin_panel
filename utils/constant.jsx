@@ -1,4 +1,5 @@
-export const NEXT_PUBLIC_API_URL = 'http://localhost:5000/api/user/';
+export const NEXT_PUBLIC_API_URL =
+  'https://lovefools-backend-76pv.vercel.app/api/user/';
 
 export const API_ENDPOINT = {
   LOGIN: 'login',
