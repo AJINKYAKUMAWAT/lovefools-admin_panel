@@ -108,7 +108,7 @@ const GalleryList = () => {
 
   const onSubmit = async (galleryData) => {
     const payload = {
-      name: galleryData.name,
+      gallery_Name: galleryData.name,
       description: galleryData.description,
       type: galleryData.type,
       photo: '',
@@ -175,7 +175,7 @@ const GalleryList = () => {
         </div>
         <List
           columns={[
-            { id: 'name', label: 'Name' },
+            { id: 'gallery_Name', label: 'Name' },
             { id: 'description', label: 'Description' },
             { id: 'type', label: 'Type' },
             { id: 'photo', label: 'photo' },
@@ -194,7 +194,7 @@ const GalleryList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.name}</TableCell>
+                <TableCell>{row.gallery_Name}</TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell>
                   {row.type ? getDataLabel(galleryType, row.type) : '-'}

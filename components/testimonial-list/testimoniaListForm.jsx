@@ -5,10 +5,16 @@ import ControllerTextField from '@/components/common/ControllerTextField';
 import Button from '@/components/common/Button';
 import FormProvider from '@/components/common/FormProvider';
 import ControllerTextArea from '../common/ControllerTextArea';
+import { generateOptions } from '@/utils/utils';
+import { galleryType, statusType, subMenuType } from '@/utils/constant';
 import { ArrowUpTrayIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import ControllerSelect from '../common/ControllerSelect';
 import { Tooltip } from '@nextui-org/react';
-import { testimonialListSchema } from '@/schema/testimonial-list/testimonialList';
+import ControllerDatePicker from '../common/ControllerDatePicker';
+import ControllerDateTimePicker from '../common/ControllerDateTimePicker';
+import { galleryListSchema } from '@/schema/gallery-list/galleryList';
+import { testiMonialListSchema } from '@/schema/testimonial-list/testimonialList';
 
 const TestimonialListForm = ({
   handleTestimonialListSubmit,
@@ -16,7 +22,7 @@ const TestimonialListForm = ({
   defaultValues,
 }) => {
   const methods = useForm({
-    resolver: yupResolver(testimonialListSchema),
+    resolver: yupResolver(testiMonialListSchema),
     defaultValues,
     mode: 'onBlur',
   });
@@ -28,7 +34,7 @@ const TestimonialListForm = ({
   const {
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { isSubmitting, errors },
     getValues,
   } = methods;
 

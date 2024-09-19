@@ -23,7 +23,7 @@ const initialState = {
 // Async thunks
 export const getCMSList = createAsyncThunk(
   'cmsList/getCMSList',
-  async (queryParameters, { dispatch, rejectWithValue }) => {
+  async (queryParameters, { rejectWithValue }) => {
     try {
       const {
         data: { data: cmsListData, pageData: meta },

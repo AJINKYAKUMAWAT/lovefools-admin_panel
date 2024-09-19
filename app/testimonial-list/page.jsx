@@ -58,8 +58,8 @@ const TestimonialList = () => {
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
-      name: '',
-      description: '',
+      name: row.testimonial_Name,
+      description: row.description,
       photo: '',
     };
 
@@ -102,14 +102,19 @@ const TestimonialList = () => {
 
   const onSubmit = async (eventData) => {
     const payload = {
-      name: eventData.name,
+      testimonial_Name: eventData.name,
       description: eventData.description,
       photo: '',
     };
 
     try {
+      console.log(payload);
+
       if (!defaultValues.current.id) {
         dispatch(addTestimonialList(payload));
+        dispatch(
+          getTestimonialList({ ...listParameters, search: '', page: 1 }),
+        );
       } else {
         dispatch(
           updateTestimonialList({
@@ -117,8 +122,10 @@ const TestimonialList = () => {
             payload: payload,
           }),
         );
+        dispatch(
+          getTestimonialList({ ...listParameters, search: '', page: 1 }),
+        );
       }
-      dispatch(getTestimonialList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
@@ -171,7 +178,7 @@ const TestimonialList = () => {
         </div>
         <List
           columns={[
-            { id: 'name', label: 'Name' },
+            { id: 'testimonial_Name', label: 'Name' },
             { id: 'description', label: 'Description' },
             { id: 'photo', label: 'photo' },
             { id: 'actions', label: 'Actions', fixed: true },
@@ -189,7 +196,7 @@ const TestimonialList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.name}</TableCell>
+                <TableCell>{row.testimonial_Name}</TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell>{row.photo ? row.photo : '-'}</TableCell>
                 <TableCell>

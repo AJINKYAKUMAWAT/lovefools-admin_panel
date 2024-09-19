@@ -43,7 +43,7 @@ const CMSList = () => {
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
-      description: '',
+      description: row.description,
       photo: '',
     };
 
@@ -116,7 +116,7 @@ const CMSList = () => {
         </div>
         <List
           columns={[
-            { id: 'name', label: 'Section Name' },
+            { id: 'section_Name', label: 'Section Name' },
             { id: 'description', label: 'Description' },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
@@ -133,7 +133,7 @@ const CMSList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.name}</TableCell>
+                <TableCell>{row.section_Name}</TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>

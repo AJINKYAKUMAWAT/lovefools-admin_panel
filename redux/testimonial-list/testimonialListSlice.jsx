@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axios';
 import {
   API_ENDPOINT,
-  GALLERY_LIST,
   SortDirection,
   TESTIMONIAL_LIST,
 } from '@/utils/constant';
@@ -50,8 +49,8 @@ export const getTestimonialList = createAsyncThunk(
   },
 );
 
-export const addTesimonialList = createAsyncThunk(
-  'testimonialList/addTesimonialList',
+export const addTestimonialList = createAsyncThunk(
+  'testimonialList/addTestimonialList',
   async (tesimonialListDetails, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.post(
@@ -139,16 +138,16 @@ const tesimonialListSlice = createSlice({
         state.error = action.payload;
       })
 
-      .addCase(addTesimonialList.pending, (state) => {
+      .addCase(addTestimonialList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addTesimonialList.fulfilled, (state, action) => {
+      .addCase(addTestimonialList.fulfilled, (state, action) => {
         state.data = action.payload || [];
         state.defaultValues = action.payload || null;
         state.loading = false;
       })
-      .addCase(addTesimonialList.rejected, (state, action) => {
+      .addCase(addTestimonialList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
