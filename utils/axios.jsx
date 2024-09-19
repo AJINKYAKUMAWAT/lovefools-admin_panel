@@ -1,9 +1,14 @@
 import axios from 'axios';
 import { deleteCookie, getCookie, setCookie } from 'cookies-next';
-import { API_ENDPOINT, ERROR_MESSAGES, MAX_RETRIES } from './constant';
+import {
+  API_ENDPOINT,
+  ERROR_MESSAGES,
+  MAX_RETRIES,
+  NEXT_PUBLIC_API_URL,
+} from './constant';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/user/',
+  baseURL: NEXT_PUBLIC_API_URL,
 });
 
 let retryCount = 0;
