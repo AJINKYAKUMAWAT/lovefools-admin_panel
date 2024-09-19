@@ -154,7 +154,7 @@ const ReceiptList = () => {
   const getDataLabel = (options, value) => {
     const getLabel = options.filter((data) => data.id === value);
 
-    return getLabel[0].type;
+    return getLabel[0]?.type;
   };
 
   return (
@@ -222,12 +222,8 @@ const ReceiptList = () => {
                 <TableCell>{row.receipt_Name}</TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell>{row.price}</TableCell>
-                <TableCell>
-                  {row.type ? getDataLabel(menuType, row.type) : '-'}
-                </TableCell>
-                <TableCell>
-                  {row.sub_type ? getDataLabel(subMenuType, row.sub_type) : '-'}
-                </TableCell>
+                <TableCell>{row.type ? row.type : '-'}</TableCell>
+                <TableCell>{row.sub_type ? row.sub_type : '-'}</TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
