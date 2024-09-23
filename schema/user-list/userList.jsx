@@ -5,5 +5,11 @@ export const userListSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
   emailId: Yup.string().required('Email is required'),
   description: Yup.string().required('Description is required'),
-  photo: Yup.string(),
+  photo: Yup.mixed()
+    .nullable()
+    .test(
+      'fileType',
+      'Invalid file type',
+      (value) => !value || value instanceof File,
+    ),
 });

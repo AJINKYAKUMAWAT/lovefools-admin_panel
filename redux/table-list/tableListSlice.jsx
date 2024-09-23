@@ -5,6 +5,7 @@ import {
   tableList,
   SortDirection,
   TABLE_LIST,
+  formDataApi,
 } from '@/utils/constant';
 import { toast } from 'react-toastify';
 
@@ -57,8 +58,14 @@ export const addTableList = createAsyncThunk(
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.ADD_TABLE_LIST,
-        tableListDetails,
+        tableListDetails[0],
       );
+      if (data) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(data.data),
+          formDataApi(tableListDetails[1].photo),
+        );
+      }
       toast.success(TABLE_LIST.TABLE_LIST_SUCCESS);
       return data;
     } catch (error) {
@@ -74,8 +81,15 @@ export const updateTableList = createAsyncThunk(
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.UPDATE_TABLE_LIST(id),
-        payload,
+        payload[0],
       );
+
+      if (data) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(id),
+          formDataApi(payload[1].photo),
+        );
+      }
       toast.success(TABLE_LIST.TABLE_LIST_UPDATE);
       return data;
     } catch (error) {

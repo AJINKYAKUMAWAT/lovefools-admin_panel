@@ -21,6 +21,10 @@ import {
 } from '../../redux/gallery-list/galleryListSlice';
 import GalleryListForm from '../../components/gallery-list/galleryListForm';
 import { galleryType } from '../../utils/constant';
+import {
+  findSingleSelectedValueLabelOption,
+  generateOptions,
+} from '@/utils/utils';
 
 const GalleryList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
@@ -32,7 +36,8 @@ const GalleryList = () => {
     name: '',
     description: null,
     type: null,
-    photo: '',
+    photo: null,
+    video: null,
   });
 
   const { listParameters, data, total, loading } = useAppSelector(
@@ -57,15 +62,18 @@ const GalleryList = () => {
   };
 
   const handleEditButtonClick = async (row) => {
+    const GalleryType = galleryType.filter((i) => i.type === row.type);
+    const type = {
+      value: GalleryType[0].id,
+      label: GalleryType[0].type,
+    };
     defaultValues.current = {
       id: row._id,
-      name: '',
+      name: row.gallery_Name,
       description: row.description,
-      type: findSingleSelectedValueLabelOption(
-        generateOptions(galleryType, 'id', 'type'),
-        row.type,
-      ),
-      photo: '',
+      type: type,
+      photo: row.photo,
+      video: row.video,
     };
 
     setShowModal((prev) => !prev);
@@ -90,7 +98,8 @@ const GalleryList = () => {
       name: '',
       description: null,
       type: null,
-      photo: '',
+      photo: null,
+      video: null,
     };
     setShowModal((prev) => !prev);
   };
@@ -107,22 +116,33 @@ const GalleryList = () => {
   };
 
   const onSubmit = async (galleryData) => {
-    const payload = {
-      gallery_Name: galleryData.name,
-      description: galleryData.description,
-      type: galleryData.type,
-      photo: '',
-    };
+    console.log('galleryData', galleryData);
+
+    const payload = [
+      {
+        gallery_Name: galleryData.name,
+        description: galleryData.description,
+        type: galleryData.type.label,
+      },
+      {
+        photo: galleryData.photo,
+        video: galleryData.video,
+      },
+    ];
 
     try {
       if (!defaultValues.current.id) {
-        dispatch(addGalleryList(payload));
-        dispatch(getGalleryList({ ...listParameters, search: '', page: 1 }));
+        const data = await dispatch(addGalleryList(payload));
+        if (data) {
+          dispatch(getGalleryList({ ...listParameters, search: '', page: 1 }));
+        }
       } else {
-        dispatch(
+        const data = await dispatch(
           updateGalleryList({ id: defaultValues.current.id, payload: payload }),
         );
-        dispatch(getGalleryList({ ...listParameters, search: '', page: 1 }));
+        if (data) {
+          dispatch(getGalleryList({ ...listParameters, search: '', page: 1 }));
+        }
       }
     } catch (error) {
       console.log(error);
@@ -130,13 +150,6 @@ const GalleryList = () => {
 
     toggleGalleryListFormModal();
   };
-
-  const getDataLabel = (options, value) => {
-    const getLabel = options.filter((data) => data.id === value);
-
-    return getLabel[0].type;
-  };
-
   return (
     <>
       <div className='container mx-auto'>
@@ -197,9 +210,7 @@ const GalleryList = () => {
               <TableRow key={row.id}>
                 <TableCell>{row.gallery_Name}</TableCell>
                 <TableCell>{row.description}</TableCell>
-                <TableCell>
-                  {row.type ? getDataLabel(galleryType, row.type) : '-'}
-                </TableCell>
+                <TableCell>{row.type ? row.type : '-'}</TableCell>
                 <TableCell>{row.photo ? row.photo : '-'}</TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>

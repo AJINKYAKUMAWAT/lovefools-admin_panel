@@ -11,5 +11,11 @@ export const eventListSchema = Yup.object().shape({
     label: Yup.string(),
     value: Yup.string(),
   }).required('Status is required'),
-  photo: Yup.string(),
+  photo: Yup.mixed()
+    .nullable()
+    .test(
+      'fileType',
+      'Invalid file type',
+      (value) => !value || value instanceof File,
+    ),
 });

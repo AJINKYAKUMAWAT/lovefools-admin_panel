@@ -1,5 +1,7 @@
-export const NEXT_PUBLIC_API_URL =
-  'https://lovefools-backend-76pv.vercel.app/api/user/';
+// export const NEXT_PUBLIC_API_URL =
+//   'https://lovefools-backend-76pv.vercel.app/api/user/';
+
+export const NEXT_PUBLIC_API_URL = 'http://localhost:5000/api/user/';
 
 export const API_ENDPOINT = {
   LOGIN: 'login',
@@ -12,7 +14,7 @@ export const API_ENDPOINT = {
   DELETE_TABLE_LIST: (id) => `deleteTable/${id}`,
   GET_TABLE_LIST: 'getTableList',
   DELETE_CONTACT_FORM: (id) => `deleteReceipt/${id}`,
-  GET_CONTACT_FORM: 'getReceiptList',
+  GET_CONTACT_FORM: 'getContactList',
   ADD_USER_LIST: 'addUserInformation',
   UPDATE_USER_LIST: (id) => `updateUserInformation/${id}`,
   DELETE_USER_LIST: (id) => `deleteUserInformation/${id}`,
@@ -33,6 +35,7 @@ export const API_ENDPOINT = {
   UPDATE_CMS_LIST: (id) => `updateCMS/${id}`,
   // DELETE_CMS_LIST: (id) => `deleteReceipt/${id}`,
   GET_CMS_LIST: 'getCMSList',
+  UPLOAD_PHOTO: (id) => `upload/${id}`,
 };
 
 export const SortDirection = {
@@ -96,6 +99,13 @@ export const CONFIRMATION_MESSAGES = {
   EVENT_LIST_DELETE: 'Are you sure want to delete this event list?',
   GALLERY_LIST_DELETE: 'Are you sure want to delete this gallery list?',
   TESTIMONIAL_LIST_DELETE: 'Are you sure want to delete this Testimonial list?',
+};
+
+export const formDataApi = (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  return formData;
 };
 
 export const menuType = [

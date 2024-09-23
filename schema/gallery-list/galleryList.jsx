@@ -8,5 +8,18 @@ export const galleryListSchema = Yup.object().shape({
     label: Yup.string(),
     value: Yup.string(),
   }).required('Type is required'),
-  photo: Yup.string(),
+  photo: Yup.mixed()
+    .nullable()
+    .test(
+      'fileType',
+      'Invalid file type',
+      (value) => !value || value instanceof File,
+    ),
+  video: Yup.mixed()
+    .nullable()
+    .test(
+      'fileType',
+      'Invalid file type',
+      (value) => !value || value instanceof File,
+    ),
 });

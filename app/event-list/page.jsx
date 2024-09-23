@@ -40,7 +40,7 @@ const EventList = () => {
     date: null,
     time: null,
     status: null,
-    photo: '',
+    photo: null,
   });
 
   const { listParameters, data, total, loading } = useAppSelector(
@@ -78,7 +78,7 @@ const EventList = () => {
         generateOptions(statusType, 'id', 'type'),
         row.status,
       ),
-      photo: '',
+      photo: row.photo,
     };
 
     setShowModal((prev) => !prev);
@@ -105,7 +105,7 @@ const EventList = () => {
       date: null,
       time: null,
       status: null,
-      photo: '',
+      photo: null,
     };
     setShowModal((prev) => !prev);
   };
@@ -122,26 +122,34 @@ const EventList = () => {
   };
 
   const onSubmit = async (eventData) => {
-    console.log(eventData);
-
-    const payload = {
-      event_Name: eventData.name,
-      description: eventData.description,
-      date: eventData.date,
-      time: eventData.time,
-      status: eventData.status.value,
-      photo: '',
-    };
+    const payload = [
+      {
+        event_Name: eventData.name,
+        description: eventData.description,
+        date: eventData.date,
+        time: eventData.time,
+        status: eventData.status.value,
+      },
+      {
+        photo: eventData.photo,
+      },
+    ];
 
     try {
       if (!defaultValues.current.id) {
-        dispatch(addEventList(payload));
-        dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
+        const data = await dispatch(addEventList(payload));
+        if (data) {
+          setShowModal(false);
+          dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
+        }
       } else {
-        dispatch(
+        const data = await dispatch(
           updateEventList({ id: defaultValues.current.id, payload: payload }),
         );
-        dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
+        if (data) {
+          setShowModal(false);
+          dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
+        }
       }
     } catch (error) {
       console.log(error);

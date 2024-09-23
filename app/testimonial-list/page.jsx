@@ -31,7 +31,7 @@ const TestimonialList = () => {
     id: null,
     name: '',
     description: '',
-    photo: '',
+    photo: null,
   });
 
   const { listParameters, data, total, loading } = useAppSelector(
@@ -60,7 +60,7 @@ const TestimonialList = () => {
       id: row._id,
       name: row.testimonial_Name,
       description: row.description,
-      photo: '',
+      photo: row.photo,
     };
 
     setShowModal((prev) => !prev);
@@ -84,7 +84,7 @@ const TestimonialList = () => {
       id: null,
       name: '',
       description: '',
-      photo: '',
+      photo: null,
     };
     setShowModal((prev) => !prev);
   };
@@ -101,42 +101,42 @@ const TestimonialList = () => {
   };
 
   const onSubmit = async (eventData) => {
-    const payload = {
-      testimonial_Name: eventData.name,
-      description: eventData.description,
-      photo: '',
-    };
+    const payload = [
+      {
+        testimonial_Name: eventData.name,
+        description: eventData.description,
+      },
+      {
+        photo: eventData.photo,
+      },
+    ];
 
     try {
-      console.log(payload);
-
       if (!defaultValues.current.id) {
-        dispatch(addTestimonialList(payload));
-        dispatch(
-          getTestimonialList({ ...listParameters, search: '', page: 1 }),
-        );
+        const data = await dispatch(addTestimonialList(payload));
+        if (data) {
+          dispatch(
+            getTestimonialList({ ...listParameters, search: '', page: 1 }),
+          );
+        }
       } else {
-        dispatch(
+        const data = await dispatch(
           updateTestimonialList({
             id: defaultValues.current.id,
             payload: payload,
           }),
         );
-        dispatch(
-          getTestimonialList({ ...listParameters, search: '', page: 1 }),
-        );
+        if (data) {
+          dispatch(
+            getTestimonialList({ ...listParameters, search: '', page: 1 }),
+          );
+        }
       }
     } catch (error) {
       console.log(error);
     }
 
     toggleTestimonialListFormModal();
-  };
-
-  const getDataLabel = (options, value) => {
-    const getLabel = options.filter((data) => data.id === value);
-
-    return getLabel[0].type;
   };
 
   return (

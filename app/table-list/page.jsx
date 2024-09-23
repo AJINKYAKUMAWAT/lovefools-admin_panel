@@ -30,7 +30,7 @@ const TableList = () => {
     id: null,
     tableNo: '',
     description: '',
-    photo: '',
+    photo: null,
   });
 
   const { listParameters, data, total, loading } = useAppSelector(
@@ -59,7 +59,7 @@ const TableList = () => {
       id: row._id,
       tableNo: row.table_number,
       description: row.description,
-      photo: '',
+      photo: null,
     };
 
     setShowModal((prev) => !prev);
@@ -83,7 +83,7 @@ const TableList = () => {
       id: null,
       tableNo: '',
       description: '',
-      photo: '',
+      photo: null,
     };
     setShowModal((prev) => !prev);
   };
@@ -100,11 +100,15 @@ const TableList = () => {
   };
 
   const onSubmit = async (tableData) => {
-    const payload = {
-      table_number: tableData.tableNo,
-      description: tableData.description,
-      photo: '',
-    };
+    const payload = [
+      {
+        table_number: tableData.tableNo,
+        description: tableData.description,
+      },
+      {
+        photo: tableData.photo,
+      },
+    ];
 
     try {
       if (!defaultValues.current.id) {

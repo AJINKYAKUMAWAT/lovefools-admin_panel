@@ -7,7 +7,11 @@ import FormProvider from '@/components/common/FormProvider';
 import ControllerTextArea from '../common/ControllerTextArea';
 import { generateOptions } from '@/utils/utils';
 import { statusType, subMenuType } from '@/utils/constant';
-import { ArrowUpTrayIcon, EyeIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowUpTrayIcon,
+  EyeIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import ControllerSelect from '../common/ControllerSelect';
 import { Tooltip } from '@nextui-org/react';
@@ -123,6 +127,7 @@ const EventListForm = ({
               <div>
                 <input
                   type='file'
+                  accept='image/*'
                   name='detailReports'
                   id='file-upload-button-for-photo'
                   className='file-upload-btn mb-2 w-5/6'
@@ -146,24 +151,26 @@ const EventListForm = ({
                       <p className='relative left-6'>Choose a file</p>
                     </label>
                   </div>
-                  {getValues('photo') && (
-                    <>
-                      <span className='m-1'>{fileName}</span>
-                      <span className='w-1/6'>
-                        <Button
-                          className='float-right'
-                          isIconOnly
-                          type='button'
-                          variant='light'
-                          color='default'>
-                          <Tooltip content='Preview'>
-                            <EyeIcon className='h-5 w-5' />
-                          </Tooltip>
-                        </Button>
-                      </span>
-                    </>
-                  )}
                 </div>
+                {getValues('photo') && (
+                  <>
+                    <span className='m-1'>{fileName}</span>
+                    <span className='w-1/6'>
+                      <Button
+                        onClick={() => {
+                          setfileName('');
+                          setValue('photo', '');
+                        }}
+                        className='float-right'
+                        isIconOnly
+                        type='button'
+                        variant='light'
+                        color='default'>
+                        <XMarkIcon className='h-5 w-5' />
+                      </Button>
+                    </span>
+                  </>
+                )}
               </div>
               {errors?.photo?.message &&
                 typeof errors.photo.message === 'string' && (

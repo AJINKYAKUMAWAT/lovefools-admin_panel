@@ -20,11 +20,11 @@ const SidebarConfig = [
     icon: <ListBulletIcon className='h-6 w-6' />,
     href: '/table-list',
   },
-  {
-    name: 'Table Order',
-    icon: <UserGroupIcon className='h-6 w-6' />,
-    href: '/employees',
-  },
+  // {
+  //   name: 'Table Order',
+  //   icon: <UserGroupIcon className='h-6 w-6' />,
+  //   href: '/employees',
+  // },
 
   {
     name: 'Contact Form',

@@ -1,6 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axios';
-import { API_ENDPOINT, GALLERY_LIST, SortDirection } from '@/utils/constant';
+import {
+  API_ENDPOINT,
+  formDataApi,
+  GALLERY_LIST,
+  SortDirection,
+} from '@/utils/constant';
 import { toast } from 'react-toastify';
 
 const initialListParameters = {
@@ -52,8 +57,26 @@ export const addGalleryList = createAsyncThunk(
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.ADD_GALLERY_LIST,
-        galleryListDetails,
+        galleryListDetails[0],
       );
+
+      if (data) {
+        if (galleryListDetails[1].photo && galleryListDetails[1].video) {
+          await axiosInstance.post(
+            API_ENDPOINT.UPLOAD_PHOTO(data.data),
+            formDataApi(galleryListDetails[1].photo),
+          );
+          await axiosInstance.post(
+            API_ENDPOINT.UPLOAD_PHOTO(data.data),
+            formDataApi(galleryListDetails[1].video),
+          );
+        } else if (galleryListDetails[1].photo) {
+          await axiosInstance.post(
+            API_ENDPOINT.UPLOAD_PHOTO(data.data),
+            formDataApi(galleryListDetails[1].photo),
+          );
+        }
+      }
       toast.success(GALLERY_LIST.GALLERY_LIST_SUCCESS);
       return data;
     } catch (error) {
@@ -69,8 +92,26 @@ export const updateGalleryList = createAsyncThunk(
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.UPDATE_GALLERY_LIST(id),
-        payload,
+        payload[0],
       );
+
+      if (data) {
+        if (payload[1].photo && payload[1].video) {
+          await axiosInstance.post(
+            API_ENDPOINT.UPLOAD_PHOTO(id),
+            formDataApi(payload[1].photo),
+          );
+          await axiosInstance.post(
+            API_ENDPOINT.UPLOAD_PHOTO(id),
+            formDataApi(payload[1].video),
+          );
+        } else if (payload[1].photo) {
+          await axiosInstance.post(
+            API_ENDPOINT.UPLOAD_PHOTO(id),
+            formDataApi(payload[1].photo),
+          );
+        }
+      }
       toast.success(GALLERY_LIST.GALLERY_LIST_UPDATE);
       return data;
     } catch (error) {

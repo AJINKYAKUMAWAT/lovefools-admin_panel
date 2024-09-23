@@ -4,6 +4,7 @@ import {
   API_ENDPOINT,
   EVENT_LIST,
   eventList,
+  formDataApi,
   SortDirection,
 } from '@/utils/constant';
 import { toast } from 'react-toastify';
@@ -57,8 +58,16 @@ export const addEventList = createAsyncThunk(
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.ADD_EVENT_LIST,
-        eventListDetails,
+        eventListDetails[0],
       );
+
+      if (data) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(data.data),
+          formDataApi(eventListDetails[1].photo),
+        );
+      }
+
       toast.success(EVENT_LIST.EVENT_LIST_SUCCESS);
       return data;
     } catch (error) {
@@ -74,8 +83,15 @@ export const updateEventList = createAsyncThunk(
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.UPDATE_EVENT_LIST(id),
-        payload,
+        payload[0],
       );
+
+      if (data) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(id),
+          formDataApi(payload[1].photo),
+        );
+      }
       toast.success(EVENT_LIST.EVENT_LIST_UPDATE);
       return data;
     } catch (error) {

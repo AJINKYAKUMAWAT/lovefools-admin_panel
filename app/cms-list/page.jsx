@@ -44,7 +44,6 @@ const CMSList = () => {
     defaultValues.current = {
       id: row._id,
       description: row.description,
-      photo: '',
     };
 
     setShowModal((prev) => !prev);

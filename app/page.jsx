@@ -44,7 +44,7 @@ const ReceiptList = () => {
     price: '',
     menuType: null,
     subMenuType: null,
-    photo: '',
+    photo: null,
   });
 
   const { listParameters, data, total, loading } = useAppSelector(
@@ -82,7 +82,7 @@ const ReceiptList = () => {
         generateOptions(subMenuType, 'id', 'type'),
         row.sub_type,
       ),
-      photo: '',
+      photo: null,
     };
 
     setShowModal((prev) => !prev);
@@ -109,7 +109,7 @@ const ReceiptList = () => {
       price: '',
       menuType: null,
       subMenuType: null,
-      photo: '',
+      photo: null,
     };
     setShowModal((prev) => !prev);
   };
@@ -126,24 +126,34 @@ const ReceiptList = () => {
   };
 
   const onSubmit = async (receiptData) => {
-    const payload = {
-      receipt_Name: receiptData.name,
-      description: receiptData.description,
-      price: receiptData.price,
-      type: receiptData.menuType.value,
-      sub_type: receiptData.subMenuType.value,
-      photo: '',
-    };
+    console.log(receiptData);
+
+    const payload = [
+      {
+        receipt_Name: receiptData.name,
+        description: receiptData.description,
+        price: receiptData.price,
+        type: receiptData.menuType.value,
+        sub_type: receiptData.subMenuType.value,
+      },
+      {
+        photo: receiptData.photo,
+      },
+    ];
 
     try {
       if (!defaultValues.current.id) {
-        dispatch(addReceipt(payload));
-        dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
+        const data = await dispatch(addReceipt(payload));
+        if (data) {
+          dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
+        }
       } else {
         dispatch(
           updateReceipt({ id: defaultValues.current.id, payload: payload }),
         );
-        dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
+        if (data) {
+          dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
+        }
       }
     } catch (error) {
       console.log(error);

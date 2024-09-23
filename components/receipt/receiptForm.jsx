@@ -8,7 +8,11 @@ import { reciptSchema } from '@/schema/receipt/receipt';
 import ControllerTextArea from '../common/ControllerTextArea';
 import { generateOptions } from '@/utils/utils';
 import { menuType, subMenuType } from '@/utils/constant';
-import { ArrowUpTrayIcon, EyeIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowUpTrayIcon,
+  EyeIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import ControllerSelect from '../common/ControllerSelect';
 import { Tooltip } from '@nextui-org/react';
@@ -29,6 +33,7 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
     setValue,
     formState: { isSubmitting, errors },
     getValues,
+    watch,
   } = methods;
 
   const onSubmit = async (data) => {
@@ -55,6 +60,8 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
         //   config,
         // );
 
+        console.log('selectedFile', selectedFile);
+
         setValue(name, selectedFile);
         clearErrors(name);
       } catch (error) {
@@ -62,6 +69,8 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
       }
     }
   };
+
+  console.log(watch('photo'));
 
   return (
     <FormProvider
@@ -120,6 +129,7 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
               <div>
                 <input
                   type='file'
+                  accept='image/*'
                   name='detailReports'
                   id='file-upload-button-for-photo'
                   className='file-upload-btn mb-2 w-5/6'
@@ -143,24 +153,26 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
                       <p className='relative left-6'>Choose a file</p>
                     </label>
                   </div>
-                  {getValues('photo') && (
-                    <>
-                      <span className='m-1'>{fileName}</span>
-                      <span className='w-1/6'>
-                        <Button
-                          className='float-right'
-                          isIconOnly
-                          type='button'
-                          variant='light'
-                          color='default'>
-                          <Tooltip content='Preview'>
-                            <EyeIcon className='h-5 w-5' />
-                          </Tooltip>
-                        </Button>
-                      </span>
-                    </>
-                  )}
                 </div>
+                {getValues('photo') && (
+                  <>
+                    <span className='m-1'>{fileName}</span>
+                    <span className='w-1/6'>
+                      <Button
+                        onClick={() => {
+                          setfileName('');
+                          setValue('photo', '');
+                        }}
+                        className='float-right'
+                        isIconOnly
+                        type='button'
+                        variant='light'
+                        color='default'>
+                        <XMarkIcon className='h-5 w-5' />
+                      </Button>
+                    </span>
+                  </>
+                )}
               </div>
               {errors?.photo?.message &&
                 typeof errors.photo.message === 'string' && (

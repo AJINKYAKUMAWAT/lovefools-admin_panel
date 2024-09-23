@@ -107,7 +107,7 @@ const ContactForm = () => {
             },
             { id: 'emailId', label: 'Email Id' },
             { id: 'message', label: 'Message' },
-            { id: 'actions', label: 'Actions', fixed: true },
+            // { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
             data: data.length > 0 ? data : [],
@@ -122,11 +122,11 @@ const ContactForm = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.mobile_no}</TableCell>
+                <TableCell>{row.mobile_number}</TableCell>
                 <TableCell>{row.name}</TableCell>
-                <TableCell>{row.emailId}</TableCell>
+                <TableCell>{row.email}</TableCell>
                 <TableCell>{row.message}</TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
                       isIconOnly
@@ -154,7 +154,7 @@ const ContactForm = () => {
                       </Tooltip>
                     </Button>
                   </div>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             );
           }}

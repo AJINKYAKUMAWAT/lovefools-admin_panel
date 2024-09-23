@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axios';
 import {
   API_ENDPOINT,
+  formDataApi,
   SortDirection,
   TESTIMONIAL_LIST,
 } from '@/utils/constant';
@@ -55,8 +56,16 @@ export const addTestimonialList = createAsyncThunk(
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.ADD_TESTIMONIAL_LIST,
-        tesimonialListDetails,
+        tesimonialListDetails[0],
       );
+
+      if (data) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(data.data),
+          formDataApi(tesimonialListDetails[1].photo),
+        );
+      }
+
       toast.success(TESTIMONIAL_LIST.TESTIMONIAL_LIST_SUCCESS);
       return data;
     } catch (error) {
@@ -74,6 +83,13 @@ export const updateTestimonialList = createAsyncThunk(
         API_ENDPOINT.UPDATE_TESTIMONIAL_LIST(id),
         payload,
       );
+
+      if (data) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(id),
+          formDataApi(payload[1].photo),
+        );
+      }
       toast.success(TESTIMONIAL_LIST.TESTIMONIAL_LIST_UPDATE);
       return data;
     } catch (error) {
