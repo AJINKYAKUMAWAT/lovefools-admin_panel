@@ -61,12 +61,12 @@ export const addEventList = createAsyncThunk(
         eventListDetails[0],
       );
 
-      if (data) {
-        await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(data.data),
-          formDataApi(eventListDetails[1].photo),
-        );
-      }
+      // if (data) {
+      //   await axiosInstance.post(
+      //     API_ENDPOINT.UPLOAD_PHOTO(data.data),
+      //     formDataApi(eventListDetails[1].photo),
+      //   );
+      // }
 
       toast.success(EVENT_LIST.EVENT_LIST_SUCCESS);
       return data;
@@ -86,12 +86,12 @@ export const updateEventList = createAsyncThunk(
         payload[0],
       );
 
-      if (data) {
-        await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(id),
-          formDataApi(payload[1].photo),
-        );
-      }
+      // if (data) {
+      //   await axiosInstance.post(
+      //     API_ENDPOINT.UPLOAD_PHOTO(id),
+      //     formDataApi(payload[1].photo),
+      //   );
+      // }
       toast.success(EVENT_LIST.EVENT_LIST_UPDATE);
       return data;
     } catch (error) {

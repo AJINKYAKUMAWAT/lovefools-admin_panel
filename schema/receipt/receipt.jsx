@@ -12,11 +12,10 @@ export const reciptSchema = Yup.object().shape({
     label: Yup.string(),
     value: Yup.string(),
   }).required('Sub menu type is required'),
-  photo: Yup.mixed()
-    .nullable()
-    .test(
-      'fileType',
-      'Invalid file type',
-      (value) => !value || value instanceof File,
-    ),
+  photo: Yup.mixed().nullable(),
+  // .test(
+  //   'fileType',
+  //   'Invalid file type',
+  //   (value) => !value || value instanceof File,
+  // ),
 });

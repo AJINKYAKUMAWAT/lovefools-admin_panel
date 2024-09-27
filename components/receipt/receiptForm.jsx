@@ -23,7 +23,7 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
     defaultValues,
     mode: 'onBlur',
   });
-  const [fileName, setfileName] = useState('');
+  const [fileName, setfileName] = useState(defaultValues.photo);
   const updateFileName = (name) => {
     setfileName(name);
   };

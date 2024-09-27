@@ -82,7 +82,7 @@ const ReceiptList = () => {
         generateOptions(subMenuType, 'id', 'type'),
         row.sub_type,
       ),
-      photo: null,
+      photo: row.photo.slice(89),
     };
 
     setShowModal((prev) => !prev);
@@ -148,7 +148,7 @@ const ReceiptList = () => {
           dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
         }
       } else {
-        dispatch(
+        const data = await dispatch(
           updateReceipt({ id: defaultValues.current.id, payload: payload }),
         );
         if (data) {

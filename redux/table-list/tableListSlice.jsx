@@ -60,12 +60,12 @@ export const addTableList = createAsyncThunk(
         API_ENDPOINT.ADD_TABLE_LIST,
         tableListDetails[0],
       );
-      if (data) {
-        await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(data.data),
-          formDataApi(tableListDetails[1].photo),
-        );
-      }
+      // if (data) {
+      //   await axiosInstance.post(
+      //     API_ENDPOINT.UPLOAD_PHOTO(data.data),
+      //     formDataApi(tableListDetails[1].photo),
+      //   );
+      // }
       toast.success(TABLE_LIST.TABLE_LIST_SUCCESS);
       return data;
     } catch (error) {
@@ -84,12 +84,12 @@ export const updateTableList = createAsyncThunk(
         payload[0],
       );
 
-      if (data) {
-        await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(id),
-          formDataApi(payload[1].photo),
-        );
-      }
+      // if (data) {
+      //   await axiosInstance.post(
+      //     API_ENDPOINT.UPLOAD_PHOTO(id),
+      //     formDataApi(payload[1].photo),
+      //   );
+      // }
       toast.success(TABLE_LIST.TABLE_LIST_UPDATE);
       return data;
     } catch (error) {

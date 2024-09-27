@@ -63,12 +63,12 @@ export const addReceipt = createAsyncThunk(
         receiptDetails[0],
       );
 
-      if (data) {
-        await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(data.data),
-          formDataApi(receiptDetails[1].photo),
-        );
-      }
+      // if (data) {
+      //   await axiosInstance.post(
+      //     API_ENDPOINT.UPLOAD_PHOTO(data.data),
+      //     formDataApi(receiptDetails[1].photo),
+      //   );
+      // }
       toast.success(RECEIPT.RECEIPT_SUCCESS);
       return data;
     } catch (error) {
@@ -87,12 +87,12 @@ export const updateReceipt = createAsyncThunk(
         payload[0],
       );
 
-      if (data) {
-        await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(id),
-          formDataApi(payload[1].photo),
-        );
-      }
+      // if (data) {
+      //   await axiosInstance.post(
+      //     API_ENDPOINT.UPLOAD_PHOTO(id),
+      //     formDataApi(payload[1].photo),
+      //   );
+      // }
       toast.success(RECEIPT.RECEIPT_UPDATE);
       return data;
     } catch (error) {

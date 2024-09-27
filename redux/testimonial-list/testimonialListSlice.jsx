@@ -59,12 +59,12 @@ export const addTestimonialList = createAsyncThunk(
         tesimonialListDetails[0],
       );
 
-      if (data) {
-        await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(data.data),
-          formDataApi(tesimonialListDetails[1].photo),
-        );
-      }
+      // if (data) {
+      //   await axiosInstance.post(
+      //     API_ENDPOINT.UPLOAD_PHOTO(data.data),
+      //     formDataApi(tesimonialListDetails[1].photo),
+      //   );
+      // }
 
       toast.success(TESTIMONIAL_LIST.TESTIMONIAL_LIST_SUCCESS);
       return data;
@@ -84,12 +84,12 @@ export const updateTestimonialList = createAsyncThunk(
         payload,
       );
 
-      if (data) {
-        await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(id),
-          formDataApi(payload[1].photo),
-        );
-      }
+      // if (data) {
+      //   await axiosInstance.post(
+      //     API_ENDPOINT.UPLOAD_PHOTO(id),
+      //     formDataApi(payload[1].photo),
+      //   );
+      // }
       toast.success(TESTIMONIAL_LIST.TESTIMONIAL_LIST_UPDATE);
       return data;
     } catch (error) {
