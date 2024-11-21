@@ -14,36 +14,36 @@ import { useAppDispatch, useAppSelector } from '@/redux/selector';
 import SearchBar from '@/components/common/SearchBar';
 import PopupModal from '@/components/common/PopupModal';
 import {
-  addTableList,
-  deleteTableList,
-  getTableList,
-  updateTableList,
-} from '../../redux/table-list/tableListSlice';
-import TableListForm from '@/components/table-list/tableListForm';
+  addFloorList,
+  deleteFloorList,
+  getFloorList,
+  updateFloorList,
+} from '../../redux/floor-list/floorListSlice';
+import FloorListForm from '../../components/floor-list/floorLIstForm';
+import { useRouter } from 'next/navigation';
 
-const TableList = () => {
+const FloorList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
   const dispatch = useAppDispatch();
+  const navigate = useRouter();
   const defaultValues = useRef({
     id: null,
-    tableNo: '',
-    description: '',
-    photo: null,
+    floorName: '',
   });
 
   const { listParameters, data, total, loading } = useAppSelector(
-    (state) => state.tableList,
+    (state) => state.floorList,
   );
 
   useEffect(() => {
-    dispatch(getTableList({}));
+    dispatch(getFloorList({}));
   }, []);
 
   const handleMetaChange = (meta) => {
     dispatch(
-      getTableList({
+      getFloorList({
         ...meta,
         search: meta.search,
       }),
@@ -51,15 +51,13 @@ const TableList = () => {
   };
 
   const refreshBtn = () => {
-    dispatch(getTableList({}));
+    dispatch(getFloorList({}));
   };
 
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
-      tableNo: row.table_number,
-      description: row.description,
-      photo: null,
+      floorName: row.floor_name,
     };
 
     setShowModal((prev) => !prev);
@@ -78,20 +76,18 @@ const TableList = () => {
     });
   };
 
-  const toggleTableListModal = () => {
+  const toggleFormListFormModal = () => {
     defaultValues.current = {
       id: null,
-      tableNo: '',
-      description: '',
-      photo: null,
+      floorName: '',
     };
     setShowModal((prev) => !prev);
   };
 
   const handleDelete = async () => {
     try {
-      dispatch(deleteTableList({ id }));
-      dispatch(getTableList({ ...listParameters, search: '', page: 1 }));
+      dispatch(deleteFloorList({ id }));
+      dispatch(getFloorList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
@@ -99,39 +95,37 @@ const TableList = () => {
     toggleDeleteModal();
   };
 
-  const onSubmit = async (tableData) => {
-    const payload = [
-      {
-        table_number: tableData.tableNo,
-        description: tableData.description,
-      },
-      {
-        photo: tableData.photo,
-      },
-    ];
+  const onSubmit = async (floorData) => {
+    const payload = {
+      floor_name: floorData.floorName,
+    };
 
     try {
       if (!defaultValues.current.id) {
-        dispatch(addTableList(payload));
-        dispatch(getTableList({ ...listParameters, search: '', page: 1 }));
+        const data = await dispatch(addFloorList(payload));
+        if (data) {
+          setShowModal(false);
+          dispatch(getFloorList({ ...listParameters, search: '', page: 1 }));
+        }
       } else {
-        dispatch(
-          updateTableList({ id: defaultValues.current.id, payload: payload }),
+        const data = await dispatch(
+          updateFloorList({ id: defaultValues.current.id, payload: payload }),
         );
-        dispatch(getTableList({ ...listParameters, search: '', page: 1 }));
+        if (data) {
+          setShowModal(false);
+          dispatch(getFloorList({ ...listParameters, search: '', page: 1 }));
+        }
       }
     } catch (error) {
       console.log(error);
     }
-
-    toggleTableListModal();
   };
 
   return (
     <>
       <div className='container mx-auto'>
         <div className='flex flex-col justify-between'>
-          <h2 className='text-2xl font-semibold'>Table List </h2>
+          <h2 className='text-2xl font-semibold'>Floor List </h2>
           <div className='flex flex-wrap'>
             <div className='sm: flex w-full gap-4 sm:flex-col md:w-fit lg:w-3/4'>
               <div className='flex w-full flex-col sm:flex-row md:gap-4'>
@@ -157,7 +151,7 @@ const TableList = () => {
               </Button>
               <Button
                 onClick={() => {
-                  toggleTableListModal();
+                  toggleFormListFormModal();
                 }}>
                 Add
               </Button>
@@ -166,12 +160,7 @@ const TableList = () => {
         </div>
         <List
           columns={[
-            { id: 'table_number', label: 'Table No.' },
-            {
-              id: 'description',
-              label: 'Description',
-            },
-            { id: 'photo', label: 'Photo' },
+            { id: 'floor_Name', label: 'Floor Name' },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
@@ -187,9 +176,11 @@ const TableList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.table_number}</TableCell>
-                <TableCell>{row.description}</TableCell>
-                <TableCell>{row.photo ? row.photo : '-'}</TableCell>
+                <TableCell
+                  className='cursor-pointer hover:text-sky-700'
+                  onClick={() => navigate.push(`/table-list/${row._id}`)}>
+                  {row.floor_name}
+                </TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
@@ -227,18 +218,18 @@ const TableList = () => {
       <PopupModal
         isOpen={showModal}
         header={
-          defaultValues.current.id ? 'Update Table List' : 'Add Table List'
+          defaultValues.current.id ? 'Update Floor List' : 'Add Floor List'
         }
-        onOpenChange={toggleTableListModal}>
-        <TableListForm
-          handleClose={toggleTableListModal}
-          handleTableListSubmit={onSubmit}
+        onOpenChange={toggleFormListFormModal}>
+        <FloorListForm
+          handleClose={toggleFormListFormModal}
+          handleFloorListSubmit={onSubmit}
           defaultValues={defaultValues.current}
         />
       </PopupModal>
       <ConfirmationModal
         isOpen={showDeleteModal}
-        message={CONFIRMATION_MESSAGES.TABLE_LIST_DELETE}
+        message={CONFIRMATION_MESSAGES.FLOOR_LIST_DELETE}
         onClose={toggleDeleteModal}
         onConfirm={() => {
           handleDelete();
@@ -248,4 +239,4 @@ const TableList = () => {
   );
 };
 
-export default TableList;
+export default FloorList;

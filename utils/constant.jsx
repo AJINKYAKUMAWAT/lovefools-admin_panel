@@ -23,6 +23,10 @@ export const API_ENDPOINT = {
   UPDATE_EVENT_LIST: (id) => `updateEvent/${id}`,
   DELETE_EVENT_LIST: (id) => `deleteEvent/${id}`,
   GET_EVENT_LIST: 'getEventList',
+  ADD_FLOOR_LIST: 'addFloor',
+  UPDATE_FLOOR_LIST: (id) => `updateFloor/${id}`,
+  DELETE_FLOOR_LIST: (id) => `deleteFloor/${id}`,
+  GET_FLOOR_LIST: 'getFloorList',
   ADD_GALLERY_LIST: 'addGallery',
   UPDATE_GALLERY_LIST: (id) => `updateGallery/${id}`,
   DELETE_GALLERY_LIST: (id) => `deleteGallery/${id}`,
@@ -73,6 +77,12 @@ export const EVENT_LIST = {
   EVENT_LIST_UPDATE: 'Event list updated successfully',
 };
 
+export const FLOOR_LIST = {
+  FLOOR_LIST_DELETED: 'Floor list deleted successfully',
+  FLOOR_LIST_SUCCESS: 'Floor list created successfully',
+  FLOOR_LIST_UPDATE: 'Floor list updated successfully',
+};
+
 export const CMS_LIST = {
   CMS_LIST_UPDATE: 'CMS list updated successfully',
 };
@@ -99,6 +109,7 @@ export const CONFIRMATION_MESSAGES = {
   EVENT_LIST_DELETE: 'Are you sure want to delete this event list?',
   GALLERY_LIST_DELETE: 'Are you sure want to delete this gallery list?',
   TESTIMONIAL_LIST_DELETE: 'Are you sure want to delete this Testimonial list?',
+  FLOOR_LIST_DELETE: 'Are you sure want to delete this Floor list?',
 };
 
 export const formDataApi = (file) => {

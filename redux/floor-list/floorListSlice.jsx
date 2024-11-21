@@ -1,12 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axios';
-import {
-  API_ENDPOINT,
-  tableList,
-  SortDirection,
-  TABLE_LIST,
-  formDataApi,
-} from '@/utils/constant';
+import { API_ENDPOINT, FLOOR_LIST, SortDirection } from '@/utils/constant';
 import { toast } from 'react-toastify';
 
 const initialListParameters = {
@@ -28,17 +22,17 @@ const initialState = {
 };
 
 // Async thunks
-export const getTableList = createAsyncThunk(
-  'tableList/getTableList',
-  async (queryParameters, { rejectWithValue }) => {
+export const getFloorList = createAsyncThunk(
+  'floorList/getFloorList',
+  async (queryParameters, { dispatch, rejectWithValue }) => {
     try {
       const {
-        data: { data: tableListData, pageData: meta },
-      } = await axiosInstance.post(API_ENDPOINT.GET_TABLE_LIST, {
+        data: { data: floorListData, pageData: meta },
+      } = await axiosInstance.post(API_ENDPOINT.GET_FLOOR_LIST, {
         ...queryParameters,
       });
       return {
-        tableListData,
+        floorListData,
         total: meta.total,
         updatedListParams: {
           ...queryParameters,
@@ -52,14 +46,14 @@ export const getTableList = createAsyncThunk(
   },
 );
 
-export const addTableList = createAsyncThunk(
-  'tableList/addTableList',
-  async (tableListDetails, { rejectWithValue }) => {
+export const addFloorList = createAsyncThunk(
+  'floorList/addFloorList',
+  async (floorListDetails, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post(API_ENDPOINT.ADD_TABLE_LIST, {
-        ...tableListDetails,
+      const { data } = await axiosInstance.post(API_ENDPOINT.ADD_FLOOR_LIST, {
+        ...floorListDetails,
       });
-      toast.success(TABLE_LIST.TABLE_LIST_SUCCESS);
+      toast.success(FLOOR_LIST.FLOOR_LIST_SUCCESS);
       return data;
     } catch (error) {
       toast.error(error.message);
@@ -68,15 +62,15 @@ export const addTableList = createAsyncThunk(
   },
 );
 
-export const updateTableList = createAsyncThunk(
-  'tableList/updateTableList',
+export const updateFloorList = createAsyncThunk(
+  'floorList/updateFloorList',
   async ({ id, payload }) => {
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.UPDATE_TABLE_LIST(id),
+        API_ENDPOINT.UPDATE_FLOOR_LIST(id),
         { ...payload },
       );
-      toast.success(TABLE_LIST.TABLE_LIST_UPDATE);
+      toast.success(FLOOR_LIST.FLOOR_LIST_UPDATE);
       return data;
     } catch (error) {
       toast.error(error.message);
@@ -85,14 +79,14 @@ export const updateTableList = createAsyncThunk(
   },
 );
 
-export const deleteTableList = createAsyncThunk(
-  'tableList/deleteTableList',
+export const deleteFloorList = createAsyncThunk(
+  'floorList/deleteFloorList',
   async ({ id }) => {
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.DELETE_TABLE_LIST(id),
+        API_ENDPOINT.DELETE_FLOOR_LIST(id),
       );
-      toast.success(TABLE_LIST.TABLE_LIST_DELETED);
+      toast.success(FLOOR_LIST.FLOOR_LIST_DELETED);
       return data;
     } catch (error) {
       toast.error(error.message);
@@ -101,8 +95,8 @@ export const deleteTableList = createAsyncThunk(
   },
 );
 
-export const updateTableListValues = createAsyncThunk(
-  'tableList/updateTableListValues',
+export const updateFloortListValues = createAsyncThunk(
+  'floorList/updateFloortListValues',
   async (defaultValues, { rejectWithValue }) => {
     try {
       return defaultValues;
@@ -112,8 +106,8 @@ export const updateTableListValues = createAsyncThunk(
   },
 );
 
-const tableListSlice = createSlice({
-  name: 'tableList',
+const floorListSlice = createSlice({
+  name: 'floorList',
   initialState,
   reducers: {
     updateListParameters: (state, action) => {
@@ -125,64 +119,64 @@ const tableListSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getTableList.pending, (state) => {
+      .addCase(getFloorList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getTableList.fulfilled, (state, action) => {
-        state.data = action.payload.tableListData;
+      .addCase(getFloorList.fulfilled, (state, action) => {
+        state.data = action.payload.floorListData;
         state.total = action.payload.total;
         state.listParameters = action.payload.updatedListParams;
         state.loading = false;
       })
-      .addCase(getTableList.rejected, (state, action) => {
+      .addCase(getFloorList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(addTableList.pending, (state) => {
+      .addCase(addFloorList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addTableList.fulfilled, (state, action) => {
+      .addCase(addFloorList.fulfilled, (state, action) => {
         state.data = action.payload || [];
         state.defaultValues = action.payload || null;
         state.loading = false;
       })
-      .addCase(addTableList.rejected, (state, action) => {
+      .addCase(addFloorList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(updateTableList.pending, (state) => {
+      .addCase(updateFloorList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateTableList.fulfilled, (state, action) => {
+      .addCase(updateFloorList.fulfilled, (state, action) => {
         state.data = action.payload || [];
         state.defaultValues = action.payload || null;
         state.loading = false;
       })
-      .addCase(updateTableList.rejected, (state, action) => {
+      .addCase(updateFloorList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(updateTableListValues.pending, (state) => {
+      .addCase(updateFloortListValues.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateTableListValues.fulfilled, (state, action) => {
+      .addCase(updateFloortListValues.fulfilled, (state, action) => {
         state.defaultValues = action.payload;
         state.loading = false;
       })
-      .addCase(updateTableListValues.rejected, (state, action) => {
+      .addCase(updateFloortListValues.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export const { updateListParameters, setLoading } = tableListSlice.actions;
+export const { updateListParameters, setLoading } = floorListSlice.actions;
 
-export default tableListSlice.reducer;
+export default floorListSlice.reducer;

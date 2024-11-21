@@ -56,19 +56,10 @@ export const addReceipt = createAsyncThunk(
   'receipt/addReceipt',
   async (receiptDetails, { rejectWithValue }) => {
     try {
-      console.log('receiptDetails', receiptDetails);
+      const { data } = await axiosInstance.post(API_ENDPOINT.ADD_RECEIPT, {
+        ...receiptDetails,
+      });
 
-      const { data } = await axiosInstance.post(
-        API_ENDPOINT.ADD_RECEIPT,
-        receiptDetails[0],
-      );
-
-      // if (data) {
-      //   await axiosInstance.post(
-      //     API_ENDPOINT.UPLOAD_PHOTO(data.data),
-      //     formDataApi(receiptDetails[1].photo),
-      //   );
-      // }
       toast.success(RECEIPT.RECEIPT_SUCCESS);
       return data;
     } catch (error) {
@@ -84,15 +75,8 @@ export const updateReceipt = createAsyncThunk(
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.UPDATE_RECEIPT(id),
-        payload[0],
+        { ...payload },
       );
-
-      // if (data) {
-      //   await axiosInstance.post(
-      //     API_ENDPOINT.UPLOAD_PHOTO(id),
-      //     formDataApi(payload[1].photo),
-      //   );
-      // }
       toast.success(RECEIPT.RECEIPT_UPDATE);
       return data;
     } catch (error) {

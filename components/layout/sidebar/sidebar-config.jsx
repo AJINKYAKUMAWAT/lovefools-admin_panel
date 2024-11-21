@@ -18,7 +18,7 @@ const SidebarConfig = [
   {
     name: 'Table List ',
     icon: <ListBulletIcon className='h-6 w-6' />,
-    href: '/table-list',
+    href: '/floor-list',
   },
   // {
   //   name: 'Table Order',

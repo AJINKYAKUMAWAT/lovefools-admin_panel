@@ -14,46 +14,41 @@ import { useAppDispatch, useAppSelector } from '@/redux/selector';
 import SearchBar from '@/components/common/SearchBar';
 import PopupModal from '@/components/common/PopupModal';
 import {
-  addEventList,
-  deleteEventList,
-  getEventList,
-  updateEventList,
-} from '../../redux/event-list/eventListSlice';
-import EventListForm from '../../components/event-list/eventListForm';
-import { statusType } from '../../utils/constant';
-import { formatDate } from '@/utils/formatTime';
-import {
-  findSingleSelectedValueLabelOption,
-  generateOptions,
-} from '@/utils/utils';
-import { Time } from '@internationalized/date';
+  addTableList,
+  deleteTableList,
+  getTableList,
+  updateTableList,
+} from '../../../redux/table-list/tableListSlice';
+import TableListForm from '@/components/table-list/tableListForm';
+import { useParams } from 'next/navigation';
 
-const EventList = () => {
+const TableList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
   const dispatch = useAppDispatch();
   const defaultValues = useRef({
     id: null,
-    name: '',
+    floor_id: null,
+    person: null,
+    tableNo: '',
     description: '',
-    date: null,
-    time: null,
-    status: null,
     photo: null,
   });
 
+  const param = useParams();
+
   const { listParameters, data, total, loading } = useAppSelector(
-    (state) => state.eventList,
+    (state) => state.tableList,
   );
 
   useEffect(() => {
-    dispatch(getEventList({}));
+    dispatch(getTableList({ floor_id: param.id }));
   }, []);
 
   const handleMetaChange = (meta) => {
     dispatch(
-      getEventList({
+      getTableList({
         ...meta,
         search: meta.search,
       }),
@@ -61,23 +56,17 @@ const EventList = () => {
   };
 
   const refreshBtn = () => {
-    dispatch(getEventList({}));
+    dispatch(getTableList({}));
   };
 
   const handleEditButtonClick = async (row) => {
-    const [hr, min] = row.time.split(':');
-
     defaultValues.current = {
       id: row._id,
-      name: row.event_Name,
+      floor_id: param.id,
+      person: row.seatCount,
+      tableNo: row.table_number,
       description: row.description,
-      date: new Date(row.date),
-      time: new Time(hr, min),
-      status: findSingleSelectedValueLabelOption(
-        generateOptions(statusType, 'id', 'type'),
-        row.status,
-      ),
-      photo: row.photo,
+      photo: null,
     };
 
     setShowModal((prev) => !prev);
@@ -96,14 +85,13 @@ const EventList = () => {
     });
   };
 
-  const toggleEventListFormModal = () => {
+  const toggleTableListModal = () => {
     defaultValues.current = {
       id: null,
-      name: '',
+      floor_id: param.id,
+      person: null,
+      tableNo: '',
       description: '',
-      date: null,
-      time: null,
-      status: null,
       photo: null,
     };
     setShowModal((prev) => !prev);
@@ -111,8 +99,8 @@ const EventList = () => {
 
   const handleDelete = async () => {
     try {
-      dispatch(deleteEventList({ id }));
-      dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
+      dispatch(deleteTableList({ id }));
+      dispatch(getTableList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
@@ -120,54 +108,50 @@ const EventList = () => {
     toggleDeleteModal();
   };
 
-  const onSubmit = async (eventData) => {
-    const payload = [
-      {
-        event_Name: eventData.name,
-        description: eventData.description,
-        date: eventData.date,
-        time: eventData.time,
-        status: eventData.status.value,
-      },
-      {
-        photo: eventData.photo,
-      },
-    ];
+  const onSubmit = async (tableData) => {
+    const payload = {
+      floor_id: param.id,
+      table_number: tableData.tableNo,
+      seatCount: tableData.person,
+      description: tableData.description,
+    };
 
     try {
       if (!defaultValues.current.id) {
-        const data = await dispatch(addEventList(payload));
-        if (data) {
-          setShowModal(false);
-          dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
-        }
-      } else {
-        const data = await dispatch(
-          updateEventList({ id: defaultValues.current.id, payload: payload }),
+        dispatch(addTableList(payload));
+        dispatch(
+          getTableList({
+            ...listParameters,
+            floor_id: param.id,
+            search: '',
+            page: 1,
+          }),
         );
-        if (data) {
-          setShowModal(false);
-          dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
-        }
+      } else {
+        dispatch(
+          updateTableList({ id: defaultValues.current.id, payload: payload }),
+        );
+        dispatch(
+          getTableList({
+            ...listParameters,
+            floor_id: param.id,
+            search: '',
+            page: 1,
+          }),
+        );
       }
     } catch (error) {
       console.log(error);
     }
 
-    toggleEventListFormModal();
-  };
-
-  const getDataLabel = (options, value) => {
-    const getLabel = options && options?.filter((data) => data.id === value);
-
-    return getLabel[0].type;
+    toggleTableListModal();
   };
 
   return (
     <>
       <div className='container mx-auto'>
         <div className='flex flex-col justify-between'>
-          <h2 className='text-2xl font-semibold'>Event List </h2>
+          <h2 className='text-2xl font-semibold'>Table List </h2>
           <div className='flex flex-wrap'>
             <div className='sm: flex w-full gap-4 sm:flex-col md:w-fit lg:w-3/4'>
               <div className='flex w-full flex-col sm:flex-row md:gap-4'>
@@ -193,7 +177,7 @@ const EventList = () => {
               </Button>
               <Button
                 onClick={() => {
-                  toggleEventListFormModal();
+                  toggleTableListModal();
                 }}>
                 Add
               </Button>
@@ -202,15 +186,13 @@ const EventList = () => {
         </div>
         <List
           columns={[
-            { id: 'event_Name', label: 'Name' },
+            { id: 'table_number', label: 'Table No.' },
+            { id: 'person', label: 'Person' },
             {
-              id: 'date',
-              label: 'Date',
+              id: 'description',
+              label: 'Description',
             },
-            { id: 'Time', label: 'Time' },
-            { id: 'description', label: 'Description' },
-            { id: 'status', label: 'Status' },
-            { id: 'photo', label: 'photo' },
+            { id: 'photo', label: 'Photo' },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
@@ -226,14 +208,9 @@ const EventList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.event_Name}</TableCell>
-                <TableCell>{row.date ? formatDate(row.date) : '-'}</TableCell>
-                <TableCell>{row.time}</TableCell>
-
+                <TableCell>{row.table_number}</TableCell>
+                <TableCell>{row.seatCount ?? '-'}</TableCell>
                 <TableCell>{row.description}</TableCell>
-                <TableCell>
-                  {row.status ? getDataLabel(statusType, row.status) : '-'}
-                </TableCell>
                 <TableCell>{row.photo ? row.photo : '-'}</TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
@@ -272,18 +249,18 @@ const EventList = () => {
       <PopupModal
         isOpen={showModal}
         header={
-          defaultValues.current.id ? 'Update Event List' : 'Add Event List'
+          defaultValues.current.id ? 'Update Table List' : 'Add Table List'
         }
-        onOpenChange={toggleEventListFormModal}>
-        <EventListForm
-          handleClose={toggleEventListFormModal}
-          handleEventListSubmit={onSubmit}
+        onOpenChange={toggleTableListModal}>
+        <TableListForm
+          handleClose={toggleTableListModal}
+          handleTableListSubmit={onSubmit}
           defaultValues={defaultValues.current}
         />
       </PopupModal>
       <ConfirmationModal
         isOpen={showDeleteModal}
-        message={CONFIRMATION_MESSAGES.EVENT_LIST_DELETE}
+        message={CONFIRMATION_MESSAGES.TABLE_LIST_DELETE}
         onClose={toggleDeleteModal}
         onConfirm={() => {
           handleDelete();
@@ -293,4 +270,4 @@ const EventList = () => {
   );
 };
 
-export default EventList;
+export default TableList;

@@ -11,7 +11,6 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { useState } from 'react';
-import { Tooltip } from '@nextui-org/react';
 import { tableListSchema } from '@/schema/table-list/tableList';
 
 const TableLIstForm = ({
@@ -83,6 +82,14 @@ const TableLIstForm = ({
             />
           </div>
           <div className='grid gap-4'>
+            <ControllerTextField
+              type='text'
+              placeholder='Enter Person '
+              name='person'
+              label='Person'
+            />
+          </div>
+          <div className='grid gap-4'>
             <ControllerTextArea
               type='text'
               placeholder='Enter description '
@@ -90,7 +97,7 @@ const TableLIstForm = ({
               label='Description'
             />
           </div>
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+          {/* <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
             <div>
               <h6
                 className={`mb-2 pt-1 text-small ${
@@ -153,7 +160,7 @@ const TableLIstForm = ({
                   </h6>
                 )}
             </div>
-          </div>
+          </div> */}
           <div className='flex justify-end space-x-4'>
             <Button
               type='button'

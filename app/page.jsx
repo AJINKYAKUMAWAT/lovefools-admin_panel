@@ -31,6 +31,7 @@ import {
   findSingleSelectedValueLabelOption,
   generateOptions,
 } from '@/utils/utils';
+import { formatDate } from '@/utils/formatTime';
 
 const ReceiptList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
@@ -39,9 +40,11 @@ const ReceiptList = () => {
   const dispatch = useAppDispatch();
   const defaultValues = useRef({
     id: null,
-    name: '',
-    description: '',
+    email: '',
+    mobile: '',
     price: '',
+    date: null,
+    time: null,
     menuType: null,
     subMenuType: null,
     photo: null,
@@ -69,10 +72,13 @@ const ReceiptList = () => {
   };
 
   const handleEditButtonClick = async (row) => {
+    const [hr, min] = row.time.split(':');
     defaultValues.current = {
       id: row._id,
-      name: row.receipt_Name,
-      description: row.description,
+      email: row.receipt_Name,
+      mobile: row.mobile,
+      date: new Date(row.date),
+      time: new Time(hr, min),
       price: row.price,
       menuType: findSingleSelectedValueLabelOption(
         generateOptions(menuType, 'id', 'type'),
@@ -82,7 +88,6 @@ const ReceiptList = () => {
         generateOptions(subMenuType, 'id', 'type'),
         row.sub_type,
       ),
-      photo: row.photo.slice(89),
     };
 
     setShowModal((prev) => !prev);
@@ -104,8 +109,10 @@ const ReceiptList = () => {
   const toggleReciptFormModal = () => {
     defaultValues.current = {
       id: null,
-      name: '',
-      description: '',
+      email: '',
+      mobile: '',
+      date: null,
+      time: null,
       price: '',
       menuType: null,
       subMenuType: null,
@@ -128,18 +135,15 @@ const ReceiptList = () => {
   const onSubmit = async (receiptData) => {
     console.log(receiptData);
 
-    const payload = [
-      {
-        receipt_Name: receiptData.name,
-        description: receiptData.description,
-        price: receiptData.price,
-        type: receiptData.menuType.value,
-        sub_type: receiptData.subMenuType.value,
-      },
-      {
-        photo: receiptData.photo,
-      },
-    ];
+    const payload = {
+      emailId: receiptData.email,
+      mobileNo: receiptData.mobile,
+      price: receiptData.price,
+      date: receiptData.date,
+      time: receiptData.time,
+      type: receiptData.menuType.value,
+      sub_type: receiptData.subMenuType.value,
+    };
 
     try {
       if (!defaultValues.current.id) {
@@ -201,11 +205,16 @@ const ReceiptList = () => {
         </div>
         <List
           columns={[
-            { id: 'receipt_Name', label: 'Receipt Name' },
+            { id: 'emailId', label: 'Email' },
             {
-              id: 'description',
-              label: 'Description',
+              id: 'mobileNo',
+              label: 'Mobile',
             },
+            {
+              id: 'date',
+              label: 'Date',
+            },
+            { id: 'Time', label: 'Time' },
             { id: 'price', label: 'Price' },
             { id: 'type', label: 'Menu Type' },
             { id: 'sub_type', label: 'Sub Menu Type' },
@@ -224,8 +233,10 @@ const ReceiptList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.receipt_Name}</TableCell>
-                <TableCell>{row.description}</TableCell>
+                <TableCell>{row.emailId}</TableCell>
+                <TableCell>{row.mobileNo}</TableCell>
+                <TableCell>{row.date ? formatDate(row.date) : '-'}</TableCell>
+                <TableCell>{row.time}</TableCell>
                 <TableCell>{row.price}</TableCell>
                 <TableCell>{row.type ? row.type : '-'}</TableCell>
                 <TableCell>{row.sub_type ? row.sub_type : '-'}</TableCell>
