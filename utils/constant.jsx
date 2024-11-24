@@ -27,6 +27,14 @@ export const API_ENDPOINT = {
   UPDATE_FLOOR_LIST: (id) => `updateFloor/${id}`,
   DELETE_FLOOR_LIST: (id) => `deleteFloor/${id}`,
   GET_FLOOR_LIST: 'getFloorList',
+  ADD_ROOM_LIST: 'addRoom',
+  UPDATE_ROOM_LIST: (id) => `updateRoom/${id}`,
+  DELETE_ROOM_LIST: (id) => `deleteRoom/${id}`,
+  GET_ROOM_LIST: 'getRoomList',
+  ADD_MENU_LIST: 'addMenu',
+  UPDATE_MENU_LIST: (id) => `updateMenu/${id}`,
+  DELETE_MENU_LIST: (id) => `deleteMenu/${id}`,
+  GET_MENU_LIST: 'getMenuList',
   ADD_GALLERY_LIST: 'addGallery',
   UPDATE_GALLERY_LIST: (id) => `updateGallery/${id}`,
   DELETE_GALLERY_LIST: (id) => `deleteGallery/${id}`,
@@ -83,6 +91,12 @@ export const FLOOR_LIST = {
   FLOOR_LIST_UPDATE: 'Floor list updated successfully',
 };
 
+export const ROOM_LIST = {
+  ROOM_LIST_DELETED: 'Room list deleted successfully',
+  ROOM_LIST_SUCCESS: 'Room list created successfully',
+  ROOM_LIST_UPDATE: 'Room list updated successfully',
+};
+
 export const CMS_LIST = {
   CMS_LIST_UPDATE: 'CMS list updated successfully',
 };
@@ -99,6 +113,12 @@ export const TESTIMONIAL_LIST = {
   TESTIMONIAL_LIST_UPDATE: 'Testimonial list updated successfully',
 };
 
+export const MENU_LIST = {
+  MENU_LIST_DELETED: 'Menu list deleted successfully',
+  MENU_LIST_SUCCESS: 'Menu list created successfully',
+  MENU_LIST_UPDATE: 'Menu list updated successfully',
+};
+
 export const ERROR_MESSAGE = 'Something went wrong';
 
 export const CONFIRMATION_MESSAGES = {
@@ -110,6 +130,8 @@ export const CONFIRMATION_MESSAGES = {
   GALLERY_LIST_DELETE: 'Are you sure want to delete this gallery list?',
   TESTIMONIAL_LIST_DELETE: 'Are you sure want to delete this Testimonial list?',
   FLOOR_LIST_DELETE: 'Are you sure want to delete this Floor list?',
+  ROOM_LIST_DELETE: 'Are you sure want to delete this Room list?',
+  MENU_LIST_DELETE: 'Are you sure want to delete this Menu?',
 };
 
 export const formDataApi = (file) => {

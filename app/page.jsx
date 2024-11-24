@@ -1,11 +1,6 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  API_ENDPOINT,
-  CONFIRMATION_MESSAGES,
-  menuType,
-  subMenuType,
-} from '@/utils/constant';
+import { CONFIRMATION_MESSAGES, menuType, subMenuType } from '@/utils/constant';
 import { List } from '@/components/common/list/List';
 import {
   ArrowPathIcon,
@@ -16,8 +11,6 @@ import { TableCell, TableRow, Tooltip } from '@nextui-org/react';
 import Button from '@/components/common/Button';
 import ConfirmationModal from '@/components/common/ConfirmationModal';
 import { useAppDispatch, useAppSelector } from '@/redux/selector';
-import axiosInstance from '@/utils/axios';
-import { useRouter } from 'next/navigation';
 import SearchBar from '@/components/common/SearchBar';
 import ReceiptForm from '@/components/receipt/receiptForm';
 import PopupModal from '@/components/common/PopupModal';
@@ -28,10 +21,15 @@ import {
   updateReceipt,
 } from '@/redux/receipt/receiptSlice';
 import {
+  convertTimeObjectToString,
   findSingleSelectedValueLabelOption,
   generateOptions,
 } from '@/utils/utils';
 import { formatDate } from '@/utils/formatTime';
+import { getMenuList } from '@/redux/menu-list/menuListSlice';
+import { getFloorList } from '@/redux/floor-list/floorListSlice';
+import { getRoomList } from '@/redux/room-list/roomSlice';
+import { getTableList } from '@/redux/table-list/tableListSlice';
 
 const ReceiptList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
@@ -41,21 +39,36 @@ const ReceiptList = () => {
   const defaultValues = useRef({
     id: null,
     email: '',
+    receiptName: null,
+    floor: null,
+    room: null,
+    table_number: null,
     mobile: '',
     price: '',
     date: null,
     time: null,
     menuType: null,
     subMenuType: null,
-    photo: null,
   });
 
   const { listParameters, data, total, loading } = useAppSelector(
     (state) => state.receipt,
   );
 
+  const floorList = useAppSelector((state) => state.floorList);
+
+  const roomList = useAppSelector((state) => state.roomList);
+
+  const getAllTables = useAppSelector((state) => state.tableList);
+
+  const menuList = useAppSelector((state) => state.menuList);
+
   useEffect(() => {
     dispatch(getReceiptList({}));
+    dispatch(getMenuList({}));
+    dispatch(getFloorList({}));
+    dispatch(getRoomList({}));
+    dispatch(getTableList({}));
   }, []);
 
   const handleMetaChange = (meta) => {
@@ -73,12 +86,19 @@ const ReceiptList = () => {
 
   const handleEditButtonClick = async (row) => {
     const [hr, min] = row.time.split(':');
+    const date = new Date(row.date); // Use the provided date
+    date.setHours(hr, min, 0, 0); // Set the time based on the time string
+
     defaultValues.current = {
       id: row._id,
-      email: row.receipt_Name,
-      mobile: row.mobile,
-      date: new Date(row.date),
-      time: new Time(hr, min),
+      email: row.emailId,
+      receiptName: findSingleSelectedValueLabelOption(
+        generateOptions(menuList.data, '_id', 'menu_Name'),
+        row.receiptName,
+      ),
+      mobile: row.mobileNo,
+      date: date, // Combined date and time
+      time: { hour: parseInt(hr, 10), minute: parseInt(min, 10) }, // Create an object for TimeInput
       price: row.price,
       menuType: findSingleSelectedValueLabelOption(
         generateOptions(menuType, 'id', 'type'),
@@ -87,6 +107,18 @@ const ReceiptList = () => {
       subMenuType: findSingleSelectedValueLabelOption(
         generateOptions(subMenuType, 'id', 'type'),
         row.sub_type,
+      ),
+      floor: findSingleSelectedValueLabelOption(
+        generateOptions(floorList.data, '_id', 'floor_name'),
+        row.floor,
+      ),
+      room: findSingleSelectedValueLabelOption(
+        generateOptions(roomList.data, '_id', 'room_name'),
+        row.room,
+      ),
+      table_number: findSingleSelectedValueLabelOption(
+        generateOptions(getAllTables.data, '_id', 'table_number'),
+        row.table_number,
       ),
     };
 
@@ -110,13 +142,16 @@ const ReceiptList = () => {
     defaultValues.current = {
       id: null,
       email: '',
+      receiptName: null,
+      floor: null,
+      room: null,
+      table_number: null,
       mobile: '',
       date: null,
       time: null,
       price: '',
       menuType: null,
       subMenuType: null,
-      photo: null,
     };
     setShowModal((prev) => !prev);
   };
@@ -133,16 +168,18 @@ const ReceiptList = () => {
   };
 
   const onSubmit = async (receiptData) => {
-    console.log(receiptData);
-
     const payload = {
       emailId: receiptData.email,
       mobileNo: receiptData.mobile,
+      receiptName: receiptData.receiptName.value,
       price: receiptData.price,
       date: receiptData.date,
-      time: receiptData.time,
+      time: convertTimeObjectToString(receiptData.time),
       type: receiptData.menuType.value,
       sub_type: receiptData.subMenuType.value,
+      floor: receiptData.floor.value,
+      room: receiptData.room.value,
+      table_number: receiptData.table_number.value,
     };
 
     try {
@@ -150,6 +187,7 @@ const ReceiptList = () => {
         const data = await dispatch(addReceipt(payload));
         if (data) {
           dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
+          dispatch(getTableList({}));
         }
       } else {
         const data = await dispatch(
@@ -157,6 +195,7 @@ const ReceiptList = () => {
         );
         if (data) {
           dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
+          dispatch(getTableList({}));
         }
       }
     } catch (error) {
@@ -164,6 +203,22 @@ const ReceiptList = () => {
     }
 
     toggleReciptFormModal();
+  };
+
+  const filterMenu = (type, list) => {
+    const getMenu = findSingleSelectedValueLabelOption(
+      generateOptions(list, 'id', 'type'),
+      type,
+    );
+    return getMenu?.label;
+  };
+
+  const filterMenuList = (type, list, name) => {
+    const getMenu = findSingleSelectedValueLabelOption(
+      generateOptions(list, '_id', name),
+      type,
+    );
+    return getMenu?.label;
   };
 
   return (
@@ -211,11 +266,18 @@ const ReceiptList = () => {
               label: 'Mobile',
             },
             {
+              id: 'receiptName',
+              label: 'Receipt Name',
+            },
+            {
               id: 'date',
               label: 'Date',
             },
             { id: 'Time', label: 'Time' },
             { id: 'price', label: 'Price' },
+            { id: 'floor', label: 'Floor' },
+            { id: 'room', label: 'Room' },
+            { id: 'table_number', label: 'Table Number' },
             { id: 'type', label: 'Menu Type' },
             { id: 'sub_type', label: 'Sub Menu Type' },
             { id: 'actions', label: 'Actions', fixed: true },
@@ -235,11 +297,44 @@ const ReceiptList = () => {
               <TableRow key={row.id}>
                 <TableCell>{row.emailId}</TableCell>
                 <TableCell>{row.mobileNo}</TableCell>
+                <TableCell>
+                  {row.receiptName
+                    ? filterMenuList(
+                        row.receiptName,
+                        menuList.data,
+                        'menu_Name',
+                      )
+                    : '-'}
+                </TableCell>
                 <TableCell>{row.date ? formatDate(row.date) : '-'}</TableCell>
                 <TableCell>{row.time}</TableCell>
                 <TableCell>{row.price}</TableCell>
-                <TableCell>{row.type ? row.type : '-'}</TableCell>
-                <TableCell>{row.sub_type ? row.sub_type : '-'}</TableCell>
+                <TableCell>
+                  {row.floor
+                    ? filterMenuList(row.floor, floorList.data, 'floor_name')
+                    : '-'}
+                </TableCell>
+                <TableCell>
+                  {row.room
+                    ? filterMenuList(row.room, roomList.data, 'room_name')
+                    : '-'}
+                </TableCell>
+                <TableCell>
+                  {row.table_number
+                    ? filterMenuList(
+                        row.table_number,
+                        getAllTables.data,
+                        'table_number',
+                      )
+                    : '-'}
+                </TableCell>
+                <TableCell>
+                  {row.type ? filterMenu(row.type, menuType) : '-'}
+                </TableCell>
+                <TableCell>
+                  {row.sub_type ? filterMenu(row.sub_type, subMenuType) : '-'}
+                </TableCell>
+
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axios';
-import { API_ENDPOINT, FLOOR_LIST, SortDirection } from '@/utils/constant';
+import { API_ENDPOINT, ROOM_LIST, SortDirection } from '@/utils/constant';
 import { toast } from 'react-toastify';
 
 const initialListParameters = {
@@ -14,7 +14,6 @@ const initialListParameters = {
 const initialState = {
   data: [],
   defaultValues: null,
-  selectedFloor: null,
   total: 0,
   loading: false,
   error: null,
@@ -23,17 +22,17 @@ const initialState = {
 };
 
 // Async thunks
-export const getFloorList = createAsyncThunk(
-  'floorList/getFloorList',
+export const getRoomList = createAsyncThunk(
+  'roomList/getRoomList',
   async (queryParameters, { dispatch, rejectWithValue }) => {
     try {
       const {
-        data: { data: floorListData, pageData: meta },
-      } = await axiosInstance.post(API_ENDPOINT.GET_FLOOR_LIST, {
+        data: { data: roomListData, pageData: meta },
+      } = await axiosInstance.post(API_ENDPOINT.GET_ROOM_LIST, {
         ...queryParameters,
       });
       return {
-        floorListData,
+        roomListData,
         total: meta.total,
         updatedListParams: {
           ...queryParameters,
@@ -47,14 +46,14 @@ export const getFloorList = createAsyncThunk(
   },
 );
 
-export const addFloorList = createAsyncThunk(
-  'floorList/addFloorList',
-  async (floorListDetails, { rejectWithValue }) => {
+export const addRoomList = createAsyncThunk(
+  'roomList/addRoomList',
+  async (roomListDetails, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post(API_ENDPOINT.ADD_FLOOR_LIST, {
-        ...floorListDetails,
+      const { data } = await axiosInstance.post(API_ENDPOINT.ADD_ROOM_LIST, {
+        ...roomListDetails,
       });
-      toast.success(FLOOR_LIST.FLOOR_LIST_SUCCESS);
+      toast.success(ROOM_LIST.ROOM_LIST_SUCCESS);
       return data;
     } catch (error) {
       toast.error(error.message);
@@ -63,22 +62,15 @@ export const addFloorList = createAsyncThunk(
   },
 );
 
-export const SelectedFloorList = createAsyncThunk(
-  'floorList/SelectedFloorList',
-  async (data) => {
-    return data;
-  },
-);
-
-export const updateFloorList = createAsyncThunk(
-  'floorList/updateFloorList',
+export const updateRoomList = createAsyncThunk(
+  'roomList/updateRoomList',
   async ({ id, payload }) => {
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.UPDATE_FLOOR_LIST(id),
+        API_ENDPOINT.UPDATE_ROOM_LIST(id),
         { ...payload },
       );
-      toast.success(FLOOR_LIST.FLOOR_LIST_UPDATE);
+      toast.success(ROOM_LIST.ROOM_LIST_UPDATE);
       return data;
     } catch (error) {
       toast.error(error.message);
@@ -87,14 +79,14 @@ export const updateFloorList = createAsyncThunk(
   },
 );
 
-export const deleteFloorList = createAsyncThunk(
-  'floorList/deleteFloorList',
+export const deleteRoomList = createAsyncThunk(
+  'roomList/deleteRoomList',
   async ({ id }) => {
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.DELETE_FLOOR_LIST(id),
+        API_ENDPOINT.DELETE_ROOM_LIST(id),
       );
-      toast.success(FLOOR_LIST.FLOOR_LIST_DELETED);
+      toast.success(ROOM_LIST.ROOM_LIST_DELETED);
       return data;
     } catch (error) {
       toast.error(error.message);
@@ -103,8 +95,8 @@ export const deleteFloorList = createAsyncThunk(
   },
 );
 
-export const updateFloortListValues = createAsyncThunk(
-  'floorList/updateFloortListValues',
+export const updateRoomListValues = createAsyncThunk(
+  'roomList/updateRoomListValues',
   async (defaultValues, { rejectWithValue }) => {
     try {
       return defaultValues;
@@ -114,15 +106,12 @@ export const updateFloortListValues = createAsyncThunk(
   },
 );
 
-const floorListSlice = createSlice({
-  name: 'floorList',
+const roomListSlice = createSlice({
+  name: 'roomList',
   initialState,
   reducers: {
     updateListParameters: (state, action) => {
       state.listParameters = { ...state.listParameters, ...action.payload };
-    },
-    selectedFloors: (state, action) => {
-      state.selectedFloor = action.payload;
     },
     setLoading: (state, action) => {
       state.loading = action.payload.loading;
@@ -130,65 +119,64 @@ const floorListSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getFloorList.pending, (state) => {
+      .addCase(getRoomList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getFloorList.fulfilled, (state, action) => {
-        state.data = action.payload.floorListData;
+      .addCase(getRoomList.fulfilled, (state, action) => {
+        state.data = action.payload.roomListData;
         state.total = action.payload.total;
         state.listParameters = action.payload.updatedListParams;
         state.loading = false;
       })
-      .addCase(getFloorList.rejected, (state, action) => {
+      .addCase(getRoomList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(addFloorList.pending, (state) => {
+      .addCase(addRoomList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addFloorList.fulfilled, (state, action) => {
+      .addCase(addRoomList.fulfilled, (state, action) => {
         state.data = action.payload || [];
         state.defaultValues = action.payload || null;
         state.loading = false;
       })
-      .addCase(addFloorList.rejected, (state, action) => {
+      .addCase(addRoomList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(updateFloorList.pending, (state) => {
+      .addCase(updateRoomList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateFloorList.fulfilled, (state, action) => {
+      .addCase(updateRoomList.fulfilled, (state, action) => {
         state.data = action.payload || [];
         state.defaultValues = action.payload || null;
         state.loading = false;
       })
-      .addCase(updateFloorList.rejected, (state, action) => {
+      .addCase(updateRoomList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(updateFloortListValues.pending, (state) => {
+      .addCase(updateRoomListValues.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateFloortListValues.fulfilled, (state, action) => {
+      .addCase(updateRoomListValues.fulfilled, (state, action) => {
         state.defaultValues = action.payload;
         state.loading = false;
       })
-      .addCase(updateFloortListValues.rejected, (state, action) => {
+      .addCase(updateRoomListValues.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export const { updateListParameters, setLoading, selectedFloors } =
-  floorListSlice.actions;
+export const { updateListParameters, setLoading } = roomListSlice.actions;
 
-export default floorListSlice.reducer;
+export default roomListSlice.reducer;

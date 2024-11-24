@@ -14,63 +14,55 @@ import { useAppDispatch, useAppSelector } from '@/redux/selector';
 import SearchBar from '@/components/common/SearchBar';
 import PopupModal from '@/components/common/PopupModal';
 import {
-  addTableList,
-  deleteTableList,
-  getTableList,
-  updateTableList,
-} from '../../../redux/table-list/tableListSlice';
-import TableListForm from '@/components/table-list/tableListForm';
-import { useParams } from 'next/navigation';
+  addRoomList,
+  deleteRoomList,
+  getRoomList,
+  updateRoomList,
+} from '../../redux/room-list/roomSlice';
+import RoomListForm from '../../components/room-list/roomListForm';
+import { useParams, useRouter } from 'next/navigation';
 
-const TableList = () => {
+const RoomList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
   const dispatch = useAppDispatch();
+  const navigate = useRouter();
   const defaultValues = useRef({
     id: null,
     // floor_id: null,
-    room_id: null,
-    person: null,
-    tableNo: '',
-    photo: null,
+    roomName: '',
   });
 
-  const param = useParams();
+  const params = useParams();
 
   const { listParameters, data, total, loading } = useAppSelector(
-    (state) => state.tableList,
+    (state) => state.roomList,
   );
 
-  const { selectedFloor } = useAppSelector((state) => state.floorList);
-
   useEffect(() => {
-    dispatch(getTableList({ room_id: param.id }));
+    dispatch(getRoomList({}));
   }, []);
 
   const handleMetaChange = (meta) => {
     dispatch(
-      getTableList({
+      getRoomList({
         ...meta,
-        // floor_id: param.id,
-        room_id: param.id,
+        // floor_id: params.id,
         search: meta.search,
       }),
     );
   };
 
   const refreshBtn = () => {
-    dispatch(getTableList({ room_id: param.id }));
+    dispatch(getRoomList({}));
   };
 
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
-      // floor_id: param.id,
-      room_id: param.id,
-      person: row.seatCount,
-      tableNo: row.table_number,
-      photo: null,
+      // floor_id: row.floor_id,
+      roomName: row.room_name,
     };
 
     setShowModal((prev) => !prev);
@@ -89,32 +81,26 @@ const TableList = () => {
     });
   };
 
-  const toggleTableListModal = () => {
+  const toggleFormListFormModal = () => {
     defaultValues.current = {
       id: null,
       // floor_id: null,
-      room_id: null,
-      person: null,
-      tableNo: '',
-      photo: null,
+      roomName: '',
     };
     setShowModal((prev) => !prev);
   };
 
   const handleDelete = async () => {
     try {
-      const data = await dispatch(deleteTableList({ id }));
-      if (data) {
-        await dispatch(
-          getTableList({
-            ...listParameters,
-            // floor_id: param.id,
-            room_id: param.id,
-            search: '',
-            page: 1,
-          }),
-        );
-      }
+      dispatch(deleteRoomList({ id }));
+      dispatch(
+        getRoomList({
+          ...listParameters,
+          // floor_id: params.id,
+          search: '',
+          page: 1,
+        }),
+      );
     } catch (error) {
       console.log(error);
     }
@@ -122,47 +108,52 @@ const TableList = () => {
     toggleDeleteModal();
   };
 
-  const onSubmit = async (tableData) => {
+  const onSubmit = async (roomData) => {
     const payload = {
-      room_id: param.id,
-      table_number: tableData.tableNo,
-      seatCount: tableData.person,
+      // floor_id: params.id,
+      room_name: roomData.roomName,
     };
 
     try {
-      let data;
       if (!defaultValues.current.id) {
-        // Await the async action
-        data = await dispatch(addTableList(payload)).unwrap();
+        const data = await dispatch(addRoomList(payload));
+        if (data) {
+          setShowModal(false);
+          dispatch(
+            getRoomList({
+              ...listParameters,
+              // floor_id: params.id,
+              search: '',
+              page: 1,
+            }),
+          );
+        }
       } else {
-        data = await dispatch(
-          updateTableList({ id: defaultValues.current.id, payload }),
-        ).unwrap();
-      }
-
-      if (data) {
-        // Fetch updated table list
-        await dispatch(
-          getTableList({
-            ...listParameters,
-            room_id: param.id,
-            search: '',
-            page: 1,
-          }),
+        const data = await dispatch(
+          updateRoomList({ id: defaultValues.current.id, payload: payload }),
         );
+        if (data) {
+          setShowModal(false);
+          dispatch(
+            getRoomList({
+              ...listParameters,
+              // floor_id: params.id,
+              search: '',
+              page: 1,
+            }),
+          );
+        }
       }
     } catch (error) {
-      console.error('Error during submission:', error);
+      console.log(error);
     }
-
-    toggleTableListModal();
   };
 
   return (
     <>
       <div className='container mx-auto'>
         <div className='flex flex-col justify-between'>
-          <h2 className='text-2xl font-semibold'>Table List </h2>
+          <h2 className='text-2xl font-semibold'>Room List </h2>
           <div className='flex flex-wrap'>
             <div className='sm: flex w-full gap-4 sm:flex-col md:w-fit lg:w-3/4'>
               <div className='flex w-full flex-col sm:flex-row md:gap-4'>
@@ -188,7 +179,7 @@ const TableList = () => {
               </Button>
               <Button
                 onClick={() => {
-                  toggleTableListModal();
+                  toggleFormListFormModal();
                 }}>
                 Add
               </Button>
@@ -197,9 +188,7 @@ const TableList = () => {
         </div>
         <List
           columns={[
-            { id: 'table_number', label: 'Table No.' },
-            { id: 'person', label: 'Person' },
-
+            { id: 'room_Name', label: 'Room Name' },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
@@ -215,8 +204,11 @@ const TableList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.table_number}</TableCell>
-                <TableCell>{row.seatCount ?? '-'}</TableCell>
+                <TableCell
+                  className='cursor-pointer hover:text-sky-700'
+                  onClick={() => navigate.push(`/table-list/${row._id}`)}>
+                  {row.room_name}
+                </TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
@@ -253,19 +245,17 @@ const TableList = () => {
       </div>
       <PopupModal
         isOpen={showModal}
-        header={
-          defaultValues.current.id ? 'Update Table List' : 'Add Table List'
-        }
-        onOpenChange={toggleTableListModal}>
-        <TableListForm
-          handleClose={toggleTableListModal}
-          handleTableListSubmit={onSubmit}
+        header={defaultValues.current.id ? 'Update Room List' : 'Add Room List'}
+        onOpenChange={toggleFormListFormModal}>
+        <RoomListForm
+          handleClose={toggleFormListFormModal}
+          handleRoomListSubmit={onSubmit}
           defaultValues={defaultValues.current}
         />
       </PopupModal>
       <ConfirmationModal
         isOpen={showDeleteModal}
-        message={CONFIRMATION_MESSAGES.TABLE_LIST_DELETE}
+        message={CONFIRMATION_MESSAGES.ROOM_LIST_DELETE}
         onClose={toggleDeleteModal}
         onConfirm={() => {
           handleDelete();
@@ -275,4 +265,4 @@ const TableList = () => {
   );
 };
 
-export default TableList;
+export default RoomList;

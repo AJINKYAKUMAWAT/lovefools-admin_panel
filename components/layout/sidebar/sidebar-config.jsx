@@ -11,14 +11,19 @@ import {
 
 const SidebarConfig = [
   {
-    name: 'Reciept List',
+    name: 'Booking',
     icon: <DocumentTextIcon className='h-6 w-6' />,
     href: '/',
   },
   {
+    name: 'Menu List',
+    icon: <DocumentTextIcon className='h-6 w-6' />,
+    href: '/menu-list',
+  },
+  {
     name: 'Table List ',
     icon: <ListBulletIcon className='h-6 w-6' />,
-    href: '/floor-list',
+    href: '/room-list',
   },
   // {
   //   name: 'Table Order',

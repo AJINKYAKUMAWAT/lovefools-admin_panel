@@ -17,6 +17,7 @@ import {
   addFloorList,
   deleteFloorList,
   getFloorList,
+  selectedFloors,
   updateFloorList,
 } from '../../redux/floor-list/floorListSlice';
 import FloorListForm from '../../components/floor-list/floorLIstForm';
@@ -178,7 +179,10 @@ const FloorList = () => {
               <TableRow key={row.id}>
                 <TableCell
                   className='cursor-pointer hover:text-sky-700'
-                  onClick={() => navigate.push(`/table-list/${row._id}`)}>
+                  onClick={() => {
+                    dispatch(selectedFloors(row));
+                    navigate.push(`/room-list/${row._id}`);
+                  }}>
                   {row.floor_name}
                 </TableCell>
                 <TableCell>

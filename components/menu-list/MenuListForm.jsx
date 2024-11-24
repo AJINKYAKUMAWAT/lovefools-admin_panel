@@ -4,26 +4,26 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import ControllerTextField from '@/components/common/ControllerTextField';
 import Button from '@/components/common/Button';
 import FormProvider from '@/components/common/FormProvider';
+import { reciptSchema } from '@/schema/receipt/receipt';
 import ControllerTextArea from '../common/ControllerTextArea';
+import { generateOptions } from '@/utils/utils';
+import { menuType, subMenuType } from '@/utils/constant';
 import {
   ArrowUpTrayIcon,
   EyeIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { useState } from 'react';
-import { tableListSchema } from '@/schema/table-list/tableList';
+import ControllerSelect from '../common/ControllerSelect';
+import { menuSchema } from '@/schema/menu-list/menuList';
 
-const TableLIstForm = ({
-  handleTableListSubmit,
-  handleClose,
-  defaultValues,
-}) => {
+const MenuListForm = ({ handleMenuSubmit, handleClose, defaultValues }) => {
   const methods = useForm({
-    resolver: yupResolver(tableListSchema),
+    resolver: yupResolver(menuSchema),
     defaultValues,
     mode: 'onBlur',
   });
-  const [fileName, setfileName] = useState('');
+  const [fileName, setfileName] = useState(defaultValues.photo);
   const updateFileName = (name) => {
     setfileName(name);
   };
@@ -31,12 +31,13 @@ const TableLIstForm = ({
   const {
     handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { isSubmitting, errors },
     getValues,
+    watch,
   } = methods;
 
   const onSubmit = async (data) => {
-    handleTableListSubmit(data);
+    handleMenuSubmit(data);
   };
 
   const handleImageUpload = async (name, event) => {
@@ -59,6 +60,8 @@ const TableLIstForm = ({
         //   config,
         // );
 
+        console.log('selectedFile', selectedFile);
+
         setValue(name, selectedFile);
         clearErrors(name);
       } catch (error) {
@@ -66,6 +69,8 @@ const TableLIstForm = ({
       }
     }
   };
+
+  console.log(watch('photo'));
 
   return (
     <FormProvider
@@ -76,17 +81,41 @@ const TableLIstForm = ({
           <div className='grid gap-4'>
             <ControllerTextField
               type='text'
-              placeholder='Enter table no. '
-              name='tableNo'
-              label='Table No.'
+              placeholder='Enter menu name '
+              name='menuName'
+              label='Menu Name'
+            />
+          </div>
+          <div className='grid gap-4'>
+            <ControllerTextArea
+              type='text'
+              placeholder='Enter Description '
+              name='description'
+              label='description'
             />
           </div>
           <div className='grid gap-4'>
             <ControllerTextField
               type='text'
-              placeholder='Enter Person '
-              name='person'
-              label='Person'
+              placeholder='Enter Price '
+              name='price'
+              label='Price'
+            />
+          </div>
+          <div className='grid gap-4'>
+            <ControllerSelect
+              name='menuType'
+              placeholder='Select menu type'
+              options={generateOptions(menuType, 'id', 'type')}
+              label='Type'
+            />
+          </div>
+          <div className='grid gap-4'>
+            <ControllerSelect
+              name='subMenuType'
+              placeholder='Select sub menu type'
+              options={generateOptions(subMenuType, 'id', 'type')}
+              label='Sub Type'
             />
           </div>
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
@@ -168,4 +197,4 @@ const TableLIstForm = ({
   );
 };
 
-export default TableLIstForm;
+export default MenuListForm;

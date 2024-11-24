@@ -91,7 +91,7 @@ export const disabledForRoles = (roles, Role) => {
 };
 
 export const findSingleSelectedValueLabelOption = (options, selectedValue) => {
-  return options.find((item) => item.value === selectedValue) || null;
+  return options.find((item) => item?.value === selectedValue) || null;
 };
 
 export const generateOptionsFromEnum = (members) =>
@@ -303,3 +303,15 @@ export const disablePastDate = (date) => {
   const currentDate = new Date().setHours(0, 0, 0, 0);
   return selectedDate < currentDate;
 };
+
+export function convertTimeObjectToString(timeObj) {
+  const hour = timeObj?.hour ? timeObj?.hour.toString().padStart(2, '0') : '00'; // Ensure 2 digits
+  const minute = timeObj?.minute
+    ? timeObj?.minute.toString().padStart(2, '0')
+    : '00';
+  const second = timeObj?.second
+    ? timeObj?.second.toString().padStart(2, '0')
+    : '00';
+
+  return `${hour}:${minute}:${second}`;
+}

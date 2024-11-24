@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
-import { CONFIRMATION_MESSAGES } from '@/utils/constant';
+import { CONFIRMATION_MESSAGES, menuType, subMenuType } from '@/utils/constant';
 import { List } from '@/components/common/list/List';
 import {
   ArrowPathIcon,
@@ -12,65 +12,70 @@ import Button from '@/components/common/Button';
 import ConfirmationModal from '@/components/common/ConfirmationModal';
 import { useAppDispatch, useAppSelector } from '@/redux/selector';
 import SearchBar from '@/components/common/SearchBar';
+import MenuListForm from '../../components/menu-list/MenuListForm';
 import PopupModal from '@/components/common/PopupModal';
 import {
-  addTableList,
-  deleteTableList,
-  getTableList,
-  updateTableList,
-} from '../../../redux/table-list/tableListSlice';
-import TableListForm from '@/components/table-list/tableListForm';
-import { useParams } from 'next/navigation';
+  addMenu,
+  deleteMenu,
+  getMenuList,
+  updateMenu,
+} from '../../redux/menu-list/menuListSlice';
+import {
+  findSingleSelectedValueLabelOption,
+  generateOptions,
+} from '@/utils/utils';
 
-const TableList = () => {
+const MenuList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState(null);
   const dispatch = useAppDispatch();
   const defaultValues = useRef({
     id: null,
-    // floor_id: null,
-    room_id: null,
-    person: null,
-    tableNo: '',
+    menuName: '',
+    description: '',
+    price: '',
+    menuType: null,
+    subMenuType: null,
     photo: null,
   });
 
-  const param = useParams();
-
   const { listParameters, data, total, loading } = useAppSelector(
-    (state) => state.tableList,
+    (state) => state.menuList,
   );
 
-  const { selectedFloor } = useAppSelector((state) => state.floorList);
-
   useEffect(() => {
-    dispatch(getTableList({ room_id: param.id }));
+    dispatch(getMenuList({}));
   }, []);
 
   const handleMetaChange = (meta) => {
     dispatch(
-      getTableList({
+      getMenuList({
         ...meta,
-        // floor_id: param.id,
-        room_id: param.id,
         search: meta.search,
       }),
     );
   };
 
   const refreshBtn = () => {
-    dispatch(getTableList({ room_id: param.id }));
+    dispatch(getMenuList({}));
   };
 
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
-      // floor_id: param.id,
-      room_id: param.id,
-      person: row.seatCount,
-      tableNo: row.table_number,
-      photo: null,
+      menuName: row.menu_Name,
+      description: row.description,
+      price: row.price,
+      menuType: findSingleSelectedValueLabelOption(
+        generateOptions(menuType, 'id', 'type'),
+        row.menuType,
+      ),
+      subMenuType: findSingleSelectedValueLabelOption(
+        generateOptions(subMenuType, 'id', 'type'),
+        row.subMenuType,
+      ),
+      photo: '',
     };
 
     setShowModal((prev) => !prev);
@@ -89,13 +94,14 @@ const TableList = () => {
     });
   };
 
-  const toggleTableListModal = () => {
+  const toggleReciptFormModal = () => {
     defaultValues.current = {
       id: null,
-      // floor_id: null,
-      room_id: null,
-      person: null,
-      tableNo: '',
+      menuName: '',
+      description: '',
+      price: '',
+      menuType: null,
+      subMenuType: null,
       photo: null,
     };
     setShowModal((prev) => !prev);
@@ -103,18 +109,8 @@ const TableList = () => {
 
   const handleDelete = async () => {
     try {
-      const data = await dispatch(deleteTableList({ id }));
-      if (data) {
-        await dispatch(
-          getTableList({
-            ...listParameters,
-            // floor_id: param.id,
-            room_id: param.id,
-            search: '',
-            page: 1,
-          }),
-        );
-      }
+      dispatch(deleteMenu({ id }));
+      dispatch(getMenuList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
@@ -122,47 +118,50 @@ const TableList = () => {
     toggleDeleteModal();
   };
 
-  const onSubmit = async (tableData) => {
+  const onSubmit = async (menuData) => {
     const payload = {
-      room_id: param.id,
-      table_number: tableData.tableNo,
-      seatCount: tableData.person,
+      menu_Name: menuData.menuName,
+      description: menuData.description,
+      price: menuData.price,
+      photo: null,
+      menuType: menuData.menuType.value,
+      subMenuType: menuData.subMenuType.value,
     };
 
     try {
-      let data;
       if (!defaultValues.current.id) {
-        // Await the async action
-        data = await dispatch(addTableList(payload)).unwrap();
+        const data = await dispatch(addMenu(payload));
+        if (data) {
+          dispatch(getMenuList({ ...listParameters, search: '', page: 1 }));
+        }
       } else {
-        data = await dispatch(
-          updateTableList({ id: defaultValues.current.id, payload }),
-        ).unwrap();
-      }
-
-      if (data) {
-        // Fetch updated table list
-        await dispatch(
-          getTableList({
-            ...listParameters,
-            room_id: param.id,
-            search: '',
-            page: 1,
-          }),
+        const data = await dispatch(
+          updateMenu({ id: defaultValues.current.id, payload: payload }),
         );
+        if (data) {
+          dispatch(getMenuList({ ...listParameters, search: '', page: 1 }));
+        }
       }
     } catch (error) {
-      console.error('Error during submission:', error);
+      console.log(error);
     }
 
-    toggleTableListModal();
+    toggleReciptFormModal();
+  };
+
+  const filterMenu = (type, list) => {
+    const getMenu = findSingleSelectedValueLabelOption(
+      generateOptions(list, 'id', 'type'),
+      type,
+    );
+    return getMenu.label;
   };
 
   return (
     <>
       <div className='container mx-auto'>
         <div className='flex flex-col justify-between'>
-          <h2 className='text-2xl font-semibold'>Table List </h2>
+          <h2 className='text-2xl font-semibold'>Menu List </h2>
           <div className='flex flex-wrap'>
             <div className='sm: flex w-full gap-4 sm:flex-col md:w-fit lg:w-3/4'>
               <div className='flex w-full flex-col sm:flex-row md:gap-4'>
@@ -188,7 +187,7 @@ const TableList = () => {
               </Button>
               <Button
                 onClick={() => {
-                  toggleTableListModal();
+                  toggleReciptFormModal();
                 }}>
                 Add
               </Button>
@@ -197,9 +196,15 @@ const TableList = () => {
         </div>
         <List
           columns={[
-            { id: 'table_number', label: 'Table No.' },
-            { id: 'person', label: 'Person' },
-
+            { id: 'menu_Name', label: 'Menu Name' },
+            {
+              id: 'description',
+              label: 'Description',
+            },
+            { id: 'price', label: 'Price' },
+            { id: 'type', label: 'Menu Type' },
+            { id: 'sub_type', label: 'Sub Menu Type' },
+            { id: 'photo', label: 'photo', fixed: true },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
@@ -215,8 +220,19 @@ const TableList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.table_number}</TableCell>
-                <TableCell>{row.seatCount ?? '-'}</TableCell>
+                <TableCell>{row.menu_Name}</TableCell>
+                <TableCell>{row.description}</TableCell>
+
+                <TableCell>{row.price}</TableCell>
+                <TableCell>
+                  {row.menuType ? filterMenu(row.menuType, menuType) : '-'}
+                </TableCell>
+                <TableCell>
+                  {row.subMenuType
+                    ? filterMenu(row.subMenuType, subMenuType)
+                    : '-'}
+                </TableCell>
+                <TableCell>{row.photo ? row.photo : '-'}</TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
@@ -253,19 +269,17 @@ const TableList = () => {
       </div>
       <PopupModal
         isOpen={showModal}
-        header={
-          defaultValues.current.id ? 'Update Table List' : 'Add Table List'
-        }
-        onOpenChange={toggleTableListModal}>
-        <TableListForm
-          handleClose={toggleTableListModal}
-          handleTableListSubmit={onSubmit}
+        header={defaultValues.current.id ? 'Update Menu' : 'Add Menu'}
+        onOpenChange={toggleReciptFormModal}>
+        <MenuListForm
+          handleClose={toggleReciptFormModal}
+          handleMenuSubmit={onSubmit}
           defaultValues={defaultValues.current}
         />
       </PopupModal>
       <ConfirmationModal
         isOpen={showDeleteModal}
-        message={CONFIRMATION_MESSAGES.TABLE_LIST_DELETE}
+        message={CONFIRMATION_MESSAGES.MENU_LIST_DELETE}
         onClose={toggleDeleteModal}
         onConfirm={() => {
           handleDelete();
@@ -275,4 +289,4 @@ const TableList = () => {
   );
 };
 
-export default TableList;
+export default MenuList;
