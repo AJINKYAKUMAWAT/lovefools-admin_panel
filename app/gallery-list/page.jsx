@@ -21,10 +21,6 @@ import {
 } from '../../redux/gallery-list/galleryListSlice';
 import GalleryListForm from '../../components/gallery-list/galleryListForm';
 import { galleryType } from '../../utils/constant';
-import {
-  findSingleSelectedValueLabelOption,
-  generateOptions,
-} from '@/utils/utils';
 
 const GalleryList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);

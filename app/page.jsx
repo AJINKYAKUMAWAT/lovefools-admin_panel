@@ -27,7 +27,6 @@ import {
 } from '@/utils/utils';
 import { formatDate } from '@/utils/formatTime';
 import { getMenuList } from '@/redux/menu-list/menuListSlice';
-import { getFloorList } from '@/redux/floor-list/floorListSlice';
 import { getRoomList } from '@/redux/room-list/roomSlice';
 import { getTableList } from '@/redux/table-list/tableListSlice';
 
@@ -40,7 +39,6 @@ const ReceiptList = () => {
     id: null,
     email: '',
     receiptName: null,
-    floor: null,
     room: null,
     table_number: null,
     mobile: '',
@@ -55,8 +53,6 @@ const ReceiptList = () => {
     (state) => state.receipt,
   );
 
-  const floorList = useAppSelector((state) => state.floorList);
-
   const roomList = useAppSelector((state) => state.roomList);
 
   const getAllTables = useAppSelector((state) => state.tableList);
@@ -66,7 +62,6 @@ const ReceiptList = () => {
   useEffect(() => {
     dispatch(getReceiptList({}));
     dispatch(getMenuList({}));
-    dispatch(getFloorList({}));
     dispatch(getRoomList({}));
     dispatch(getTableList({}));
   }, []);
@@ -108,10 +103,6 @@ const ReceiptList = () => {
         generateOptions(subMenuType, 'id', 'type'),
         row.sub_type,
       ),
-      floor: findSingleSelectedValueLabelOption(
-        generateOptions(floorList.data, '_id', 'floor_name'),
-        row.floor,
-      ),
       room: findSingleSelectedValueLabelOption(
         generateOptions(roomList.data, '_id', 'room_name'),
         row.room,
@@ -143,7 +134,6 @@ const ReceiptList = () => {
       id: null,
       email: '',
       receiptName: null,
-      floor: null,
       room: null,
       table_number: null,
       mobile: '',
@@ -177,7 +167,6 @@ const ReceiptList = () => {
       time: convertTimeObjectToString(receiptData.time),
       type: receiptData.menuType.value,
       sub_type: receiptData.subMenuType.value,
-      floor: receiptData.floor.value,
       room: receiptData.room.value,
       table_number: receiptData.table_number.value,
     };
@@ -275,7 +264,6 @@ const ReceiptList = () => {
             },
             { id: 'Time', label: 'Time' },
             { id: 'price', label: 'Price' },
-            { id: 'floor', label: 'Floor' },
             { id: 'room', label: 'Room' },
             { id: 'table_number', label: 'Table Number' },
             { id: 'type', label: 'Menu Type' },
@@ -309,11 +297,6 @@ const ReceiptList = () => {
                 <TableCell>{row.date ? formatDate(row.date) : '-'}</TableCell>
                 <TableCell>{row.time}</TableCell>
                 <TableCell>{row.price}</TableCell>
-                <TableCell>
-                  {row.floor
-                    ? filterMenuList(row.floor, floorList.data, 'floor_name')
-                    : '-'}
-                </TableCell>
                 <TableCell>
                   {row.room
                     ? filterMenuList(row.room, roomList.data, 'room_name')

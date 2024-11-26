@@ -29,7 +29,6 @@ const TableList = () => {
   const dispatch = useAppDispatch();
   const defaultValues = useRef({
     id: null,
-    // floor_id: null,
     room_id: null,
     person: null,
     tableNo: '',
@@ -42,8 +41,6 @@ const TableList = () => {
     (state) => state.tableList,
   );
 
-  const { selectedFloor } = useAppSelector((state) => state.floorList);
-
   useEffect(() => {
     dispatch(getTableList({ room_id: param.id }));
   }, []);
@@ -52,7 +49,6 @@ const TableList = () => {
     dispatch(
       getTableList({
         ...meta,
-        // floor_id: param.id,
         room_id: param.id,
         search: meta.search,
       }),
@@ -66,7 +62,6 @@ const TableList = () => {
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
-      // floor_id: param.id,
       room_id: param.id,
       person: row.seatCount,
       tableNo: row.table_number,
@@ -92,7 +87,6 @@ const TableList = () => {
   const toggleTableListModal = () => {
     defaultValues.current = {
       id: null,
-      // floor_id: null,
       room_id: null,
       person: null,
       tableNo: '',
@@ -108,7 +102,6 @@ const TableList = () => {
         await dispatch(
           getTableList({
             ...listParameters,
-            // floor_id: param.id,
             room_id: param.id,
             search: '',
             page: 1,
@@ -123,11 +116,14 @@ const TableList = () => {
   };
 
   const onSubmit = async (tableData) => {
-    const payload = {
-      room_id: param.id,
-      table_number: tableData.tableNo,
-      seatCount: tableData.person,
-    };
+    const payload = [
+      {
+        room_id: param.id,
+        table_number: tableData.tableNo,
+        seatCount: tableData.person,
+      },
+      { photo: tableData.photo },
+    ];
 
     try {
       let data;

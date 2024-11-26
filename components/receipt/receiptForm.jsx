@@ -21,7 +21,6 @@ import ControllerDatePicker from '../common/ControllerDatePicker';
 import { getMenuList } from '@/redux/menu-list/menuListSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/selector';
 import axios from 'axios';
-import { getFloorList } from '@/redux/floor-list/floorListSlice';
 import { getRoomList } from '@/redux/room-list/roomSlice';
 import { getTableList } from '@/redux/table-list/tableListSlice';
 
@@ -51,8 +50,6 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
     getValues,
     watch,
   } = methods;
-
-  const floorList = useAppSelector((state) => state.floorList);
 
   const roomList = useAppSelector((state) => state.roomList);
 
@@ -92,28 +89,15 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
   };
 
   useEffect(() => {
-    if (watch('floor')) {
-      dispatch(getRoomList({ floor_id: watch('floor').value }));
-    }
-  }, [watch('floor')]);
-
-  useEffect(() => {
     if (watch('room')) {
       dispatch(
         getTableList({
-          floor_id: watch('room').value,
-          room_id: watch('floor').value,
+          room_id: watch('room').value,
         }),
       );
       getTables();
     }
   }, [watch('room')]);
-
-  useEffect(() => {
-    if (watch('date') && watch('time')) {
-      dispatch(getFloorList({}));
-    }
-  }, [watch('date'), watch('time')]);
 
   const onSubmit = async (data) => {
     console.log('data', data);
@@ -216,14 +200,6 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
               placeholder='Select sub menu type'
               options={generateOptions(subMenuType, 'id', 'type')}
               label='Sub Type'
-            />
-          </div>
-          <div className='grid gap-4'>
-            <ControllerSelect
-              name='floor'
-              placeholder='Select floor'
-              options={generateOptions(floorList.data, '_id', 'floor_name')}
-              label='Floor'
             />
           </div>
           <div className='grid gap-4'>

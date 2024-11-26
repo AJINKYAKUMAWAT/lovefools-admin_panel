@@ -57,8 +57,15 @@ export const addTableList = createAsyncThunk(
   async (tableListDetails, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.post(API_ENDPOINT.ADD_TABLE_LIST, {
-        ...tableListDetails,
+        ...tableListDetails[0],
       });
+
+      if (data) {
+        await axiosInstance.post(
+          `http://localhost:5000/api/user/upload/${data.data}`,
+          formDataApi(tableListDetails[1].photo),
+        );
+      }
       toast.success(TABLE_LIST.TABLE_LIST_SUCCESS);
       return data;
     } catch (error) {

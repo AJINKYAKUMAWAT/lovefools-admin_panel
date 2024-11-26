@@ -30,7 +30,6 @@ const RoomList = () => {
   const navigate = useRouter();
   const defaultValues = useRef({
     id: null,
-    // floor_id: null,
     roomName: '',
   });
 
@@ -48,7 +47,6 @@ const RoomList = () => {
     dispatch(
       getRoomList({
         ...meta,
-        // floor_id: params.id,
         search: meta.search,
       }),
     );
@@ -61,7 +59,6 @@ const RoomList = () => {
   const handleEditButtonClick = async (row) => {
     defaultValues.current = {
       id: row._id,
-      // floor_id: row.floor_id,
       roomName: row.room_name,
     };
 
@@ -84,7 +81,6 @@ const RoomList = () => {
   const toggleFormListFormModal = () => {
     defaultValues.current = {
       id: null,
-      // floor_id: null,
       roomName: '',
     };
     setShowModal((prev) => !prev);
@@ -96,7 +92,6 @@ const RoomList = () => {
       dispatch(
         getRoomList({
           ...listParameters,
-          // floor_id: params.id,
           search: '',
           page: 1,
         }),
@@ -110,7 +105,6 @@ const RoomList = () => {
 
   const onSubmit = async (roomData) => {
     const payload = {
-      // floor_id: params.id,
       room_name: roomData.roomName,
     };
 
@@ -122,7 +116,6 @@ const RoomList = () => {
           dispatch(
             getRoomList({
               ...listParameters,
-              // floor_id: params.id,
               search: '',
               page: 1,
             }),
@@ -137,7 +130,6 @@ const RoomList = () => {
           dispatch(
             getRoomList({
               ...listParameters,
-              // floor_id: params.id,
               search: '',
               page: 1,
             }),

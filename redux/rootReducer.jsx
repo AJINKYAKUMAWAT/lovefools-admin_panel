@@ -9,7 +9,6 @@ import EventListReducer from '@/redux/event-list/eventListSlice';
 import GalleryListReducer from '@/redux/gallery-list/galleryListSlice';
 import TestimonialListReducer from '@/redux/testimonial-list/testimonialListSlice';
 import CMSListReducer from '@/redux/cms-list/cmsListSlice';
-import FloorListReducer from '@/redux/floor-list/floorListSlice';
 import RoomListReducer from '@/redux/room-list/roomSlice';
 import MenuListReducer from '@/redux/menu-list/menuListSlice';
 
@@ -24,7 +23,6 @@ export const rootReducer = combineReducers({
   galleryList: GalleryListReducer,
   testimonialList: TestimonialListReducer,
   cmsList: CMSListReducer,
-  floorList: FloorListReducer,
   roomList: RoomListReducer,
   menuList: MenuListReducer,
 });

@@ -18,10 +18,6 @@ export const reciptSchema = Yup.object().shape({
     label: Yup.string(),
     value: Yup.string(),
   }).required('Sub menu type is required'),
-  floor: Yup.object({
-    label: Yup.string(),
-    value: Yup.string(),
-  }).required('Floor is required'),
   room: Yup.object({
     label: Yup.string(),
     value: Yup.string(),

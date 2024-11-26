@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { deleteCookie, setCookie } from 'cookies-next';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { NEXT_PUBLIC_API_URL } from '@/utils/constant';
 
 const initialState = {
   isAuthenticated: false,
@@ -33,7 +34,7 @@ export const handleLogin = createAsyncThunk(
   async (credentials, { dispatch, rejectWithValue }) => {
     try {
       const { data } = await axios.post(
-        'http://localhost:5000/api/user/login',
+        `${NEXT_PUBLIC_API_URL}login`,
         credentials,
       );
 
