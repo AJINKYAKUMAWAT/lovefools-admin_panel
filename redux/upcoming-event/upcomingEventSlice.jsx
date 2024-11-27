@@ -6,6 +6,7 @@ import {
   upcomingEventList,
   formDataApi,
   SortDirection,
+  UPCOMING_EVENT_LIST,
 } from '@/utils/constant';
 import { toast } from 'react-toastify';
 
@@ -34,7 +35,7 @@ export const getUpcomingEventList = createAsyncThunk(
     try {
       const {
         data: { data: eventListData, pageData: meta },
-      } = await axiosInstance.post(API_ENDPOINT.GET_EVENT_LIST, {
+      } = await axiosInstance.post(API_ENDPOINT.GET_UPCOMING_EVENT_LIST, {
         ...queryParameters,
       });
       return {
@@ -52,23 +53,23 @@ export const getUpcomingEventList = createAsyncThunk(
   },
 );
 
-export const addEventList = createAsyncThunk(
-  'upcomingEventList/addEventList',
+export const addUpcomingEventList = createAsyncThunk(
+  'upcomingEventList/addUpcomingEventList',
   async (eventListDetails, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.ADD_EVENT_LIST,
+        API_ENDPOINT.ADD_UPCOMING_EVENT_LIST,
         eventListDetails[0],
       );
 
-      // if (data) {
-      //   await axiosInstance.post(
-      //     API_ENDPOINT.UPLOAD_PHOTO(data.data),
-      //     formDataApi(eventListDetails[1].photo),
-      //   );
-      // }
+      if (data) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(data.data),
+          formDataApi(eventListDetails[1].photo),
+        );
+      }
 
-      toast.success(EVENT_LIST.EVENT_LIST_SUCCESS);
+      toast.success(UPCOMING_EVENT_LIST.UPCOMING_EVENT_LIST_SUCCESS);
       return data;
     } catch (error) {
       toast.error(error.message);
@@ -77,22 +78,22 @@ export const addEventList = createAsyncThunk(
   },
 );
 
-export const updateEventList = createAsyncThunk(
-  'upcomingEventList/updateEventList',
+export const updateUpcomingEventList = createAsyncThunk(
+  'upcomingEventList/updateUpcomingEventList',
   async ({ id, payload }) => {
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.UPDATE_EVENT_LIST(id),
+        API_ENDPOINT.UPDATE_UPCOMING_EVENT_LIST(id),
         payload[0],
       );
 
-      // if (data) {
-      //   await axiosInstance.post(
-      //     API_ENDPOINT.UPLOAD_PHOTO(id),
-      //     formDataApi(payload[1].photo),
-      //   );
-      // }
-      toast.success(EVENT_LIST.EVENT_LIST_UPDATE);
+      if (data) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(id),
+          formDataApi(payload[1].photo),
+        );
+      }
+      toast.success(UPCOMING_EVENT_LIST.UPCOMING_EVENT_LIST_UPDATE);
       return data;
     } catch (error) {
       toast.error(error.message);
@@ -101,14 +102,21 @@ export const updateEventList = createAsyncThunk(
   },
 );
 
-export const deleteEventList = createAsyncThunk(
-  'upcomingEventList/deleteEventList',
+export const deleteUpcomingEventList = createAsyncThunk(
+  'upcomingEventList/deleteUpcomingEventList',
   async ({ id }) => {
+    const eventId = id?._id;
+    const image_name = id.photo.split('uploads/');
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.DELETE_EVENT_LIST(id),
+        API_ENDPOINT.DELETE_UPCOMING_EVENT_LIST(eventId),
       );
-      toast.success(EVENT_LIST.EVENT_LIST_DELETED);
+      if (data) {
+        await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
+          PhotoUrl: image_name[1],
+        });
+      }
+      toast.success(UPCOMING_EVENT_LIST.UPCOMING_EVENT_LIST_DELETED);
       return data;
     } catch (error) {
       toast.error(error.message);
@@ -117,8 +125,8 @@ export const deleteEventList = createAsyncThunk(
   },
 );
 
-export const updateEventListValues = createAsyncThunk(
-  'upcomingEventList/updateEventListValues',
+export const updateUpcomingEventListValues = createAsyncThunk(
+  'upcomingEventList/updateUpcomingEventListValues',
   async (defaultValues, { rejectWithValue }) => {
     try {
       return defaultValues;
@@ -128,7 +136,7 @@ export const updateEventListValues = createAsyncThunk(
   },
 );
 
-const eventListSlice = createSlice({
+const upcomingEventListSlice = createSlice({
   name: 'upcomingEventList',
   initialState,
   reducers: {
@@ -156,49 +164,50 @@ const eventListSlice = createSlice({
         state.error = action.payload;
       })
 
-      .addCase(addEventList.pending, (state) => {
+      .addCase(addUpcomingEventList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addEventList.fulfilled, (state, action) => {
+      .addCase(addUpcomingEventList.fulfilled, (state, action) => {
         state.data = action.payload || [];
         state.defaultValues = action.payload || null;
         state.loading = false;
       })
-      .addCase(addEventList.rejected, (state, action) => {
+      .addCase(addUpcomingEventList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(updateEventList.pending, (state) => {
+      .addCase(updateUpcomingEventList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateEventList.fulfilled, (state, action) => {
+      .addCase(updateUpcomingEventList.fulfilled, (state, action) => {
         state.data = action.payload || [];
         state.defaultValues = action.payload || null;
         state.loading = false;
       })
-      .addCase(updateEventList.rejected, (state, action) => {
+      .addCase(updateUpcomingEventList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(updateEventListValues.pending, (state) => {
+      .addCase(updateUpcomingEventListValues.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateEventListValues.fulfilled, (state, action) => {
+      .addCase(updateUpcomingEventListValues.fulfilled, (state, action) => {
         state.defaultValues = action.payload;
         state.loading = false;
       })
-      .addCase(updateEventListValues.rejected, (state, action) => {
+      .addCase(updateUpcomingEventListValues.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export const { updateListParameters, setLoading } = eventListSlice.actions;
+export const { updateListParameters, setLoading } =
+  upcomingEventListSlice.actions;
 
-export default eventListSlice.reducer;
+export default upcomingEventListSlice.reducer;

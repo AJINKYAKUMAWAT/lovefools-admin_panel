@@ -14,19 +14,20 @@ import { useAppDispatch, useAppSelector } from '@/redux/selector';
 import SearchBar from '@/components/common/SearchBar';
 import PopupModal from '@/components/common/PopupModal';
 import {
-  addEventList,
-  deleteEventList,
-  getEventList,
-  updateEventList,
-} from '../../redux/event-list/eventListSlice';
+  addUpcomingEventList,
+  deleteUpcomingEventList,
+  getUpcomingEventList,
+  updateUpcomingEventList,
+} from '../../redux/upcoming-event/upcomingEventSlice';
 import EventListForm from '../../components/event-list/eventListForm';
-import { statusType } from '../../utils/constant';
 import { formatDate } from '@/utils/formatTime';
 import {
   findSingleSelectedValueLabelOption,
   generateOptions,
 } from '@/utils/utils';
 import { Time } from '@internationalized/date';
+import UpcomingEventForm from '@/components/upcoming-event/UpcomingEventForm';
+import Image from 'next/image';
 
 const UpcomingEventList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
@@ -39,21 +40,20 @@ const UpcomingEventList = () => {
     description: '',
     date: null,
     time: null,
-    status: null,
     photo: null,
   });
 
   const { listParameters, data, total, loading } = useAppSelector(
-    (state) => state.eventList,
+    (state) => state.upcomingEventList,
   );
 
   useEffect(() => {
-    dispatch(getEventList({}));
+    dispatch(getUpcomingEventList({}));
   }, []);
 
   const handleMetaChange = (meta) => {
     dispatch(
-      getEventList({
+      getUpcomingEventList({
         ...meta,
         search: meta.search,
       }),
@@ -61,7 +61,7 @@ const UpcomingEventList = () => {
   };
 
   const refreshBtn = () => {
-    dispatch(getEventList({}));
+    dispatch(getUpcomingEventList({}));
   };
 
   const handleEditButtonClick = async (row) => {
@@ -73,18 +73,15 @@ const UpcomingEventList = () => {
       description: row.description,
       date: new Date(row.date),
       time: new Time(hr, min),
-      status: findSingleSelectedValueLabelOption(
-        generateOptions(statusType, 'id', 'type'),
-        row.status,
-      ),
+
       photo: row.photo,
     };
 
     setShowModal((prev) => !prev);
   };
 
-  const toggleDeleteModal = (id) => {
-    setId(id);
+  const toggleDeleteModal = (row) => {
+    setId(row);
     setDeleteModal((prev) => !prev);
   };
 
@@ -96,14 +93,13 @@ const UpcomingEventList = () => {
     });
   };
 
-  const toggleEventListFormModal = () => {
+  const toggleUpcomingEventListFormModal = () => {
     defaultValues.current = {
       id: null,
       name: '',
       description: '',
       date: null,
       time: null,
-      status: null,
       photo: null,
     };
     setShowModal((prev) => !prev);
@@ -111,14 +107,22 @@ const UpcomingEventList = () => {
 
   const handleDelete = async () => {
     try {
-      dispatch(deleteEventList({ id }));
-      dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
+      dispatch(deleteUpcomingEventList({ id }));
+      dispatch(
+        getUpcomingEventList({ ...listParameters, search: '', page: 1 }),
+      );
     } catch (error) {
       console.log(error);
     }
     setId(null);
     toggleDeleteModal();
   };
+
+  useEffect(() => {
+    if (!loading) {
+      setShowModal(false);
+    }
+  }, [loading]);
 
   const onSubmit = async (eventData) => {
     const payload = [
@@ -127,7 +131,6 @@ const UpcomingEventList = () => {
         description: eventData.description,
         date: eventData.date,
         time: eventData.time,
-        status: eventData.status.value,
       },
       {
         photo: eventData.photo,
@@ -136,30 +139,36 @@ const UpcomingEventList = () => {
 
     try {
       if (!defaultValues.current.id) {
-        const data = await dispatch(addEventList(payload));
+        const data = await dispatch(addUpcomingEventList(payload));
         if (data) {
           setShowModal(false);
-          dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
+          dispatch(
+            getUpcomingEventList({ ...listParameters, search: '', page: 1 }),
+          );
         }
       } else {
         const data = await dispatch(
-          updateEventList({ id: defaultValues.current.id, payload: payload }),
+          updateUpcomingEventList({
+            id: defaultValues.current.id,
+            payload: payload,
+          }),
         );
         if (data) {
           setShowModal(false);
-          dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
+          dispatch(
+            getUpcomingEventList({ ...listParameters, search: '', page: 1 }),
+          );
         }
       }
     } catch (error) {
       console.log(error);
     }
 
-    toggleEventListFormModal();
+    toggleUpcomingEventListFormModal();
   };
 
   const getDataLabel = (options, value) => {
     const getLabel = options && options?.filter((data) => data.id === value);
-
     return getLabel[0].type;
   };
 
@@ -167,7 +176,7 @@ const UpcomingEventList = () => {
     <>
       <div className='container mx-auto'>
         <div className='flex flex-col justify-between'>
-          <h2 className='text-2xl font-semibold'>Event List </h2>
+          <h2 className='text-2xl font-semibold'>Upcoming Event List </h2>
           <div className='flex flex-wrap'>
             <div className='sm: flex w-full gap-4 sm:flex-col md:w-fit lg:w-3/4'>
               <div className='flex w-full flex-col sm:flex-row md:gap-4'>
@@ -193,7 +202,7 @@ const UpcomingEventList = () => {
               </Button>
               <Button
                 onClick={() => {
-                  toggleEventListFormModal();
+                  toggleUpcomingEventListFormModal();
                 }}>
                 Add
               </Button>
@@ -209,7 +218,6 @@ const UpcomingEventList = () => {
             },
             { id: 'Time', label: 'Time' },
             { id: 'description', label: 'Description' },
-            { id: 'status', label: 'Status' },
             { id: 'photo', label: 'photo' },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
@@ -231,10 +239,15 @@ const UpcomingEventList = () => {
                 <TableCell>{row.time}</TableCell>
 
                 <TableCell>{row.description}</TableCell>
+
                 <TableCell>
-                  {row.status ? getDataLabel(statusType, row.status) : '-'}
+                  <Image
+                    height={10}
+                    width={70}
+                    style={{ maxHeight: '50px' }}
+                    src={row.photo}
+                  />
                 </TableCell>
-                <TableCell>{row.photo ? row.photo : '-'}</TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
@@ -256,7 +269,7 @@ const UpcomingEventList = () => {
                       color='danger'
                       aria-label='Delete'
                       onClick={() => {
-                        toggleDeleteModal(row._id);
+                        toggleDeleteModal(row);
                       }}>
                       <Tooltip content='Delete'>
                         <TrashIcon className='h-4 w-4' />
@@ -272,18 +285,21 @@ const UpcomingEventList = () => {
       <PopupModal
         isOpen={showModal}
         header={
-          defaultValues.current.id ? 'Update Event List' : 'Add Event List'
+          defaultValues.current.id
+            ? 'Update Upcoming Event List'
+            : 'Add Upcoming Event List'
         }
-        onOpenChange={toggleEventListFormModal}>
-        <EventListForm
-          handleClose={toggleEventListFormModal}
+        onOpenChange={toggleUpcomingEventListFormModal}>
+        <UpcomingEventForm
+          handleClose={toggleUpcomingEventListFormModal}
           handleEventListSubmit={onSubmit}
           defaultValues={defaultValues.current}
+          loading={loading}
         />
       </PopupModal>
       <ConfirmationModal
         isOpen={showDeleteModal}
-        message={CONFIRMATION_MESSAGES.EVENT_LIST_DELETE}
+        message={CONFIRMATION_MESSAGES.UPCOMING_EVENT_LIST_DELETE}
         onClose={toggleDeleteModal}
         onConfirm={() => {
           handleDelete();

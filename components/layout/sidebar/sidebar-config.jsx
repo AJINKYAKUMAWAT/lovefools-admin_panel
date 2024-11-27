@@ -49,6 +49,11 @@ const SidebarConfig = [
     href: '/event-list',
   },
   {
+    name: 'Upcoming Event List',
+    icon: <CalendarDaysIcon className='h-6 w-6' />,
+    href: '/upcoming-event',
+  },
+  {
     name: 'Gallery List',
     icon: <PhotoIcon className='h-6 w-6' />,
     href: '/gallery-list',

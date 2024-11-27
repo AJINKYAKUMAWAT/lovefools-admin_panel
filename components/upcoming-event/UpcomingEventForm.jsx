@@ -24,6 +24,7 @@ const UpcomingEventForm = ({
   handleEventListSubmit,
   handleClose,
   defaultValues,
+  loading,
 }) => {
   const methods = useForm({
     resolver: yupResolver(upcomingListSchema),
@@ -40,6 +41,7 @@ const UpcomingEventForm = ({
     setValue,
     formState: { isSubmitting, errors },
     getValues,
+    clearErrors,
   } = methods;
 
   const onSubmit = async (data) => {
@@ -74,6 +76,8 @@ const UpcomingEventForm = ({
     }
   };
 
+  console.log('loading', loading);
+
   return (
     <FormProvider
       methods={methods}
@@ -107,14 +111,6 @@ const UpcomingEventForm = ({
               placeholder='Enter description '
               name='description'
               label='Description'
-            />
-          </div>
-          <div className='grid gap-4'>
-            <ControllerSelect
-              name='status'
-              placeholder='Select status'
-              options={generateOptions(statusType, 'id', 'type')}
-              label='Status'
             />
           </div>
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
@@ -188,7 +184,11 @@ const UpcomingEventForm = ({
               onClick={handleClose}>
               Cancel
             </Button>
-            <Button type='submit'>{defaultValues.id ? 'Update' : 'Add'}</Button>
+            <Button
+              type='submit'
+              isLoading={loading}>
+              {defaultValues.id ? 'Update' : 'Add'}
+            </Button>
           </div>
         </div>
       </div>

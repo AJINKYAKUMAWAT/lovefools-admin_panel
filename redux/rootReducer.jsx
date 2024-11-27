@@ -11,6 +11,7 @@ import TestimonialListReducer from '@/redux/testimonial-list/testimonialListSlic
 import CMSListReducer from '@/redux/cms-list/cmsListSlice';
 import RoomListReducer from '@/redux/room-list/roomSlice';
 import MenuListReducer from '@/redux/menu-list/menuListSlice';
+import UpcomingEventListReducer from '@/redux/upcoming-event/upcomingEventSlice';
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -25,6 +26,7 @@ export const rootReducer = combineReducers({
   cmsList: CMSListReducer,
   roomList: RoomListReducer,
   menuList: MenuListReducer,
+  upcomingEventList: UpcomingEventListReducer,
 });
 
 export default rootReducer;

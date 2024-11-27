@@ -21,6 +21,7 @@ import {
 } from '../../../redux/table-list/tableListSlice';
 import TableListForm from '@/components/table-list/tableListForm';
 import { useParams } from 'next/navigation';
+import Image from 'next/image';
 
 const TableList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
@@ -97,7 +98,7 @@ const TableList = () => {
 
   const handleDelete = async () => {
     try {
-      const data = await dispatch(deleteTableList({ id }));
+      const data = await dispatch(deleteTableList(id));
       if (data) {
         await dispatch(
           getTableList({
@@ -195,7 +196,7 @@ const TableList = () => {
           columns={[
             { id: 'table_number', label: 'Table No.' },
             { id: 'person', label: 'Person' },
-
+            { id: 'photo', label: 'Photo', fixed: true },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
@@ -213,6 +214,18 @@ const TableList = () => {
               <TableRow key={row.id}>
                 <TableCell>{row.table_number}</TableCell>
                 <TableCell>{row.seatCount ?? '-'}</TableCell>
+                <TableCell>
+                  {row.photo ? (
+                    <Image
+                      height={10}
+                      width={70}
+                      style={{ maxHeight: '50px' }}
+                      src={row.photo}
+                    />
+                  ) : (
+                    '-'
+                  )}
+                </TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
@@ -234,7 +247,7 @@ const TableList = () => {
                       color='danger'
                       aria-label='Delete'
                       onClick={() => {
-                        toggleDeleteModal(row._id);
+                        toggleDeleteModal(row);
                       }}>
                       <Tooltip content='Delete'>
                         <TrashIcon className='h-4 w-4' />

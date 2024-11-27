@@ -6,11 +6,6 @@ export const upcomingListSchema = Yup.object().shape({
   time: Yup.string().required('Time is required'),
 
   description: Yup.string().required('Description is required'),
-
-  status: Yup.object({
-    label: Yup.string(),
-    value: Yup.string(),
-  }).required('Status is required'),
   photo: Yup.mixed()
     .nullable()
     .test(

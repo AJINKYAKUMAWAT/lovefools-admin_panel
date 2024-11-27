@@ -1,7 +1,7 @@
-export const NEXT_PUBLIC_API_URL =
-  'https://lovefools-backend-76pv.vercel.app/api/user/';
+// export const NEXT_PUBLIC_API_URL =
+//   'https://lovefools-backend-76pv.vercel.app/api/user/';
 
-// export const NEXT_PUBLIC_API_URL = 'http://localhost:5000/api/user/';
+export const NEXT_PUBLIC_API_URL = 'http://localhost:5000/api/user/';
 
 export const API_ENDPOINT = {
   LOGIN: 'login',
@@ -48,6 +48,11 @@ export const API_ENDPOINT = {
   // DELETE_CMS_LIST: (id) => `deleteReceipt/${id}`,
   GET_CMS_LIST: 'getCMSList',
   UPLOAD_PHOTO: (id) => `upload/${id}`,
+  DELETE_PHOTO: 'delete-image',
+  ADD_UPCOMING_EVENT_LIST: 'addUpComingEvent',
+  UPDATE_UPCOMING_EVENT_LIST: (id) => `updateUpComingEvent/${id}`,
+  DELETE_UPCOMING_EVENT_LIST: (id) => `deleteUpComingEvent/${id}`,
+  GET_UPCOMING_EVENT_LIST: 'getUpComingEventList',
 };
 
 export const SortDirection = {
@@ -83,6 +88,12 @@ export const EVENT_LIST = {
   EVENT_LIST_DELETED: 'Event list deleted successfully',
   EVENT_LIST_SUCCESS: 'Event list created successfully',
   EVENT_LIST_UPDATE: 'Event list updated successfully',
+};
+
+export const UPCOMING_EVENT_LIST = {
+  UPCOMING_EVENT_LIST_DELETED: 'Upcoming Event list deleted successfully',
+  UPCOMING_EVENT_LIST_SUCCESS: 'Upcoming Event list created successfully',
+  UPCOMING_EVENT_LIST_UPDATE: 'Upcoming Event list updated successfully',
 };
 
 export const FLOOR_LIST = {
@@ -128,10 +139,11 @@ export const CONFIRMATION_MESSAGES = {
   USER_LIST_DELETE: 'Are you sure want to delete this user list?',
   EVENT_LIST_DELETE: 'Are you sure want to delete this event list?',
   GALLERY_LIST_DELETE: 'Are you sure want to delete this gallery list?',
-  TESTIMONIAL_LIST_DELETE: 'Are you sure want to delete this Testimonial list?',
-  FLOOR_LIST_DELETE: 'Are you sure want to delete this Floor list?',
-  ROOM_LIST_DELETE: 'Are you sure want to delete this Room list?',
-  MENU_LIST_DELETE: 'Are you sure want to delete this Menu?',
+  TESTIMONIAL_LIST_DELETE: 'Are you sure want to delete this testimonial list?',
+  ROOM_LIST_DELETE: 'Are you sure want to delete this room list?',
+  MENU_LIST_DELETE: 'Are you sure want to delete this menu?',
+  UPCOMING_EVENT_LIST_DELETE:
+    'Are you sure want to delete this upcoming event ?',
 };
 
 export const formDataApi = (file) => {

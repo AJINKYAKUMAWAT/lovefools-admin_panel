@@ -81,8 +81,14 @@ export const updateTableList = createAsyncThunk(
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.UPDATE_TABLE_LIST(id),
-        { ...payload },
+        payload[0],
       );
+      if (data) {
+        await axiosInstance.post(
+          `http://localhost:5000/api/user/upload/${id}`,
+          formDataApi(payload[1].photo),
+        );
+      }
       toast.success(TABLE_LIST.TABLE_LIST_UPDATE);
       return data;
     } catch (error) {
@@ -94,11 +100,19 @@ export const updateTableList = createAsyncThunk(
 
 export const deleteTableList = createAsyncThunk(
   'tableList/deleteTableList',
-  async ({ id }) => {
+  async (id) => {
+    const tableId = id?._id;
+    const image_name = id?.photo?.split('uploads/');
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.DELETE_TABLE_LIST(id),
+        API_ENDPOINT.DELETE_TABLE_LIST(tableId),
       );
+
+      if (data && image_name) {
+        await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
+          PhotoUrl: image_name[1],
+        });
+      }
       toast.success(TABLE_LIST.TABLE_LIST_DELETED);
       return data;
     } catch (error) {
