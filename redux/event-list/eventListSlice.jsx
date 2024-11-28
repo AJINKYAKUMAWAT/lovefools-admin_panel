@@ -61,12 +61,12 @@ export const addEventList = createAsyncThunk(
         eventListDetails[0],
       );
 
-      // if (data) {
-      //   await axiosInstance.post(
-      //     API_ENDPOINT.UPLOAD_PHOTO(data.data),
-      //     formDataApi(eventListDetails[1].photo),
-      //   );
-      // }
+      if (data) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(data.data),
+          formDataApi(eventListDetails[1].photo),
+        );
+      }
 
       toast.success(EVENT_LIST.EVENT_LIST_SUCCESS);
       return data;
@@ -86,12 +86,12 @@ export const updateEventList = createAsyncThunk(
         payload[0],
       );
 
-      // if (data) {
-      //   await axiosInstance.post(
-      //     API_ENDPOINT.UPLOAD_PHOTO(id),
-      //     formDataApi(payload[1].photo),
-      //   );
-      // }
+      if (data) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(id),
+          formDataApi(payload[1].photo),
+        );
+      }
       toast.success(EVENT_LIST.EVENT_LIST_UPDATE);
       return data;
     } catch (error) {
@@ -103,11 +103,20 @@ export const updateEventList = createAsyncThunk(
 
 export const deleteEventList = createAsyncThunk(
   'eventList/deleteEventList',
-  async ({ id }) => {
+  async (id) => {
+    const eventId = id?._id;
+    const image_name = id.photo.split('uploads/');
+
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.DELETE_EVENT_LIST(id),
+        API_ENDPOINT.DELETE_EVENT_LIST(eventId),
       );
+
+      if (data) {
+        await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
+          PhotoUrl: image_name[1],
+        });
+      }
       toast.success(EVENT_LIST.EVENT_LIST_DELETED);
       return data;
     } catch (error) {

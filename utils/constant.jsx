@@ -53,6 +53,10 @@ export const API_ENDPOINT = {
   UPDATE_UPCOMING_EVENT_LIST: (id) => `updateUpComingEvent/${id}`,
   DELETE_UPCOMING_EVENT_LIST: (id) => `deleteUpComingEvent/${id}`,
   GET_UPCOMING_EVENT_LIST: 'getUpComingEventList',
+  ADD_ENQUIRY_LIST: 'addEnquiry',
+  UPDATE_ENQUIRY_LIST: (id) => `updateEnquiry/${id}`,
+  DELETE_ENQUIRY_LIST: (id) => `deleteEnquiry/${id}`,
+  GET_ENQUIRY_LIST: 'getEnquiry',
 };
 
 export const SortDirection = {
@@ -64,6 +68,13 @@ export const RECEIPT = {
   RECEIPT_DELETED: 'Receipt deleted successfully',
   RECEIPT_SUCCESS: 'Receipt created successfully',
   RECEIPT_UPDATE: 'Receipt updated successfully',
+};
+
+
+export const ENQUIRY = {
+  ENQUIRY_DELETED: 'Enquiry deleted successfully',
+  ENQUIRY_SUCCESS: 'Enquiry created successfully',
+  ENQUIRY_UPDATE: 'Enquiry updated successfully',
 };
 
 export const TABLE_LIST = {
@@ -201,3 +212,15 @@ export const galleryType = [
     type: 'Video',
   },
 ];
+
+export const eventType = [
+  {
+    id: '1',
+    type: 'New Enquiry',
+  },
+  {
+    id: '2',
+    type: 'Update Event',
+  },
+];
+

@@ -60,23 +60,23 @@ export const addGalleryList = createAsyncThunk(
         galleryListDetails[0],
       );
 
-      // if (data) {
-      //   if (galleryListDetails[1].photo && galleryListDetails[1].video) {
-      //     await axiosInstance.post(
-      //       API_ENDPOINT.UPLOAD_PHOTO(data.data),
-      //       formDataApi(galleryListDetails[1].photo),
-      //     );
-      //     await axiosInstance.post(
-      //       API_ENDPOINT.UPLOAD_PHOTO(data.data),
-      //       formDataApi(galleryListDetails[1].video),
-      //     );
-      //   } else if (galleryListDetails[1].photo) {
-      //     await axiosInstance.post(
-      //       API_ENDPOINT.UPLOAD_PHOTO(data.data),
-      //       formDataApi(galleryListDetails[1].photo),
-      //     );
-      //   }
-      // }
+      if (data) {
+        if (galleryListDetails[1].photo && galleryListDetails[1].video) {
+          await axiosInstance.post(
+            API_ENDPOINT.UPLOAD_PHOTO(data.data),
+            formDataApi(galleryListDetails[1].photo),
+          );
+          await axiosInstance.post(
+            API_ENDPOINT.UPLOAD_PHOTO(data.data),
+            formDataApi(galleryListDetails[1].video),
+          );
+        } else if (galleryListDetails[1].photo) {
+          await axiosInstance.post(
+            API_ENDPOINT.UPLOAD_PHOTO(data.data),
+            formDataApi(galleryListDetails[1].photo),
+          );
+        }
+      }
       toast.success(GALLERY_LIST.GALLERY_LIST_SUCCESS);
       return data;
     } catch (error) {
@@ -95,23 +95,23 @@ export const updateGalleryList = createAsyncThunk(
         payload[0],
       );
 
-      // if (data) {
-      //   if (payload[1].photo && payload[1].video) {
-      //     await axiosInstance.post(
-      //       API_ENDPOINT.UPLOAD_PHOTO(id),
-      //       formDataApi(payload[1].photo),
-      //     );
-      //     await axiosInstance.post(
-      //       API_ENDPOINT.UPLOAD_PHOTO(id),
-      //       formDataApi(payload[1].video),
-      //     );
-      //   } else if (payload[1].photo) {
-      //     await axiosInstance.post(
-      //       API_ENDPOINT.UPLOAD_PHOTO(id),
-      //       formDataApi(payload[1].photo),
-      //     );
-      //   }
-      // }
+      if (data) {
+        if (payload[1].photo && payload[1].video) {
+          await axiosInstance.post(
+            API_ENDPOINT.UPLOAD_PHOTO(id),
+            formDataApi(payload[1].photo),
+          );
+          await axiosInstance.post(
+            API_ENDPOINT.UPLOAD_PHOTO(id),
+            formDataApi(payload[1].video),
+          );
+        } else if (payload[1].photo) {
+          await axiosInstance.post(
+            API_ENDPOINT.UPLOAD_PHOTO(id),
+            formDataApi(payload[1].photo),
+          );
+        }
+      }
       toast.success(GALLERY_LIST.GALLERY_LIST_UPDATE);
       return data;
     } catch (error) {
@@ -123,11 +123,19 @@ export const updateGalleryList = createAsyncThunk(
 
 export const deleteGalleryList = createAsyncThunk(
   'galleryList/deleteGalleryList',
-  async ({ id }) => {
+  async (id) => {
+    const eventId = id?._id;
+    const image_name = id.photo.split('uploads/');
+
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.DELETE_GALLERY_LIST(id),
+        API_ENDPOINT.DELETE_GALLERY_LIST(eventId),
       );
+      if (data) {
+        await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
+          PhotoUrl: image_name[1],
+        });
+      }
       toast.success(GALLERY_LIST.GALLERY_LIST_DELETED);
       return data;
     } catch (error) {

@@ -75,7 +75,7 @@ const MenuList = () => {
         generateOptions(subMenuType, 'id', 'type'),
         row.subMenuType,
       ),
-      photo: '',
+      photo: row.photo ? row.photo : '' ,
     };
 
     setShowModal((prev) => !prev);
@@ -119,14 +119,19 @@ const MenuList = () => {
   };
 
   const onSubmit = async (menuData) => {
-    const payload = {
+    const payload = [
+      {
       menu_Name: menuData.menuName,
       description: menuData.description,
       price: menuData.price,
-      photo: null,
+      
       menuType: menuData.menuType.value,
       subMenuType: menuData.subMenuType.value,
-    };
+    },
+    {
+      photo: menuData.photo,
+    }
+  ]
 
     try {
       if (!defaultValues.current.id) {
@@ -254,7 +259,7 @@ const MenuList = () => {
                       color='danger'
                       aria-label='Delete'
                       onClick={() => {
-                        toggleDeleteModal(row._id);
+                        toggleDeleteModal(row);
                       }}>
                       <Tooltip content='Delete'>
                         <TrashIcon className='h-4 w-4' />

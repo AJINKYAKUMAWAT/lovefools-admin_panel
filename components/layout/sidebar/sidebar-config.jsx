@@ -1,12 +1,14 @@
 import {
   UserGroupIcon,
-  DocumentTextIcon,
+  MapIcon,
   ListBulletIcon,
   EnvelopeIcon,
   UserCircleIcon,
   CalendarDaysIcon,
   PhotoIcon,
+  StartIcon,
   ClipboardDocumentIcon,
+  PhoneArrowUpRightIcon,
 } from '@heroicons/react/24/outline';
 
 const SidebarConfig = [
@@ -17,7 +19,7 @@ const SidebarConfig = [
   },
   {
     name: 'Menu List',
-    icon: <DocumentTextIcon className='h-6 w-6' />,
+    icon: <MapIcon className='h-6 w-6' />,
     href: '/menu-list',
   },
   {
@@ -45,13 +47,18 @@ const SidebarConfig = [
 
   {
     name: 'Event List',
-    icon: <CalendarDaysIcon className='h-6 w-6' />,
+    icon: <StartIcon className='h-6 w-6' />,
     href: '/event-list',
   },
   {
     name: 'Upcoming Event List',
     icon: <CalendarDaysIcon className='h-6 w-6' />,
     href: '/upcoming-event',
+  },
+  {
+    name: 'Event Enquiry List',
+    icon: <PhoneArrowUpRightIcon className='h-6 w-6' />,
+    href: '/event-enquiry',
   },
   {
     name: 'Gallery List',

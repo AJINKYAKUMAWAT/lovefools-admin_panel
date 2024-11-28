@@ -102,7 +102,7 @@ const UserListForm = ({ handleUserListSubmit, handleClose, defaultValues }) => {
               label='Description'
             />
           </div>
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+          {/* <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
             <div>
               <h6
                 className={`mb-2 pt-1 text-small ${
@@ -165,7 +165,7 @@ const UserListForm = ({ handleUserListSubmit, handleClose, defaultValues }) => {
                   </h6>
                 )}
             </div>
-          </div>
+          </div> */}
           <div className='flex justify-end space-x-4'>
             <Button
               type='button'

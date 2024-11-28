@@ -2,9 +2,10 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosInstance from '@/utils/axios';
 import {
   API_ENDPOINT,
+  ENQUIRY,
   formDataApi,
   SortDirection,
-  TESTIMONIAL_LIST,
+  UPCOMING_EVENT_LIST,
 } from '@/utils/constant';
 import { toast } from 'react-toastify';
 
@@ -23,20 +24,21 @@ const initialState = {
   loading: false,
   error: null,
   listParameters: initialListParameters,
+  tab: '',
 };
 
 // Async thunks
-export const getTestimonialList = createAsyncThunk(
-  'testimonialList/getTestimonialList',
+export const getEventEnquiryList = createAsyncThunk(
+  'enquiryEventList/getEventEnquiryList',
   async (queryParameters, { dispatch, rejectWithValue }) => {
     try {
       const {
-        data: { data: tesimonialListData, pageData: meta },
-      } = await axiosInstance.post(API_ENDPOINT.GET_TESTIMONIAL_LIST, {
+        data: { data: eventListData, pageData: meta },
+      } = await axiosInstance.post(API_ENDPOINT.GET_ENQUIRY_LIST, {
         ...queryParameters,
       });
       return {
-        tesimonialListData,
+        eventListData,
         total: meta.total,
         updatedListParams: {
           ...queryParameters,
@@ -50,23 +52,16 @@ export const getTestimonialList = createAsyncThunk(
   },
 );
 
-export const addTestimonialList = createAsyncThunk(
-  'testimonialList/addTestimonialList',
-  async (tesimonialListDetails, { rejectWithValue }) => {
+export const addEventEnquiryList = createAsyncThunk(
+  'enquiryEventList/addEventEnquiryList',
+  async (eventListDetails, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.ADD_TESTIMONIAL_LIST,
-        tesimonialListDetails[0],
+        API_ENDPOINT.ADD_ENQUIRY_LIST,
+        eventListDetails[0],
       );
 
-      if (data) {
-        await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(data.data),
-          formDataApi(tesimonialListDetails[1].photo),
-        );
-      }
-
-      toast.success(TESTIMONIAL_LIST.TESTIMONIAL_LIST_SUCCESS);
+      toast.success(ENQUIRY.ENQUIRY_SUCCESS);
       return data;
     } catch (error) {
       toast.error(error.message);
@@ -75,22 +70,15 @@ export const addTestimonialList = createAsyncThunk(
   },
 );
 
-export const updateTestimonialList = createAsyncThunk(
-  'testimonialList/updateTestimonialList',
+export const updateEventEnquiryList = createAsyncThunk(
+  'enquiryEventList/updateEventEnquiryList',
   async ({ id, payload }) => {
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.UPDATE_TESTIMONIAL_LIST(id),
-        payload,
+        API_ENDPOINT.UPDATE_UPCOMING_EVENT_LIST(id),
+        payload[0],
       );
-
-      if (data) {
-        await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(id),
-          formDataApi(payload[1].photo),
-        );
-      }
-      toast.success(TESTIMONIAL_LIST.TESTIMONIAL_LIST_UPDATE);
+      toast.success(ENQUIRY.ENQUIRY_UPDATE);
       return data;
     } catch (error) {
       toast.error(error.message);
@@ -99,24 +87,14 @@ export const updateTestimonialList = createAsyncThunk(
   },
 );
 
-export const deleteTestimonialList = createAsyncThunk(
-  'testimonialList/deleteTestimonialList',
-  async (id) => {
-    
-  const eventId = id?._id;
-  const image_name = id.photo.split('uploads/');
-
+export const deleteEventEnquiryList = createAsyncThunk(
+  'enquiryEventList/deleteEventEnquiryList',
+  async ({ id }) => {
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.DELETE_TESTIMONIAL_LIST(eventId),
+        API_ENDPOINT.DELETE_ENQUIRY_LIST(id),
       );
-
-      if (data) {
-        await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: image_name[1],
-        });
-      }
-      toast.success(TESTIMONIAL_LIST.TESTIMONIAL_LIST_DELETED);
+      toast.success(ENQUIRY.ENQUIRY_DELETED);
       return data;
     } catch (error) {
       toast.error(error.message);
@@ -125,19 +103,8 @@ export const deleteTestimonialList = createAsyncThunk(
   },
 );
 
-export const updateTestimonialListValues = createAsyncThunk(
-  'testimonialList/updateTestimonialListValues',
-  async (defaultValues, { rejectWithValue }) => {
-    try {
-      return defaultValues;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  },
-);
-
-const tesimonialListSlice = createSlice({
-  name: 'testimonialList',
+const eventEnquiryListSlice = createSlice({
+  name: 'enquiryEventList',
   initialState,
   reducers: {
     updateListParameters: (state, action) => {
@@ -149,64 +116,65 @@ const tesimonialListSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getTestimonialList.pending, (state) => {
+      .addCase(getEventEnquiryList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getTestimonialList.fulfilled, (state, action) => {
-        state.data = action.payload.tesimonialListData;
+      .addCase(getEventEnquiryList.fulfilled, (state, action) => {
+        state.data = action.payload.eventListData;
         state.total = action.payload.total;
         state.listParameters = action.payload.updatedListParams;
         state.loading = false;
       })
-      .addCase(getTestimonialList.rejected, (state, action) => {
+      .addCase(getEventEnquiryList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(addTestimonialList.pending, (state) => {
+      .addCase(addEventEnquiryList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addTestimonialList.fulfilled, (state, action) => {
+      .addCase(addEventEnquiryList.fulfilled, (state, action) => {
         state.data = action.payload || [];
         state.defaultValues = action.payload || null;
         state.loading = false;
       })
-      .addCase(addTestimonialList.rejected, (state, action) => {
+      .addCase(addEventEnquiryList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(updateTestimonialList.pending, (state) => {
+      .addCase(updateEventEnquiryList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateTestimonialList.fulfilled, (state, action) => {
+      .addCase(updateEventEnquiryList.fulfilled, (state, action) => {
         state.data = action.payload || [];
         state.defaultValues = action.payload || null;
         state.loading = false;
       })
-      .addCase(updateTestimonialList.rejected, (state, action) => {
+      .addCase(updateEventEnquiryList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(updateTestimonialListValues.pending, (state) => {
+      .addCase(updateUpcomingEventListValues.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateTestimonialListValues.fulfilled, (state, action) => {
+      .addCase(updateUpcomingEventListValues.fulfilled, (state, action) => {
         state.defaultValues = action.payload;
         state.loading = false;
       })
-      .addCase(updateTestimonialListValues.rejected, (state, action) => {
+      .addCase(updateUpcomingEventListValues.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export const { updateListParameters, setLoading } = tesimonialListSlice.actions;
+export const { updateListParameters, setLoading } =
+  eventEnquiryListSlice.actions;
 
-export default tesimonialListSlice.reducer;
+export default eventEnquiryListSlice.reducer;

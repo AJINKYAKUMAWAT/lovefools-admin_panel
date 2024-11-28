@@ -12,6 +12,8 @@ import CMSListReducer from '@/redux/cms-list/cmsListSlice';
 import RoomListReducer from '@/redux/room-list/roomSlice';
 import MenuListReducer from '@/redux/menu-list/menuListSlice';
 import UpcomingEventListReducer from '@/redux/upcoming-event/upcomingEventSlice';
+import EventEnquiryListReducer from '@/redux/event-enquiry/eventEnquirySlice';
+
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -27,6 +29,7 @@ export const rootReducer = combineReducers({
   roomList: RoomListReducer,
   menuList: MenuListReducer,
   upcomingEventList: UpcomingEventListReducer,
+  eventEnquiryList: EventEnquiryListReducer,
 });
 
 export default rootReducer;

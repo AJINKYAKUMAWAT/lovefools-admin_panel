@@ -106,7 +106,7 @@ const Sidebar = ({ open, toggleSidebar }) => {
                 showFallback
               />
             </div>
-            <h3 className='mt-3 text-center'>Ajinkya</h3>
+            <h3 className='mt-3 text-center'>Admin</h3>
           </div>
         </div>
       ) : (

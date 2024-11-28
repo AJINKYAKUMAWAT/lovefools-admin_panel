@@ -229,7 +229,7 @@ const GalleryList = () => {
                       color='danger'
                       aria-label='Delete'
                       onClick={() => {
-                        toggleDeleteModal(row._id);
+                        toggleDeleteModal(row);
                       }}>
                       <Tooltip content='Delete'>
                         <TrashIcon className='h-4 w-4' />

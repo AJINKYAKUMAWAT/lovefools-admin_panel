@@ -56,9 +56,17 @@ export const addMenu = createAsyncThunk(
   'menu/addMenu',
   async (menuDetails, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post(API_ENDPOINT.ADD_MENU_LIST, {
-        ...menuDetails,
-      });
+      const { data } = await axiosInstance.post(API_ENDPOINT.ADD_MENU_LIST, 
+        menuDetails[0],
+      );
+
+      if (data) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(data.data),
+          formDataApi(menuDetails[1].photo),
+        );
+      }
+
 
       toast.success(MENU_LIST.MENU_LIST_SUCCESS);
       return data;
@@ -88,11 +96,20 @@ export const updateMenu = createAsyncThunk(
 
 export const deleteMenu = createAsyncThunk(
   'menu/deleteMenu',
-  async ({ id }) => {
+  async (id) => {
+    const eventId = id?._id;
+    const image_name = id.photo.split('uploads/');
+
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.DELETE_MENU_LIST(id),
+        API_ENDPOINT.DELETE_MENU_LIST(eventId),
       );
+
+      if (data) {
+        await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
+          PhotoUrl: image_name[1],
+        });
+      }
       toast.success(MENU_LIST.MENU_LIST_DELETED);
       return data;
     } catch (error) {
