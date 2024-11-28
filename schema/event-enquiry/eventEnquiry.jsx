@@ -9,5 +9,5 @@ export const enquiryListSchema = Yup.object().shape({
   event_type: Yup.object({
     label: Yup.string(),
     value: Yup.string(),
-  }).required('Menu type is required'),
+  }).required('Event type is required'),
 });

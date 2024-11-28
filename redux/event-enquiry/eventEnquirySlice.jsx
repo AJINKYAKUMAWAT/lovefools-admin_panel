@@ -56,10 +56,9 @@ export const addEventEnquiryList = createAsyncThunk(
   'enquiryEventList/addEventEnquiryList',
   async (eventListDetails, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post(
-        API_ENDPOINT.ADD_ENQUIRY_LIST,
-        eventListDetails[0],
-      );
+      const { data } = await axiosInstance.post(API_ENDPOINT.ADD_ENQUIRY_LIST, {
+        ...eventListDetails,
+      });
 
       toast.success(ENQUIRY.ENQUIRY_SUCCESS);
       return data;
@@ -75,8 +74,8 @@ export const updateEventEnquiryList = createAsyncThunk(
   async ({ id, payload }) => {
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.UPDATE_UPCOMING_EVENT_LIST(id),
-        payload[0],
+        API_ENDPOINT.UPDATE_ENQUIRY_LIST(id),
+        { ...payload },
       );
       toast.success(ENQUIRY.ENQUIRY_UPDATE);
       return data;
@@ -155,19 +154,6 @@ const eventEnquiryListSlice = createSlice({
         state.loading = false;
       })
       .addCase(updateEventEnquiryList.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      .addCase(updateUpcomingEventListValues.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateUpcomingEventListValues.fulfilled, (state, action) => {
-        state.defaultValues = action.payload;
-        state.loading = false;
-      })
-      .addCase(updateUpcomingEventListValues.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -6,9 +6,10 @@ import {
   UserCircleIcon,
   CalendarDaysIcon,
   PhotoIcon,
-  StartIcon,
+  StarIcon,
   ClipboardDocumentIcon,
   PhoneArrowUpRightIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 
 const SidebarConfig = [
@@ -47,7 +48,7 @@ const SidebarConfig = [
 
   {
     name: 'Event List',
-    icon: <StartIcon className='h-6 w-6' />,
+    icon: <StarIcon className='h-6 w-6' />,
     href: '/event-list',
   },
   {

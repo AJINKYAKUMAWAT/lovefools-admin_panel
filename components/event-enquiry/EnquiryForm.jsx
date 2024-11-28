@@ -33,10 +33,7 @@ const EventEnquiryForm = ({
     mode: 'onBlur',
   });
 
-
-  const {
-    handleSubmit,
-  } = methods;
+  const { handleSubmit } = methods;
 
   const onSubmit = async (data) => {
     handleEventListSubmit(data);
@@ -78,8 +75,8 @@ const EventEnquiryForm = ({
             />
           </div>
           <div className='grid gap-4'>
-          <ControllerSelect
-              name='menuType'
+            <ControllerSelect
+              name='event_type'
               placeholder='Select event type'
               options={generateOptions(eventType, 'id', 'type')}
               label='Event Type'

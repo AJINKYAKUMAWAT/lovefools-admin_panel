@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
-import { CONFIRMATION_MESSAGES } from '@/utils/constant';
+import { CONFIRMATION_MESSAGES, eventType } from '@/utils/constant';
 import { List } from '@/components/common/list/List';
 import {
   ArrowPathIcon,
@@ -15,7 +15,7 @@ import SearchBar from '@/components/common/SearchBar';
 import PopupModal from '@/components/common/PopupModal';
 import {
   addEventEnquiryList,
-  deleteUpcomingEventList,
+  deleteEventEnquiryList,
   getEventEnquiryList,
   updateEventEnquiryList,
 } from '../../redux/event-enquiry/eventEnquirySlice';
@@ -26,7 +26,7 @@ import {
   generateOptions,
 } from '@/utils/utils';
 import { Time } from '@internationalized/date';
-import EventEnquiryForm from '@/components/event-enquiry/EnquiryForm';
+import EventEnquiryForm from '../../components/event-enquiry/EnquiryForm';
 import Image from 'next/image';
 
 const EventEnquiryList = () => {
@@ -44,7 +44,7 @@ const EventEnquiryList = () => {
   });
 
   const { listParameters, data, total, loading } = useAppSelector(
-    (state) => state.eventEnquiryList
+    (state) => state.eventEnquiryList,
   );
 
   useEffect(() => {
@@ -73,7 +73,10 @@ const EventEnquiryList = () => {
       description: row.description,
       date: new Date(row.date),
       time: new Time(hr, min),
-      event_type: row.event_type,
+      event_type: findSingleSelectedValueLabelOption(
+        generateOptions(eventType, 'id', 'type'),
+        row.event_type,
+      ),
     };
 
     setShowModal((prev) => !prev);
@@ -106,10 +109,8 @@ const EventEnquiryList = () => {
 
   const handleDelete = async () => {
     try {
-      dispatch(deleteUpcomingEventList({ id }));
-      dispatch(
-        getEventEnquiryList({ ...listParameters, search: '', page: 1 }),
-      );
+      dispatch(deleteEventEnquiryList({ id }));
+      dispatch(getEventEnquiryList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
@@ -126,11 +127,11 @@ const EventEnquiryList = () => {
   const onSubmit = async (eventData) => {
     const payload = {
       event_Name: eventData.name,
-        description: eventData.description,
-        date: eventData.date,
-        time: eventData.time,
-        event_type:eventData.event_type.value
-    }
+      description: eventData.description,
+      date: eventData.date,
+      time: eventData.time,
+      event_type: eventData.event_type.value,
+    };
 
     try {
       if (!defaultValues.current.id) {
@@ -171,7 +172,7 @@ const EventEnquiryList = () => {
     <>
       <div className='container mx-auto'>
         <div className='flex flex-col justify-between'>
-          <h2 className='text-2xl font-semibold'>Upcoming Event List </h2>
+          <h2 className='text-2xl font-semibold'>Event Enquiry</h2>
           <div className='flex flex-wrap'>
             <div className='sm: flex w-full gap-4 sm:flex-col md:w-fit lg:w-3/4'>
               <div className='flex w-full flex-col sm:flex-row md:gap-4'>
@@ -229,14 +230,16 @@ const EventEnquiryList = () => {
           renderRow={(row) => {
             return (
               <TableRow key={row.id}>
-                <TableCell>{row.event_Name}</TableCell>
+                <TableCell>{row.event_Name ? row.event_Name : '-'}</TableCell>
                 <TableCell>{row.date ? formatDate(row.date) : '-'}</TableCell>
                 <TableCell>{row.time}</TableCell>
 
                 <TableCell>{row.description}</TableCell>
 
                 <TableCell>
-                  {event_type ? event_type : '-'}
+                  {row.event_type
+                    ? getDataLabel(eventType, row.event_type)
+                    : '-'}
                 </TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
@@ -259,7 +262,7 @@ const EventEnquiryList = () => {
                       color='danger'
                       aria-label='Delete'
                       onClick={() => {
-                        toggleDeleteModal(row);
+                        toggleDeleteModal(row._id);
                       }}>
                       <Tooltip content='Delete'>
                         <TrashIcon className='h-4 w-4' />
