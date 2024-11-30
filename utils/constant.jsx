@@ -70,7 +70,6 @@ export const RECEIPT = {
   RECEIPT_UPDATE: 'Receipt updated successfully',
 };
 
-
 export const ENQUIRY = {
   ENQUIRY_DELETED: 'Enquiry deleted successfully',
   ENQUIRY_SUCCESS: 'Enquiry created successfully',
@@ -220,7 +219,6 @@ export const eventType = [
   },
   {
     id: '2',
-    type: 'Update Event',
+    type: 'Upcoming Event',
   },
 ];
-

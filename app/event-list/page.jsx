@@ -27,6 +27,7 @@ import {
   generateOptions,
 } from '@/utils/utils';
 import { Time } from '@internationalized/date';
+import Image from 'next/image';
 
 const EventList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
@@ -77,7 +78,7 @@ const EventList = () => {
         generateOptions(statusType, 'id', 'type'),
         row.status,
       ),
-      photo: row.photo,
+      photo: row.photo ? row.photo : null,
     };
 
     setShowModal((prev) => !prev);
@@ -111,7 +112,7 @@ const EventList = () => {
 
   const handleDelete = async () => {
     try {
-      dispatch(deleteEventList({ id }));
+      dispatch(deleteEventList(id));
       dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
@@ -127,7 +128,7 @@ const EventList = () => {
         description: eventData.description,
         date: eventData.date,
         time: eventData.time,
-        status: eventData.status.value,
+        status: eventData.status ? eventData.status.value : null,
       },
       {
         photo: eventData.photo,
@@ -136,19 +137,17 @@ const EventList = () => {
 
     try {
       if (!defaultValues.current.id) {
-        const data = await dispatch(addEventList(payload));
-        if (data) {
-          setShowModal(false);
-          dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
-        }
+        await dispatch(addEventList(payload));
+        await dispatch(
+          getEventList({ ...listParameters, search: '', page: 1 }),
+        );
       } else {
-        const data = await dispatch(
+        await dispatch(
           updateEventList({ id: defaultValues.current.id, payload: payload }),
         );
-        if (data) {
-          setShowModal(false);
-          dispatch(getEventList({ ...listParameters, search: '', page: 1 }));
-        }
+        await dispatch(
+          getEventList({ ...listParameters, search: '', page: 1 }),
+        );
       }
     } catch (error) {
       console.log(error);
@@ -209,8 +208,8 @@ const EventList = () => {
             },
             { id: 'Time', label: 'Time' },
             { id: 'description', label: 'Description' },
-            { id: 'status', label: 'Status' },
-            { id: 'photo', label: 'photo' },
+            // { id: 'status', label: 'Status' },
+            { id: 'photo', label: 'photo', fixed: true },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
@@ -231,10 +230,17 @@ const EventList = () => {
                 <TableCell>{row.time}</TableCell>
 
                 <TableCell>{row.description}</TableCell>
-                <TableCell>
+                {/* <TableCell>
                   {row.status ? getDataLabel(statusType, row.status) : '-'}
+                </TableCell> */}
+                <TableCell>
+                  <Image
+                    height={10}
+                    width={70}
+                    style={{ maxHeight: '50px' }}
+                    src={row.photo}
+                  />
                 </TableCell>
-                <TableCell>{row.photo ? row.photo : '-'}</TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
@@ -279,6 +285,7 @@ const EventList = () => {
           handleClose={toggleEventListFormModal}
           handleEventListSubmit={onSubmit}
           defaultValues={defaultValues.current}
+          loading={loading}
         />
       </PopupModal>
       <ConfirmationModal

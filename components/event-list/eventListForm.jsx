@@ -12,7 +12,7 @@ import {
   EyeIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ControllerSelect from '../common/ControllerSelect';
 import { Tooltip } from '@nextui-org/react';
 import ControllerDatePicker from '../common/ControllerDatePicker';
@@ -23,25 +23,34 @@ const EventListForm = ({
   handleEventListSubmit,
   handleClose,
   defaultValues,
+  loading,
 }) => {
   const methods = useForm({
     resolver: yupResolver(eventListSchema),
     defaultValues,
     mode: 'onBlur',
   });
+  const image_name = defaultValues?.photo?.split('uploads/');
+
   const [fileName, setfileName] = useState('');
   const updateFileName = (name) => {
     setfileName(name);
   };
+
+  useEffect(() => {
+    setValue('photo', fileName);
+  }, []);
 
   const {
     handleSubmit,
     setValue,
     formState: { isSubmitting, errors },
     getValues,
+    clearErrors,
   } = methods;
 
   const onSubmit = async (data) => {
+    console.log('data', data);
     handleEventListSubmit(data);
   };
 
@@ -108,15 +117,15 @@ const EventListForm = ({
               label='Description'
             />
           </div>
-          <div className='grid gap-4'>
+          {/* <div className='grid gap-4'>
             <ControllerSelect
               name='status'
               placeholder='Select status'
               options={generateOptions(statusType, 'id', 'type')}
               label='Status'
             />
-          </div>
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+          </div> */}
+          <div className='grid grid-cols-1 gap-4'>
             <div>
               <h6
                 className={`mb-2 pt-1 text-small ${
@@ -154,7 +163,9 @@ const EventListForm = ({
                 </div>
                 {getValues('photo') && (
                   <>
-                    <span className='m-1'>{fileName}</span>
+                    <span className='m-1'>
+                      {fileName ? fileName : image_name[1]}
+                    </span>
                     <span className='w-1/6'>
                       <Button
                         onClick={() => {
@@ -187,7 +198,11 @@ const EventListForm = ({
               onClick={handleClose}>
               Cancel
             </Button>
-            <Button type='submit'>{defaultValues.id ? 'Update' : 'Add'}</Button>
+            <Button
+              type='submit'
+              isLoading={loading}>
+              {defaultValues.id ? 'Update' : 'Add'}
+            </Button>
           </div>
         </div>
       </div>

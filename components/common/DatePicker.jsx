@@ -59,7 +59,7 @@ const DatePicker = ({
               prev: () => <ArrowLongLeftIcon className='w-5' />,
               next: () => <ArrowLongRightIcon className='w-5' />,
             },
-            datepickerClassNames: '',
+            datepickerClassNames: 'relative',
             defaultDate,
             language: 'en',
             disabledDates,

@@ -24,6 +24,7 @@ import {
   findSingleSelectedValueLabelOption,
   generateOptions,
 } from '@/utils/utils';
+import Image from 'next/image';
 
 const MenuList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
@@ -75,7 +76,7 @@ const MenuList = () => {
         generateOptions(subMenuType, 'id', 'type'),
         row.subMenuType,
       ),
-      photo: row.photo ? row.photo : '' ,
+      photo: row.photo ? row.photo : '',
     };
 
     setShowModal((prev) => !prev);
@@ -109,8 +110,8 @@ const MenuList = () => {
 
   const handleDelete = async () => {
     try {
-      dispatch(deleteMenu({ id }));
-      dispatch(getMenuList({ ...listParameters, search: '', page: 1 }));
+      await dispatch(deleteMenu(id));
+      await dispatch(getMenuList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
     }
@@ -121,17 +122,16 @@ const MenuList = () => {
   const onSubmit = async (menuData) => {
     const payload = [
       {
-      menu_Name: menuData.menuName,
-      description: menuData.description,
-      price: menuData.price,
-      
-      menuType: menuData.menuType.value,
-      subMenuType: menuData.subMenuType.value,
-    },
-    {
-      photo: menuData.photo,
-    }
-  ]
+        menu_Name: menuData.menuName,
+        description: menuData.description,
+        price: menuData.price,
+        menuType: menuData.menuType.value,
+        subMenuType: menuData.subMenuType.value,
+      },
+      {
+        photo: menuData.photo,
+      },
+    ];
 
     try {
       if (!defaultValues.current.id) {
@@ -237,7 +237,18 @@ const MenuList = () => {
                     ? filterMenu(row.subMenuType, subMenuType)
                     : '-'}
                 </TableCell>
-                <TableCell>{row.photo ? row.photo : '-'}</TableCell>
+                <TableCell>
+                  {row.photo ? (
+                    <Image
+                      height={10}
+                      width={70}
+                      style={{ maxHeight: '50px' }}
+                      src={row.photo}
+                    />
+                  ) : (
+                    '-'
+                  )}
+                </TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
@@ -280,6 +291,7 @@ const MenuList = () => {
           handleClose={toggleReciptFormModal}
           handleMenuSubmit={onSubmit}
           defaultValues={defaultValues.current}
+          loading={loading}
         />
       </PopupModal>
       <ConfirmationModal

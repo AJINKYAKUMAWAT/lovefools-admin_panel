@@ -56,22 +56,21 @@ export const addMenu = createAsyncThunk(
   'menu/addMenu',
   async (menuDetails, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post(API_ENDPOINT.ADD_MENU_LIST, 
+      const { data } = await axiosInstance.post(
+        API_ENDPOINT.ADD_MENU_LIST,
         menuDetails[0],
       );
 
-      if (data) {
+      if (data && menuDetails[1].photo) {
         await axiosInstance.post(
           API_ENDPOINT.UPLOAD_PHOTO(data.data),
           formDataApi(menuDetails[1].photo),
         );
       }
 
-
       toast.success(MENU_LIST.MENU_LIST_SUCCESS);
       return data;
     } catch (error) {
-      toast.error(error.message);
       return rejectWithValue(error.message);
     }
   },
@@ -83,41 +82,42 @@ export const updateMenu = createAsyncThunk(
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.UPDATE_MENU_LIST(id),
-        { ...payload },
+        payload[0],
       );
+
+      if (data && menuDetails[1].photo) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(data.data),
+          formDataApi(payload[1].photo),
+        );
+      }
       toast.success(MENU_LIST.MENU_LIST_UPDATE);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },
 );
 
-export const deleteMenu = createAsyncThunk(
-  'menu/deleteMenu',
-  async (id) => {
-    const eventId = id?._id;
-    const image_name = id.photo.split('uploads/');
+export const deleteMenu = createAsyncThunk('menu/deleteMenu', async (id) => {
+  const eventId = id?._id;
+  const image_name = id?.photo?.split('uploads/');
+  try {
+    const { data } = await axiosInstance.post(
+      API_ENDPOINT.DELETE_MENU_LIST(eventId),
+    );
 
-    try {
-      const { data } = await axiosInstance.post(
-        API_ENDPOINT.DELETE_MENU_LIST(eventId),
-      );
-
-      if (data) {
-        await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: image_name[1],
-        });
-      }
-      toast.success(MENU_LIST.MENU_LIST_DELETED);
-      return data;
-    } catch (error) {
-      toast.error(error.message);
-      console.log(error);
+    if (data && image_name) {
+      await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
+        PhotoUrl: image_name[1],
+      });
     }
-  },
-);
+    toast.success(MENU_LIST.MENU_LIST_DELETED);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 const menuSlice = createSlice({
   name: 'menu',

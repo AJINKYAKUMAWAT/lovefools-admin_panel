@@ -66,7 +66,7 @@ const TableList = () => {
       room_id: param.id,
       person: row.seatCount,
       tableNo: row.table_number,
-      photo: null,
+      photo: row.photo ? row?.photo : null,
     };
 
     setShowModal((prev) => !prev);
@@ -117,6 +117,7 @@ const TableList = () => {
   };
 
   const onSubmit = async (tableData) => {
+    console.log('tableData', tableData);
     const payload = [
       {
         room_id: param.id,
@@ -270,6 +271,7 @@ const TableList = () => {
           handleClose={toggleTableListModal}
           handleTableListSubmit={onSubmit}
           defaultValues={defaultValues.current}
+          loading={loading}
         />
       </PopupModal>
       <ConfirmationModal

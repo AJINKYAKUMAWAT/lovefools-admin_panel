@@ -63,7 +63,6 @@ export const addEventEnquiryList = createAsyncThunk(
       toast.success(ENQUIRY.ENQUIRY_SUCCESS);
       return data;
     } catch (error) {
-      toast.error(error.message);
       return rejectWithValue(error.message);
     }
   },
@@ -80,7 +79,6 @@ export const updateEventEnquiryList = createAsyncThunk(
       toast.success(ENQUIRY.ENQUIRY_UPDATE);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },
@@ -96,7 +94,6 @@ export const deleteEventEnquiryList = createAsyncThunk(
       toast.success(ENQUIRY.ENQUIRY_DELETED);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },

@@ -180,7 +180,7 @@ const UserList = () => {
               id: 'Address',
               label: 'Description',
             },
-            { id: 'photo', label: 'Photo' },
+            // { id: 'photo', label: 'Photo' },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
@@ -200,7 +200,7 @@ const UserList = () => {
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.emailId}</TableCell>
                 <TableCell>{row.Address}</TableCell>
-                <TableCell>{row.photo ? row.photo : '-'}</TableCell>
+                {/* <TableCell>{row.photo ? row.photo : '-'}</TableCell> */}
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button

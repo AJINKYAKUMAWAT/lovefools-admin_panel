@@ -63,7 +63,6 @@ export const addReceipt = createAsyncThunk(
       toast.success(RECEIPT.RECEIPT_SUCCESS);
       return data;
     } catch (error) {
-      toast.error(error.message);
       return rejectWithValue(error.message);
     }
   },
@@ -80,7 +79,6 @@ export const updateReceipt = createAsyncThunk(
       toast.success(RECEIPT.RECEIPT_UPDATE);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },
@@ -96,7 +94,6 @@ export const deleteReceipt = createAsyncThunk(
       toast.success(RECEIPT.RECEIPT_DELETED);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },

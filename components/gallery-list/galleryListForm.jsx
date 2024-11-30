@@ -16,18 +16,26 @@ const GalleryListForm = ({
   handleGalleryListSubmit,
   handleClose,
   defaultValues,
+  loading,
 }) => {
   const methods = useForm({
     resolver: yupResolver(galleryListSchema),
     defaultValues,
     mode: 'onBlur',
   });
-  const [fileName, setfileName] = useState('');
-  const [videoName, setVideoName] = useState('');
+  const image_name = defaultValues?.photo?.split('uploads/');
+  const video_name = defaultValues?.video?.split('uploads/');
+  const [fileName, setfileName] = useState(null);
+  const [videoName, setVideoName] = useState(null);
 
   const updateFileName = (name) => {
     setfileName(name);
   };
+
+  useEffect(() => {
+    setValue('photo', fileName);
+    setValue('video', videoName);
+  }, []);
 
   const updateVideoName = (name) => {
     setVideoName(name);
@@ -47,32 +55,20 @@ const GalleryListForm = ({
 
   const handleImageUpload = async (name, event) => {
     const { files } = event.target;
-
     const selectedFile = files && files.length ? files[0] : '';
     if (selectedFile) {
       try {
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        const config = {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        };
-
-        // const { data } = await axiosInstance.post(
-        //   `${API_ENDPOINT.IMAGE_UPLOAD}?fileType=${ImageUpload.DOCUMENTS}`,
-        //   formData,
-        //   config,
-        // );
-
-        setValue(name, selectedFile);
-        clearErrors(name);
+        setValue(name, selectedFile); // Ensure the file is set in the form state
+        if (name === 'photo') {
+          setfileName(selectedFile.name); // Update the photo file name
+        } else if (name === 'video') {
+          setVideoName(selectedFile.name); // Update the video file name
+        }
       } catch (error) {
-        console.log(error);
+        console.error('Error uploading file:', error);
       }
     }
   };
-
   const Type = watch('type');
 
   useEffect(() => {
@@ -113,7 +109,7 @@ const GalleryListForm = ({
               label='Type'
             />
           </div>
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+          <div className='grid grid-cols-1 gap-4'>
             <div>
               <h6
                 className={`mb-2 pt-1 text-small ${
@@ -151,7 +147,9 @@ const GalleryListForm = ({
                 </div>
                 {getValues('photo') && (
                   <>
-                    <span className='m-1'>{fileName}</span>
+                    <span className='m-1'>
+                      {fileName ? fileName : image_name[1]}
+                    </span>
                     <span className='w-1/6'>
                       <Button
                         onClick={() => {
@@ -178,7 +176,7 @@ const GalleryListForm = ({
             </div>
           </div>
           {watch('type')?.label === 'Video' && (
-            <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+            <div className='grid grid-cols-1 gap-4'>
               <div>
                 <h6
                   className={`mb-2 pt-1 text-small ${
@@ -215,14 +213,10 @@ const GalleryListForm = ({
                     </div>
                   </div>
                   {getValues('video') && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '100%',
-                      }}>
-                      <span className='m-1'>{videoName}</span>
+                    <div>
+                      <span className='m-1'>
+                        {videoName ? videoName : video_name[1]}
+                      </span>
                       <span className='w-1/6'>
                         <Button
                           onClick={() => {
@@ -257,7 +251,11 @@ const GalleryListForm = ({
               onClick={handleClose}>
               Cancel
             </Button>
-            <Button type='submit'>{defaultValues.id ? 'Update' : 'Add'}</Button>
+            <Button
+              type='submit'
+              isLoading={loading}>
+              {defaultValues.id ? 'Update' : 'Add'}
+            </Button>
           </div>
         </div>
       </div>

@@ -218,7 +218,7 @@ const UpcomingEventList = () => {
             },
             { id: 'Time', label: 'Time' },
             { id: 'description', label: 'Description' },
-            { id: 'photo', label: 'photo' },
+            { id: 'photo', label: 'photo', fixed: true },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{

@@ -17,13 +17,19 @@ import { useState } from 'react';
 import ControllerSelect from '../common/ControllerSelect';
 import { menuSchema } from '@/schema/menu-list/menuList';
 
-const MenuListForm = ({ handleMenuSubmit, handleClose, defaultValues }) => {
+const MenuListForm = ({
+  handleMenuSubmit,
+  handleClose,
+  defaultValues,
+  loading,
+}) => {
   const methods = useForm({
     resolver: yupResolver(menuSchema),
     defaultValues,
     mode: 'onBlur',
   });
-  const [fileName, setfileName] = useState(defaultValues.photo);
+  const image_name = defaultValues?.photo?.split('uploads/');
+  const [fileName, setfileName] = useState(null);
   const updateFileName = (name) => {
     setfileName(name);
   };
@@ -54,14 +60,6 @@ const MenuListForm = ({ handleMenuSubmit, handleClose, defaultValues }) => {
           },
         };
 
-        // const { data } = await axiosInstance.post(
-        //   `${API_ENDPOINT.IMAGE_UPLOAD}?fileType=${ImageUpload.DOCUMENTS}`,
-        //   formData,
-        //   config,
-        // );
-
-        console.log('selectedFile', selectedFile);
-
         setValue(name, selectedFile);
         clearErrors(name);
       } catch (error) {
@@ -69,8 +67,6 @@ const MenuListForm = ({ handleMenuSubmit, handleClose, defaultValues }) => {
       }
     }
   };
-
-  console.log(watch('photo'));
 
   return (
     <FormProvider
@@ -118,7 +114,7 @@ const MenuListForm = ({ handleMenuSubmit, handleClose, defaultValues }) => {
               label='Sub Type'
             />
           </div>
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+          <div className='grid grid-cols-1 gap-4'>
             <div>
               <h6
                 className={`mb-2 pt-1 text-small ${
@@ -156,7 +152,9 @@ const MenuListForm = ({ handleMenuSubmit, handleClose, defaultValues }) => {
                 </div>
                 {getValues('photo') && (
                   <>
-                    <span className='m-1'>{fileName}</span>
+                    <span className='m-1'>
+                      {fileName ? fileName : image_name[1]}
+                    </span>
                     <span className='w-1/6'>
                       <Button
                         onClick={() => {
@@ -189,7 +187,11 @@ const MenuListForm = ({ handleMenuSubmit, handleClose, defaultValues }) => {
               onClick={handleClose}>
               Cancel
             </Button>
-            <Button type='submit'>{defaultValues.id ? 'Update' : 'Add'}</Button>
+            <Button
+              type='submit'
+              isLoading={loading}>
+              {defaultValues.id ? 'Update' : 'Add'}
+            </Button>
           </div>
         </div>
       </div>

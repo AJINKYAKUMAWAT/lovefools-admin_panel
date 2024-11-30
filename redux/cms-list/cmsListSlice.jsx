@@ -56,7 +56,6 @@ export const updateCMSList = createAsyncThunk(
       toast.success(CMS_LIST.CMS_LIST_UPDATE);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },

@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { CONFIRMATION_MESSAGES, menuType, subMenuType } from '@/utils/constant';
 import { List } from '@/components/common/list/List';
 import {
@@ -63,7 +63,7 @@ const ReceiptList = () => {
     dispatch(getReceiptList({}));
     dispatch(getMenuList({}));
     dispatch(getRoomList({}));
-    dispatch(getTableList({}));
+    dispatch(getTableList({ fetchAll: true, search: 'All' }));
   }, []);
 
   const handleMetaChange = (meta) => {
@@ -77,6 +77,9 @@ const ReceiptList = () => {
 
   const refreshBtn = () => {
     dispatch(getReceiptList({}));
+    dispatch(getMenuList({}));
+    dispatch(getRoomList({}));
+    dispatch(getTableList({ fetchAll: true, search: 'All' }));
   };
 
   const handleEditButtonClick = async (row) => {
@@ -176,7 +179,7 @@ const ReceiptList = () => {
         const data = await dispatch(addReceipt(payload));
         if (data) {
           dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
-          dispatch(getTableList({}));
+          dispatch(getTableList({ fetchAll: true, search: 'All' }));
         }
       } else {
         const data = await dispatch(
@@ -184,7 +187,7 @@ const ReceiptList = () => {
         );
         if (data) {
           dispatch(getReceiptList({ ...listParameters, search: '', page: 1 }));
-          dispatch(getTableList({}));
+          dispatch(getTableList({ fetchAll: true, search: 'All' }));
         }
       }
     } catch (error) {
@@ -203,12 +206,20 @@ const ReceiptList = () => {
   };
 
   const filterMenuList = (type, list, name) => {
+    if (name === 'table_number') {
+      console.log('getMenu', type, list, name);
+    }
     const getMenu = findSingleSelectedValueLabelOption(
       generateOptions(list, '_id', name),
       type,
     );
     return getMenu?.label;
   };
+  // const sortedReceipts = useMemo(() => {
+  //   return data.sort(
+  //     (a, b) => new Date(b.created_date) - new Date(a.created_date),
+  //   );
+  // }, []);
 
   return (
     <>
@@ -357,6 +368,7 @@ const ReceiptList = () => {
         header={defaultValues.current.id ? 'Update Recipt' : 'Add Receipt'}
         onOpenChange={toggleReciptFormModal}>
         <ReceiptForm
+          loading={loading}
           handleClose={toggleReciptFormModal}
           handleReceiptSubmit={onSubmit}
           defaultValues={defaultValues.current}

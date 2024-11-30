@@ -72,7 +72,6 @@ export const addUpcomingEventList = createAsyncThunk(
       toast.success(UPCOMING_EVENT_LIST.UPCOMING_EVENT_LIST_SUCCESS);
       return data;
     } catch (error) {
-      toast.error(error.message);
       return rejectWithValue(error.message);
     }
   },
@@ -96,7 +95,6 @@ export const updateUpcomingEventList = createAsyncThunk(
       toast.success(UPCOMING_EVENT_LIST.UPCOMING_EVENT_LIST_UPDATE);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },
@@ -119,7 +117,6 @@ export const deleteUpcomingEventList = createAsyncThunk(
       toast.success(UPCOMING_EVENT_LIST.UPCOMING_EVENT_LIST_DELETED);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },

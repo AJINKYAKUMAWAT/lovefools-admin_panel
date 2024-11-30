@@ -315,3 +315,12 @@ export function convertTimeObjectToString(timeObj) {
 
   return `${hour}:${minute}:${second}`;
 }
+
+export const formatDateForApi = (date) => {
+  const localDate = new Date(date); // Ensure it's a Date object
+  const year = localDate.getFullYear();
+  const month = String(localDate.getMonth() + 1).padStart(2, '0');
+  const day = String(localDate.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`; // Format as YYYY-MM-DD
+};

@@ -56,7 +56,6 @@ export const addRoomList = createAsyncThunk(
       toast.success(ROOM_LIST.ROOM_LIST_SUCCESS);
       return data;
     } catch (error) {
-      toast.error(error.message);
       return rejectWithValue(error.message);
     }
   },
@@ -73,7 +72,6 @@ export const updateRoomList = createAsyncThunk(
       toast.success(ROOM_LIST.ROOM_LIST_UPDATE);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },
@@ -89,7 +87,6 @@ export const deleteRoomList = createAsyncThunk(
       toast.success(ROOM_LIST.ROOM_LIST_DELETED);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },

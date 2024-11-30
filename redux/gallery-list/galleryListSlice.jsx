@@ -80,7 +80,6 @@ export const addGalleryList = createAsyncThunk(
       toast.success(GALLERY_LIST.GALLERY_LIST_SUCCESS);
       return data;
     } catch (error) {
-      toast.error(error.message);
       return rejectWithValue(error.message);
     }
   },
@@ -96,27 +95,27 @@ export const updateGalleryList = createAsyncThunk(
       );
 
       if (data) {
-        if (payload[1].photo && payload[1].video) {
+        const { photo, video } = payload[1];
+        console.log('payload', payload);
+        if (video) {
           await axiosInstance.post(
             API_ENDPOINT.UPLOAD_PHOTO(id),
-            formDataApi(payload[1].photo),
+            formDataApi(video),
           );
+        }
+        if (photo) {
           await axiosInstance.post(
             API_ENDPOINT.UPLOAD_PHOTO(id),
-            formDataApi(payload[1].video),
-          );
-        } else if (payload[1].photo) {
-          await axiosInstance.post(
-            API_ENDPOINT.UPLOAD_PHOTO(id),
-            formDataApi(payload[1].photo),
+            formDataApi(photo),
           );
         }
       }
+
       toast.success(GALLERY_LIST.GALLERY_LIST_UPDATE);
       return data;
     } catch (error) {
-      toast.error(error.message);
-      console.log(error);
+      console.error('Error updating gallery:', error);
+      throw error;
     }
   },
 );
@@ -124,8 +123,10 @@ export const updateGalleryList = createAsyncThunk(
 export const deleteGalleryList = createAsyncThunk(
   'galleryList/deleteGalleryList',
   async (id) => {
+    console.log('id', id);
     const eventId = id?._id;
     const image_name = id.photo.split('uploads/');
+    const video_name = id.video.split('uploads/');
 
     try {
       const { data } = await axiosInstance.post(
@@ -136,10 +137,14 @@ export const deleteGalleryList = createAsyncThunk(
           PhotoUrl: image_name[1],
         });
       }
+      if (data && video_name[1]) {
+        await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
+          PhotoUrl: video_name[1],
+        });
+      }
       toast.success(GALLERY_LIST.GALLERY_LIST_DELETED);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },

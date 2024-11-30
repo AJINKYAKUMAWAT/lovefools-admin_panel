@@ -65,12 +65,10 @@ const TestimonialList = () => {
 
     setShowModal((prev) => !prev);
   };
-
-  const toggleDeleteModal = (id) => {
-    setId(id);
+  const toggleDeleteModal = (row) => {
+    setId(row); // Pass the entire row object
     setDeleteModal((prev) => !prev);
   };
-
   const handleSearch = (searchQuery) => {
     handleMetaChange({
       ...listParameters,
@@ -90,16 +88,22 @@ const TestimonialList = () => {
   };
 
   const handleDelete = async () => {
-    try {
-      dispatch(deleteTestimonialList({ id }));
-      dispatch(getTestimonialList({ ...listParameters, search: '', page: 1 }));
-    } catch (error) {
-      console.log(error);
+    if (!id || !id._id) {
+      console.error('Invalid id for deletion');
+      return;
     }
-    setId(null);
+
+    try {
+      await dispatch(deleteTestimonialList(id));
+      await dispatch(
+        getTestimonialList({ ...listParameters, search: '', page: 1 }),
+      );
+      toast.success('Testimonial deleted successfully.');
+    } catch (error) {
+      console.error(error);
+    }
     toggleDeleteModal();
   };
-
   const onSubmit = async (eventData) => {
     const payload = [
       {
@@ -180,7 +184,7 @@ const TestimonialList = () => {
           columns={[
             { id: 'testimonial_Name', label: 'Name' },
             { id: 'description', label: 'Description' },
-            { id: 'photo', label: 'photo' },
+            // { id: 'photo', label: 'photo',fixed: true },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
@@ -198,7 +202,7 @@ const TestimonialList = () => {
               <TableRow key={row.id}>
                 <TableCell>{row.testimonial_Name}</TableCell>
                 <TableCell>{row.description}</TableCell>
-                <TableCell>{row.photo ? row.photo : '-'}</TableCell>
+                {/* <TableCell>{row.photo ? row.photo : '-'}</TableCell> */}
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button

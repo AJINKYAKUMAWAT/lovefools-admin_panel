@@ -56,7 +56,6 @@ export const addUserList = createAsyncThunk(
       toast.success(USER_LIST.USER_LIST_SUCCESS);
       return data;
     } catch (error) {
-      toast.error(error.message);
       return rejectWithValue(error.message);
     }
   },
@@ -73,7 +72,6 @@ export const updateUserList = createAsyncThunk(
       toast.success(USER_LIST.USER_LIST_UPDATE);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },
@@ -89,7 +87,6 @@ export const deleteUserList = createAsyncThunk(
       toast.success(USER_LIST.USER_LIST_DELETED);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },

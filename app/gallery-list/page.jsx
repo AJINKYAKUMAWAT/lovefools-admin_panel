@@ -21,6 +21,7 @@ import {
 } from '../../redux/gallery-list/galleryListSlice';
 import GalleryListForm from '../../components/gallery-list/galleryListForm';
 import { galleryType } from '../../utils/constant';
+import Image from 'next/image';
 
 const GalleryList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
@@ -102,7 +103,7 @@ const GalleryList = () => {
 
   const handleDelete = async () => {
     try {
-      dispatch(deleteGalleryList({ id }));
+      dispatch(deleteGalleryList(id));
       dispatch(getGalleryList({ ...listParameters, search: '', page: 1 }));
     } catch (error) {
       console.log(error);
@@ -112,8 +113,6 @@ const GalleryList = () => {
   };
 
   const onSubmit = async (galleryData) => {
-    console.log('galleryData', galleryData);
-
     const payload = [
       {
         gallery_Name: galleryData.name,
@@ -121,8 +120,8 @@ const GalleryList = () => {
         type: galleryData.type.label,
       },
       {
-        photo: galleryData.photo,
-        video: galleryData.video,
+        photo: galleryData.photo || defaultValues.photo, // Include existing photo if not updated
+        video: galleryData.video || defaultValues.video, // Include existing video if not updated
       },
     ];
 
@@ -188,7 +187,7 @@ const GalleryList = () => {
             { id: 'gallery_Name', label: 'Name' },
             { id: 'description', label: 'Description' },
             { id: 'type', label: 'Type' },
-            { id: 'photo', label: 'photo' },
+            { id: 'photo', label: 'photo', fixed: true },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
@@ -207,7 +206,20 @@ const GalleryList = () => {
                 <TableCell>{row.gallery_Name}</TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell>{row.type ? row.type : '-'}</TableCell>
-                <TableCell>{row.photo ? row.photo : '-'}</TableCell>
+                <TableCell>
+                  {' '}
+                  {row.photo ? (
+                    <Image
+                      height={10}
+                      width={70}
+                      style={{ maxHeight: '50px' }}
+                      src={row.photo}
+                      alt='Lovefools image'
+                    />
+                  ) : (
+                    '-'
+                  )}
+                </TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
@@ -252,6 +264,7 @@ const GalleryList = () => {
           handleClose={toggleGalleryListFormModal}
           handleGalleryListSubmit={onSubmit}
           defaultValues={defaultValues.current}
+          loading={loading}
         />
       </PopupModal>
       <ConfirmationModal

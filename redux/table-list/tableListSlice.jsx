@@ -6,6 +6,7 @@ import {
   SortDirection,
   TABLE_LIST,
   formDataApi,
+  NEXT_PUBLIC_API_URL,
 } from '@/utils/constant';
 import { toast } from 'react-toastify';
 
@@ -60,16 +61,15 @@ export const addTableList = createAsyncThunk(
         ...tableListDetails[0],
       });
 
-      if (data) {
+      if (data && tableListDetails[1].photo) {
         await axiosInstance.post(
-          `http://localhost:5000/api/user/upload/${data.data}`,
+          API_ENDPOINT.UPLOAD_PHOTO(data.data),
           formDataApi(tableListDetails[1].photo),
         );
       }
       toast.success(TABLE_LIST.TABLE_LIST_SUCCESS);
       return data;
     } catch (error) {
-      toast.error(error.message);
       return rejectWithValue(error.message);
     }
   },
@@ -78,21 +78,21 @@ export const addTableList = createAsyncThunk(
 export const updateTableList = createAsyncThunk(
   'tableList/updateTableList',
   async ({ id, payload }) => {
+    console.log('payload', payload);
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.UPDATE_TABLE_LIST(id),
         payload[0],
       );
-      if (data) {
+      if (data && payload[1].photo) {
         await axiosInstance.post(
-          `http://localhost:5000/api/user/upload/${id}`,
+          API_ENDPOINT.UPLOAD_PHOTO(id),
           formDataApi(payload[1].photo),
         );
       }
       toast.success(TABLE_LIST.TABLE_LIST_UPDATE);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },
@@ -116,7 +116,6 @@ export const deleteTableList = createAsyncThunk(
       toast.success(TABLE_LIST.TABLE_LIST_DELETED);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },

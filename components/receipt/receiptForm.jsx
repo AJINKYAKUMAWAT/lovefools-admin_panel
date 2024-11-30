@@ -5,26 +5,27 @@ import ControllerTextField from '@/components/common/ControllerTextField';
 import Button from '@/components/common/Button';
 import FormProvider from '@/components/common/FormProvider';
 import { reciptSchema } from '@/schema/receipt/receipt';
-import ControllerTextArea from '../common/ControllerTextArea';
-import { convertTimeObjectToString, generateOptions } from '@/utils/utils';
-import { menuType, NEXT_PUBLIC_API_URL, subMenuType } from '@/utils/constant';
 import {
-  ArrowUpTrayIcon,
-  EyeIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
+  convertTimeObjectToString,
+  formatDateForApi,
+  generateOptions,
+} from '@/utils/utils';
+import { menuType, NEXT_PUBLIC_API_URL, subMenuType } from '@/utils/constant';
 import { useEffect, useState } from 'react';
 import ControllerSelect from '../common/ControllerSelect';
-import { Tooltip } from '@nextui-org/react';
 import ControllerDateTimePicker from '../common/ControllerDateTimePicker';
 import ControllerDatePicker from '../common/ControllerDatePicker';
 import { getMenuList } from '@/redux/menu-list/menuListSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/selector';
 import axios from 'axios';
-import { getRoomList } from '@/redux/room-list/roomSlice';
 import { getTableList } from '@/redux/table-list/tableListSlice';
 
-const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
+const ReceiptForm = ({
+  handleReceiptSubmit,
+  handleClose,
+  defaultValues,
+  loading,
+}) => {
   const methods = useForm({
     resolver: yupResolver(reciptSchema),
     defaultValues,
@@ -36,103 +37,48 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
 
   useEffect(() => {
     dispatch(getMenuList({}));
-  }, []);
+  }, [dispatch]);
 
-  const [fileName, setfileName] = useState(defaultValues.photo);
-  const updateFileName = (name) => {
-    setfileName(name);
-  };
-
-  const {
-    handleSubmit,
-    setValue,
-    formState: { isSubmitting, errors },
-    getValues,
-    watch,
-  } = methods;
+  const { handleSubmit, watch } = methods;
 
   const roomList = useAppSelector((state) => state.roomList);
-
-  const getAllTables = useAppSelector((state) => state.tableList);
 
   const getTables = async () => {
     const Time = convertTimeObjectToString(watch('time'));
     const adjustedDate = new Date(watch('date')).toISOString();
+    console.log('API call with:', {
+      date: formatDateForApi(watch('date')),
+      time: Time,
+      roomID: watch('room')?.value,
+    });
 
-    try {
-      // Fetch booking data from the API
-      const response = await axios.post(`${NEXT_PUBLIC_API_URL}getBookList`, {
-        date: adjustedDate,
-        time: Time,
-      });
+    if (watch('room')?.value) {
+      try {
+        // Fetch booking data from the API
+        const response = await axios.post(`${NEXT_PUBLIC_API_URL}getBookList`, {
+          date: formatDateForApi(watch('date')),
+          time: Time,
+          roomID: watch('room').value,
+        });
 
-      const bookedTables = response.data?.available || []; // Adjust as per API structure
-
-      console.log('All Tables:', getAllTables.data);
-      console.log('Booked Tables:', bookedTables);
-      const filteredData = bookedTables.filter((table) => {
-        // Check if the table is NOT booked
-        const isBooked = getAllTables.data.some(
-          (booked) => String(booked._id) === String(table._id),
-        );
-        console.log(`Table ${table._id} is booked:`, isBooked);
-        return isBooked; // Include only tables that are NOT booked
-      });
-
-      console.log('Filtered Data:', filteredData);
-
-      // Set the filtered tables
-      setTableList(filteredData);
-    } catch (error) {
-      console.error('Error fetching tables:', error);
+        console.log('API Response:', response.data); // Check the API response
+        setTableList(response.data.available);
+      } catch (error) {
+        console.error('Error fetching tables:', error);
+      }
     }
   };
 
+  // Trigger API call when the room is selected
   useEffect(() => {
+    console.log('Room selected:', watch('room')); // Log selected room
     if (watch('room')) {
-      dispatch(
-        getTableList({
-          room_id: watch('room').value,
-        }),
-      );
       getTables();
     }
   }, [watch('room')]);
 
   const onSubmit = async (data) => {
-    console.log('data', data);
-
     handleReceiptSubmit(data);
-  };
-
-  const handleImageUpload = async (name, event) => {
-    const { files } = event.target;
-
-    const selectedFile = files && files.length ? files[0] : '';
-    if (selectedFile) {
-      try {
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        const config = {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        };
-
-        // const { data } = await axiosInstance.post(
-        //   `${API_ENDPOINT.IMAGE_UPLOAD}?fileType=${ImageUpload.DOCUMENTS}`,
-        //   formData,
-        //   config,
-        // );
-
-        console.log('selectedFile', selectedFile);
-
-        setValue(name, selectedFile);
-        clearErrors(name);
-      } catch (error) {
-        console.log(error);
-      }
-    }
   };
 
   return (
@@ -171,7 +117,7 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
               name='date'
               label='Date'
             />
-          </div>{' '}
+          </div>
           <div className='grid gap-4'>
             <ControllerDateTimePicker
               name='time'
@@ -225,7 +171,11 @@ const ReceiptForm = ({ handleReceiptSubmit, handleClose, defaultValues }) => {
               onClick={handleClose}>
               Cancel
             </Button>
-            <Button type='submit'>{defaultValues.id ? 'Update' : 'Add'}</Button>
+            <Button
+              type='submit'
+              isLoading={loading}>
+              {defaultValues.id ? 'Update' : 'Add'}
+            </Button>
           </div>
         </div>
       </div>

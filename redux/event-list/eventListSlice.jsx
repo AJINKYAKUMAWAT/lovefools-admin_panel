@@ -55,6 +55,7 @@ export const getEventList = createAsyncThunk(
 export const addEventList = createAsyncThunk(
   'eventList/addEventList',
   async (eventListDetails, { rejectWithValue }) => {
+    console.log('eventListDetails', eventListDetails);
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.ADD_EVENT_LIST,
@@ -71,7 +72,6 @@ export const addEventList = createAsyncThunk(
       toast.success(EVENT_LIST.EVENT_LIST_SUCCESS);
       return data;
     } catch (error) {
-      toast.error(error.message);
       return rejectWithValue(error.message);
     }
   },
@@ -95,7 +95,6 @@ export const updateEventList = createAsyncThunk(
       toast.success(EVENT_LIST.EVENT_LIST_UPDATE);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },
@@ -120,7 +119,6 @@ export const deleteEventList = createAsyncThunk(
       toast.success(EVENT_LIST.EVENT_LIST_DELETED);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },

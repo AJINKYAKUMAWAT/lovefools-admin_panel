@@ -12,5 +12,5 @@ export const menuSchema = Yup.object().shape({
     label: Yup.string(),
     value: Yup.string(),
   }).required('Sub menu type is required'),
-  photo: Yup.string().nullable(),
+  photo: Yup.mixed().nullable().required('Photo is required'),
 });

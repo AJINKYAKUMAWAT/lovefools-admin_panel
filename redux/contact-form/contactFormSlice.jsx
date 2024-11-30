@@ -55,7 +55,6 @@ export const deleteContactFormList = createAsyncThunk(
       toast.success(CONTACT_FORM.CONTACT_FORM_DELETED);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },

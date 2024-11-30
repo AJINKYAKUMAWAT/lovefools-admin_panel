@@ -59,17 +59,16 @@ export const addTestimonialList = createAsyncThunk(
         tesimonialListDetails[0],
       );
 
-      if (data) {
-        await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(data.data),
-          formDataApi(tesimonialListDetails[1].photo),
-        );
-      }
+      // if (data) {
+      //   await axiosInstance.post(
+      //     API_ENDPOINT.UPLOAD_PHOTO(data.data),
+      //     formDataApi(tesimonialListDetails[1].photo),
+      //   );
+      // }
 
       toast.success(TESTIMONIAL_LIST.TESTIMONIAL_LIST_SUCCESS);
       return data;
     } catch (error) {
-      toast.error(error.message);
       return rejectWithValue(error.message);
     }
   },
@@ -81,19 +80,18 @@ export const updateTestimonialList = createAsyncThunk(
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.UPDATE_TESTIMONIAL_LIST(id),
-        payload,
+        payload[0],
       );
 
-      if (data) {
-        await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(id),
-          formDataApi(payload[1].photo),
-        );
-      }
+      // if (data) {
+      //   await axiosInstance.post(
+      //     API_ENDPOINT.UPLOAD_PHOTO(id),
+      //     formDataApi(payload[1].photo),
+      //   );
+      // }
       toast.success(TESTIMONIAL_LIST.TESTIMONIAL_LIST_UPDATE);
       return data;
     } catch (error) {
-      toast.error(error.message);
       console.log(error);
     }
   },
@@ -101,26 +99,29 @@ export const updateTestimonialList = createAsyncThunk(
 
 export const deleteTestimonialList = createAsyncThunk(
   'testimonialList/deleteTestimonialList',
-  async (id) => {
-    
-  const eventId = id?._id;
-  const image_name = id.photo.split('uploads/');
-
+  async (id, { rejectWithValue }) => {
     try {
+      const eventId = id._id;
+      const imageName = id.photo?.split('uploads/')[1];
+
+      // Delete the testimonial
       const { data } = await axiosInstance.post(
         API_ENDPOINT.DELETE_TESTIMONIAL_LIST(eventId),
       );
 
-      if (data) {
-        await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: image_name[1],
-        });
-      }
-      toast.success(TESTIMONIAL_LIST.TESTIMONIAL_LIST_DELETED);
+      // Optionally delete the photo if it exists
+      // if (imageName) {
+      //   await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
+      //     PhotoUrl: imageName,
+      //   });
+      // }
+
       return data;
     } catch (error) {
-      toast.error(error.message);
-      console.log(error);
+      console.error('Error deleting testimonial:', error);
+      return rejectWithValue(
+        error.response?.data || 'Failed to delete testimonial',
+      );
     }
   },
 );

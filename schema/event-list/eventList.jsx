@@ -10,7 +10,7 @@ export const eventListSchema = Yup.object().shape({
   status: Yup.object({
     label: Yup.string(),
     value: Yup.string(),
-  }).required('Status is required'),
+  }).nullable(),
   photo: Yup.mixed()
     .nullable()
     .test(

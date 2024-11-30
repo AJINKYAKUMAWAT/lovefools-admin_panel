@@ -40,11 +40,11 @@ const SidebarConfig = [
     href: '/contact-form',
   },
 
-  {
-    name: 'User Info',
-    icon: <UserCircleIcon className='h-6 w-6' />,
-    href: '/user-list',
-  },
+  // {
+  //   name: 'User Info',
+  //   icon: <UserCircleIcon className='h-6 w-6' />,
+  //   href: '/user-list',
+  // },
 
   {
     name: 'Event List',

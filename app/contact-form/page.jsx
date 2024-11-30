@@ -100,7 +100,7 @@ const ContactForm = () => {
         </div>
         <List
           columns={[
-            { id: 'mobile_no', label: 'Mobile No..' },
+            { id: 'mobile_number', label: 'Mobile No..' },
             {
               id: 'name',
               label: 'Name',

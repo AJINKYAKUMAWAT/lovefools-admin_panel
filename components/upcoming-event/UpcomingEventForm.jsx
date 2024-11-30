@@ -12,7 +12,7 @@ import {
   EyeIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ControllerSelect from '../common/ControllerSelect';
 import { Tooltip } from '@nextui-org/react';
 import ControllerDatePicker from '../common/ControllerDatePicker';
@@ -31,10 +31,16 @@ const UpcomingEventForm = ({
     defaultValues,
     mode: 'onBlur',
   });
-  const [fileName, setfileName] = useState('');
+  const image_name = defaultValues?.photo?.split('uploads/');
+
+  const [fileName, setfileName] = useState(null);
   const updateFileName = (name) => {
     setfileName(name);
   };
+
+  useEffect(() => {
+    setValue('photo', fileName);
+  }, []);
 
   const {
     handleSubmit,
@@ -61,12 +67,6 @@ const UpcomingEventForm = ({
             'Content-Type': 'multipart/form-data',
           },
         };
-
-        // const { data } = await axiosInstance.post(
-        //   `${API_ENDPOINT.IMAGE_UPLOAD}?fileType=${ImageUpload.DOCUMENTS}`,
-        //   formData,
-        //   config,
-        // );
 
         setValue(name, selectedFile);
         clearErrors(name);
@@ -113,7 +113,7 @@ const UpcomingEventForm = ({
               label='Description'
             />
           </div>
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+          <div className='grid grid-cols-1 gap-4'>
             <div>
               <h6
                 className={`mb-2 pt-1 text-small ${
@@ -151,7 +151,9 @@ const UpcomingEventForm = ({
                 </div>
                 {getValues('photo') && (
                   <>
-                    <span className='m-1'>{fileName}</span>
+                    <span className='m-1'>
+                      {fileName ? fileName : image_name[1]}
+                    </span>
                     <span className='w-1/6'>
                       <Button
                         onClick={() => {
