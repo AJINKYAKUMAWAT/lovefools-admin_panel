@@ -12,7 +12,7 @@ import {
   EyeIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ControllerSelect from '../common/ControllerSelect';
 import { Tooltip } from '@nextui-org/react';
 import ControllerDatePicker from '../common/ControllerDatePicker';
@@ -24,16 +24,22 @@ const TestimonialListForm = ({
   handleTestimonialListSubmit,
   handleClose,
   defaultValues,
+  loading,
 }) => {
   const methods = useForm({
     resolver: yupResolver(testiMonialListSchema),
     defaultValues,
     mode: 'onBlur',
   });
+  const image_name = defaultValues?.photo?.split('uploads/');
   const [fileName, setfileName] = useState('');
   const updateFileName = (name) => {
     setfileName(name);
   };
+
+  useEffect(() => {
+    setValue('photo', fileName);
+  }, []);
 
   const {
     handleSubmit,
@@ -59,12 +65,6 @@ const TestimonialListForm = ({
             'Content-Type': 'multipart/form-data',
           },
         };
-
-        // const { data } = await axiosInstance.post(
-        //   `${API_ENDPOINT.IMAGE_UPLOAD}?fileType=${ImageUpload.DOCUMENTS}`,
-        //   formData,
-        //   config,
-        // );
 
         setValue(name, selectedFile);
         clearErrors(name);
@@ -96,7 +96,7 @@ const TestimonialListForm = ({
               label='Description'
             />
           </div>
-          {/* <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+          <div className='grid grid-cols-1 gap-4'>
             <div>
               <h6
                 className={`mb-2 pt-1 text-small ${
@@ -134,7 +134,9 @@ const TestimonialListForm = ({
                 </div>
                 {getValues('photo') && (
                   <>
-                    <span className='m-1'>{fileName}</span>
+                    <span className='m-1'>
+                      {fileName ? fileName : image_name[1]}
+                    </span>
                     <span className='w-1/6'>
                       <Button
                         onClick={() => {
@@ -159,7 +161,7 @@ const TestimonialListForm = ({
                   </h6>
                 )}
             </div>
-          </div> */}
+          </div>
           <div className='flex justify-end space-x-4'>
             <Button
               type='button'
@@ -167,7 +169,11 @@ const TestimonialListForm = ({
               onClick={handleClose}>
               Cancel
             </Button>
-            <Button type='submit'>{defaultValues.id ? 'Update' : 'Add'}</Button>
+            <Button
+              type='submit'
+              isLoading={loading}>
+              {defaultValues.id ? 'Update' : 'Add'}
+            </Button>
           </div>
         </div>
       </div>

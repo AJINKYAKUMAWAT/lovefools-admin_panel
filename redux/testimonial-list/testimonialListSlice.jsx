@@ -59,12 +59,12 @@ export const addTestimonialList = createAsyncThunk(
         tesimonialListDetails[0],
       );
 
-      // if (data) {
-      //   await axiosInstance.post(
-      //     API_ENDPOINT.UPLOAD_PHOTO(data.data),
-      //     formDataApi(tesimonialListDetails[1].photo),
-      //   );
-      // }
+      if (data) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(data.data),
+          formDataApi(tesimonialListDetails[1].photo),
+        );
+      }
 
       toast.success(TESTIMONIAL_LIST.TESTIMONIAL_LIST_SUCCESS);
       return data;
@@ -83,12 +83,12 @@ export const updateTestimonialList = createAsyncThunk(
         payload[0],
       );
 
-      // if (data) {
-      //   await axiosInstance.post(
-      //     API_ENDPOINT.UPLOAD_PHOTO(id),
-      //     formDataApi(payload[1].photo),
-      //   );
-      // }
+      if (data) {
+        await axiosInstance.post(
+          API_ENDPOINT.UPLOAD_PHOTO(id),
+          formDataApi(payload[1].photo),
+        );
+      }
       toast.success(TESTIMONIAL_LIST.TESTIMONIAL_LIST_UPDATE);
       return data;
     } catch (error) {
@@ -109,12 +109,11 @@ export const deleteTestimonialList = createAsyncThunk(
         API_ENDPOINT.DELETE_TESTIMONIAL_LIST(eventId),
       );
 
-      // Optionally delete the photo if it exists
-      // if (imageName) {
-      //   await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-      //     PhotoUrl: imageName,
-      //   });
-      // }
+      if (imageName) {
+        await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
+          PhotoUrl: imageName,
+        });
+      }
 
       return data;
     } catch (error) {

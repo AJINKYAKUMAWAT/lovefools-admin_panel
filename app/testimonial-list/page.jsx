@@ -21,6 +21,7 @@ import {
 } from '../../redux/testimonial-list/testimonialListSlice';
 import TestimonialListForm from '../../components/testimonial-list/testimoniaListForm';
 import statusType from '../../utils/constant';
+import Image from 'next/image';
 
 const TestimonialList = () => {
   const [showDeleteModal, setDeleteModal] = useState(false);
@@ -184,7 +185,7 @@ const TestimonialList = () => {
           columns={[
             { id: 'testimonial_Name', label: 'Name' },
             { id: 'description', label: 'Description' },
-            // { id: 'photo', label: 'photo',fixed: true },
+            { id: 'photo', label: 'photo', fixed: true },
             { id: 'actions', label: 'Actions', fixed: true },
           ]}
           data={{
@@ -202,7 +203,19 @@ const TestimonialList = () => {
               <TableRow key={row.id}>
                 <TableCell>{row.testimonial_Name}</TableCell>
                 <TableCell>{row.description}</TableCell>
-                {/* <TableCell>{row.photo ? row.photo : '-'}</TableCell> */}
+                <TableCell>
+                  {' '}
+                  {row.photo ? (
+                    <Image
+                      height={10}
+                      width={70}
+                      style={{ maxHeight: '50px' }}
+                      src={row.photo}
+                    />
+                  ) : (
+                    '-'
+                  )}
+                </TableCell>
                 <TableCell>
                   <div className='flex items-center gap-4'>
                     <Button
@@ -249,6 +262,7 @@ const TestimonialList = () => {
           handleClose={toggleTestimonialListFormModal}
           handleTestimonialListSubmit={onSubmit}
           defaultValues={defaultValues.current}
+          loading={loading}
         />
       </PopupModal>
       <ConfirmationModal
