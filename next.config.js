@@ -2,6 +2,8 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
+    domains: ['https://the-lovefools.s3.eu-north-1.amazonaws.com'], // Add your image domain
+    minimumCacheTTL: 0, // Disable caching for a short duration
     remotePatterns: [
       {
         protocol: 'https',
