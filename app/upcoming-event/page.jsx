@@ -241,7 +241,7 @@ const UpcomingEventList = () => {
                 <TableCell>{row.description}</TableCell>
 
                 <TableCell>
-                  <Image
+                  <img
                     height={10}
                     width={70}
                     style={{ maxHeight: '50px' }}
