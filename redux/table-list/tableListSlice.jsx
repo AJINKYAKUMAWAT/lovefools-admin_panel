@@ -78,11 +78,11 @@ export const addTableList = createAsyncThunk(
 export const updateTableList = createAsyncThunk(
   'tableList/updateTableList',
   async ({ id, payload }) => {
-    const image_name = payload?.photo?.split('uploads/');
+    const image_name = id?.photo?.split('uploads/');
 
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.UPDATE_TABLE_LIST(id),
+        API_ENDPOINT.UPDATE_TABLE_LIST(id.id),
         payload[0],
       );
       if (data && payload[1].photo) {
@@ -90,7 +90,7 @@ export const updateTableList = createAsyncThunk(
           PhotoUrl: image_name[1],
         });
         await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(id),
+          API_ENDPOINT.UPLOAD_PHOTO(id.id),
           formDataApi(payload[1].photo),
         );
       }

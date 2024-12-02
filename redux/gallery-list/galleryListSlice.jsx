@@ -88,24 +88,22 @@ export const addGalleryList = createAsyncThunk(
 export const updateGalleryList = createAsyncThunk(
   'galleryList/updateGalleryList',
   async ({ id, payload }) => {
-    const image_name = id.photo.split('uploads/');
-    const video_name = id.video.split('uploads/');
+    const image_name = id?.photo.split('uploads/');
+    const video_name = id?.video.split('uploads/');
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.UPDATE_GALLERY_LIST(id),
+        API_ENDPOINT.UPDATE_GALLERY_LIST(id.id),
         payload[0],
       );
 
       if (data) {
         const { photo, video } = payload[1];
-        const video_name = video.split('uploads/');
-        const image_name = photo.split('uploads/');
         if (video) {
           await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
             PhotoUrl: video_name[1],
           });
           await axiosInstance.post(
-            API_ENDPOINT.UPLOAD_PHOTO(id),
+            API_ENDPOINT.UPLOAD_PHOTO(id.id),
             formDataApi(video),
           );
         }
@@ -114,7 +112,7 @@ export const updateGalleryList = createAsyncThunk(
             PhotoUrl: image_name[1],
           });
           await axiosInstance.post(
-            API_ENDPOINT.UPLOAD_PHOTO(id),
+            API_ENDPOINT.UPLOAD_PHOTO(id.id),
             formDataApi(photo),
           );
         }

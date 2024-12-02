@@ -133,7 +133,7 @@ const GalleryList = () => {
         }
       } else {
         const data = await dispatch(
-          updateGalleryList({ id: defaultValues.current.id, payload: payload }),
+          updateGalleryList({ id: defaultValues.current, payload: payload }),
         );
         if (data) {
           dispatch(getGalleryList({ ...listParameters, search: '', page: 1 }));

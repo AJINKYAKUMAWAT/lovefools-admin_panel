@@ -134,7 +134,7 @@ const TableList = () => {
         data = await dispatch(addTableList(payload)).unwrap();
       } else {
         data = await dispatch(
-          updateTableList({ id: defaultValues.current.id, payload }),
+          updateTableList({ id: defaultValues.current, payload }),
         ).unwrap();
       }
 

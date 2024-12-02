@@ -149,7 +149,7 @@ const UpcomingEventList = () => {
       } else {
         const data = await dispatch(
           updateUpcomingEventList({
-            id: defaultValues.current.id,
+            id: defaultValues.current,
             payload: payload,
           }),
         );

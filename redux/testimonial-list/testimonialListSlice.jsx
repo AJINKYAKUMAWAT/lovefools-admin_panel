@@ -77,10 +77,10 @@ export const addTestimonialList = createAsyncThunk(
 export const updateTestimonialList = createAsyncThunk(
   'testimonialList/updateTestimonialList',
   async ({ id, payload }) => {
-    const imageName = payload?.photo?.split('uploads/')[1];
+    const imageName = id?.photo?.split('uploads/')[1];
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.UPDATE_TESTIMONIAL_LIST(id),
+        API_ENDPOINT.UPDATE_TESTIMONIAL_LIST(id.id),
         payload[0],
       );
 
@@ -89,7 +89,7 @@ export const updateTestimonialList = createAsyncThunk(
           PhotoUrl: imageName,
         });
         await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(id),
+          API_ENDPOINT.UPLOAD_PHOTO(id.id),
           formDataApi(payload[1].photo),
         );
       }

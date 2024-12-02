@@ -143,7 +143,7 @@ const EventList = () => {
         );
       } else {
         await dispatch(
-          updateEventList({ id: defaultValues.current.id, payload: payload }),
+          updateEventList({ id: defaultValues.current, payload: payload }),
         );
         await dispatch(
           getEventList({ ...listParameters, search: '', page: 1 }),
