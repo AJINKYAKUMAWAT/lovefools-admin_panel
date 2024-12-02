@@ -86,7 +86,7 @@ export const updateTestimonialList = createAsyncThunk(
 
       if (data) {
         await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: imageName[1],
+          PhotoUrl: imageName,
         });
         await axiosInstance.post(
           API_ENDPOINT.UPLOAD_PHOTO(id),
@@ -115,7 +115,7 @@ export const deleteTestimonialList = createAsyncThunk(
 
       if (imageName) {
         await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: imageName[1],
+          PhotoUrl: imageName,
         });
       }
 
