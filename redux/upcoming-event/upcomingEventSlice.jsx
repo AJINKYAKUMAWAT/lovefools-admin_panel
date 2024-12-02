@@ -80,15 +80,19 @@ export const addUpcomingEventList = createAsyncThunk(
 export const updateUpcomingEventList = createAsyncThunk(
   'upcomingEventList/updateUpcomingEventList',
   async ({ id, payload }) => {
+    const image_name = id?.photo.split('uploads/');
     try {
       const { data } = await axiosInstance.post(
-        API_ENDPOINT.UPDATE_UPCOMING_EVENT_LIST(id),
+        API_ENDPOINT.UPDATE_UPCOMING_EVENT_LIST(id.id),
         payload[0],
       );
 
       if (data) {
+        await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
+          PhotoUrl: image_name[1],
+        });
         await axiosInstance.post(
-          API_ENDPOINT.UPLOAD_PHOTO(id),
+          API_ENDPOINT.UPLOAD_PHOTO(id.id),
           formDataApi(payload[1].photo),
         );
       }

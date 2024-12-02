@@ -127,7 +127,7 @@ const TestimonialList = () => {
       } else {
         const data = await dispatch(
           updateTestimonialList({
-            id: defaultValues.current.id,
+            id: defaultValues.current,
             payload: payload,
           }),
         );
