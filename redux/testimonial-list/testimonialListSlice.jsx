@@ -77,6 +77,7 @@ export const addTestimonialList = createAsyncThunk(
 export const updateTestimonialList = createAsyncThunk(
   'testimonialList/updateTestimonialList',
   async ({ id, payload }) => {
+    const imageName = payload?.photo?.split('uploads/')[1];
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.UPDATE_TESTIMONIAL_LIST(id),
@@ -84,6 +85,9 @@ export const updateTestimonialList = createAsyncThunk(
       );
 
       if (data) {
+        await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
+          PhotoUrl: imageName[1],
+        });
         await axiosInstance.post(
           API_ENDPOINT.UPLOAD_PHOTO(id),
           formDataApi(payload[1].photo),
@@ -111,7 +115,7 @@ export const deleteTestimonialList = createAsyncThunk(
 
       if (imageName) {
         await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: imageName,
+          PhotoUrl: imageName[1],
         });
       }
 
