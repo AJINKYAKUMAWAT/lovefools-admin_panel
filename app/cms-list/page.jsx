@@ -74,7 +74,7 @@ const CMSList = () => {
       dispatch(
         updateCMSList({ id: defaultValues.current.id, payload: payload }),
       );
-      dispatch(getCMSList({ ...listParameters, search: '', page: 1 }));
+      dispatch(getCMSList({}));
     } catch (error) {
       console.log(error);
     }
