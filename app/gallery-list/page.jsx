@@ -209,7 +209,7 @@ const GalleryList = () => {
                 <TableCell>
                   {' '}
                   {row.photo ? (
-                    <Image
+                    <img
                       height={10}
                       width={70}
                       style={{ maxHeight: '50px' }}

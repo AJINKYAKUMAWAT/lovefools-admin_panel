@@ -5,7 +5,7 @@ import notFound from '../../public/images/404_not_found.svg';
 const NotFound = () => {
   return (
     <div className='my-8 flex w-full flex-col items-center justify-center'>
-      <Image
+      <img
         src={notFound}
         alt='404 Not Found'
         width={400}

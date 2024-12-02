@@ -50,7 +50,7 @@ const Header = ({ toggleSidebar }) => {
               <div
                 className='mt-2 cursor-pointer pl-6'
                 onClick={() => router.push('/')}>
-                <Image
+                <img
                   width={150}
                   height={150}
                   src={img}
@@ -65,7 +65,7 @@ const Header = ({ toggleSidebar }) => {
               <div
                 className='mt-2 mt-[-2px] cursor-pointer pl-6'
                 onClick={() => router.push('/')}>
-                <Image
+                <img
                   style={{ maxWidth: 'none', marginLeft: '-32px' }}
                   width={120}
                   height={120}

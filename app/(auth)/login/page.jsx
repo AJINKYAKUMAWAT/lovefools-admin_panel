@@ -9,7 +9,7 @@ const Login = () => {
   return (
     <>
       <div className='align-center mt-10 flex flex-col items-center'>
-        <Image
+        <img
           className='cursor-pointer'
           width={200}
           height={200}
