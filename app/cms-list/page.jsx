@@ -71,15 +71,19 @@ const CMSList = () => {
     };
 
     try {
-      dispatch(
+      // Wait for the update action to complete
+      await dispatch(
         updateCMSList({ id: defaultValues.current.id, payload: payload }),
-      );
-      dispatch(getCMSList({}));
-    } catch (error) {
-      console.log(error);
-    }
+      ).unwrap(); // Unwrap to handle the promise properly
 
-    toggleCMSListFormModal();
+      // Fetch the updated list
+      await dispatch(getCMSList({}));
+    } catch (error) {
+      console.error('Failed to update CMS list:', error);
+    } finally {
+      // Close the modal after completing the update
+      toggleCMSListFormModal();
+    }
   };
 
   return (
