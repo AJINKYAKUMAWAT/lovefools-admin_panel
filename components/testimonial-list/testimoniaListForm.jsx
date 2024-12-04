@@ -135,7 +135,7 @@ const TestimonialListForm = ({
                 {getValues('photo') && (
                   <>
                     <span className='m-1'>
-                      {fileName ? fileName : image_name[1]}
+                      {fileName ? fileName : defaultValues?.photo}
                     </span>
                     <span className='w-1/6'>
                       <Button

@@ -89,7 +89,7 @@ export const updateUpcomingEventList = createAsyncThunk(
 
       if (data) {
         await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: image_name[1],
+          PhotoUrl: id?.photo,
         });
         await axiosInstance.post(
           API_ENDPOINT.UPLOAD_PHOTO(id.id),
@@ -115,7 +115,7 @@ export const deleteUpcomingEventList = createAsyncThunk(
       );
       if (data) {
         await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: image_name[1],
+          PhotoUrl: id?.photo,
         });
       }
       toast.success(UPCOMING_EVENT_LIST.UPCOMING_EVENT_LIST_DELETED);

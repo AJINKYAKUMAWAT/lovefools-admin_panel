@@ -80,8 +80,6 @@ export const addEventList = createAsyncThunk(
 export const updateEventList = createAsyncThunk(
   'eventList/updateEventList',
   async ({ id, payload }) => {
-    console.log('payload', payload);
-    const image_name = id?.photo.split('uploads/');
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.UPDATE_EVENT_LIST(id.id),
@@ -90,7 +88,7 @@ export const updateEventList = createAsyncThunk(
 
       if (data) {
         await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: image_name[1],
+          PhotoUrl: id?.photo,
         });
         await axiosInstance.post(
           API_ENDPOINT.UPLOAD_PHOTO(id.id),
@@ -118,7 +116,7 @@ export const deleteEventList = createAsyncThunk(
 
       if (data) {
         await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: image_name[1],
+          PhotoUrl: id?.photo,
         });
       }
       toast.success(EVENT_LIST.EVENT_LIST_DELETED);

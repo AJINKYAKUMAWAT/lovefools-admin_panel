@@ -100,7 +100,7 @@ export const updateGalleryList = createAsyncThunk(
         const { photo, video } = payload[1];
         if (video) {
           await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-            PhotoUrl: video_name[1],
+            PhotoUrl: id?.video,
           });
           await axiosInstance.post(
             API_ENDPOINT.UPLOAD_PHOTO(id.id),
@@ -109,7 +109,7 @@ export const updateGalleryList = createAsyncThunk(
         }
         if (photo) {
           await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-            PhotoUrl: image_name[1],
+            PhotoUrl: id?.photo,
           });
           await axiosInstance.post(
             API_ENDPOINT.UPLOAD_PHOTO(id.id),
@@ -141,12 +141,12 @@ export const deleteGalleryList = createAsyncThunk(
       );
       if (data) {
         await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: image_name[1],
+          PhotoUrl: id?.photo,
         });
       }
       if (data && video_name[1]) {
         await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: video_name[1],
+          PhotoUrl: id?.video,
         });
       }
       toast.success(GALLERY_LIST.GALLERY_LIST_DELETED);

@@ -87,7 +87,7 @@ export const updateTableList = createAsyncThunk(
       );
       if (data && payload[1].photo) {
         await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: image_name[1],
+          PhotoUrl: id?.photo,
         });
         await axiosInstance.post(
           API_ENDPOINT.UPLOAD_PHOTO(id.id),
@@ -114,7 +114,7 @@ export const deleteTableList = createAsyncThunk(
 
       if (data && image_name) {
         await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-          PhotoUrl: image_name[1],
+          PhotoUrl: id?.photo,
         });
       }
       toast.success(TABLE_LIST.TABLE_LIST_DELETED);

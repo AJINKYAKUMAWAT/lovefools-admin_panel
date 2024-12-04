@@ -239,11 +239,11 @@ const MenuList = () => {
                 </TableCell>
                 <TableCell>
                   {row.photo ? (
-                    <img
+                    <Image
                       height={10}
                       width={70}
                       style={{ maxHeight: '50px' }}
-                      src={row.photo}
+                      src={`${process.env.NEXT_PUBLIC_CLOUD_FRONT_URL}${row.photo}`}
                     />
                   ) : (
                     '-'

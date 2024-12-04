@@ -234,11 +234,11 @@ const EventList = () => {
                   {row.status ? getDataLabel(statusType, row.status) : '-'}
                 </TableCell> */}
                 <TableCell>
-                  <img
+                  <Image
                     height={10}
                     width={70}
                     style={{ maxHeight: '50px' }}
-                    src={row.photo}
+                    src={`${process.env.NEXT_PUBLIC_CLOUD_FRONT_URL}${row.photo}`}
                   />
                 </TableCell>
                 <TableCell>

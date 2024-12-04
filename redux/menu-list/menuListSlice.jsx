@@ -109,7 +109,7 @@ export const deleteMenu = createAsyncThunk('menu/deleteMenu', async (id) => {
 
     if (data && image_name) {
       await axiosInstance.post(API_ENDPOINT.DELETE_PHOTO, {
-        PhotoUrl: image_name[1],
+        PhotoUrl: id?.photo,
       });
     }
     toast.success(MENU_LIST.MENU_LIST_DELETED);
