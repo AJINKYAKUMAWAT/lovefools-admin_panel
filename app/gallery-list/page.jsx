@@ -126,6 +126,7 @@ const GalleryList = () => {
     ];
 
     try {
+      console.log('Hello');
       if (!defaultValues.current.id) {
         const data = await dispatch(addGalleryList(payload));
         if (data) {

@@ -88,8 +88,8 @@ export const addGalleryList = createAsyncThunk(
 export const updateGalleryList = createAsyncThunk(
   'galleryList/updateGalleryList',
   async ({ id, payload }) => {
-    const image_name = id?.photo.split('uploads/');
-    const video_name = id?.video.split('uploads/');
+    console.log('id', id);
+
     try {
       const { data } = await axiosInstance.post(
         API_ENDPOINT.UPDATE_GALLERY_LIST(id.id),

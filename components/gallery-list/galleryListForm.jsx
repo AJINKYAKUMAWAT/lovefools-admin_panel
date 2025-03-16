@@ -49,6 +49,8 @@ const GalleryListForm = ({
     watch,
   } = methods;
 
+  console.log(errors);
+
   const onSubmit = async (data) => {
     handleGalleryListSubmit(data);
   };
